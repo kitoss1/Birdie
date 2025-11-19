@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(claude mcp list:*)",
+      "Bash(claude mcp:*)",
+      "mcp__UnityMCP__manage_gameobject"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

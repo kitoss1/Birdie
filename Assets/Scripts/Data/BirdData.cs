@@ -1,222 +1,334 @@
-using UnityEngine;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-/// <summary>
-/// ScriptableObject that contains all static information for a bird species.
-/// This data is used by the BirdManager to spawn and manage birds.
-/// Based on the design document specifications.
-/// </summary>
-[CreateAssetMenu(fileName = "New Bird", menuName = "Idle Bird/Bird Data")]
-public class BirdData : ScriptableObject
+namespace Birdie.Data
 {
-    [Header("Basic Information")]
-    [Tooltip("Common name of the bird (e.g., 'Pit-roig')")]
-    public string birdName;
-    
-    [Tooltip("Scientific name (e.g., 'Erithacus rubecula')")]
-    public string scientificName;
-    
-    [Tooltip("Bird species ID for save system")]
-    public string birdID;
-    
-    [TextArea(3, 5)]
-    [Tooltip("Basic description (3 lines max)")]
-    public string basicDescription;
-    
-    [Header("Visual Data")]
-    [Tooltip("Prefab of the bird for spawning")]
-    public GameObject birdPrefab;
-    
-    [Tooltip("Photo/sprite for the diary")]
-    public Sprite birdPhoto;
-    
-    [Tooltip("Size category")]
-    public BirdSize size;
-    
-    [Header("Rarity System")]
-    [Tooltip("Rarity affects spawn probability and rewards")]
-    public BirdRarity rarity = BirdRarity.Common;
-    
-    [Tooltip("Base weight for weighted spawn system (higher = more likely)")]
-    [Range(1, 100)]
-    public int baseSpawnWeight = 50;
-    
-    [Header("Time Availability")]
-    [Tooltip("Time range when this bird can appear (24h format)")]
-    public TimeRange appearanceTimeRange;
-    
-    [Tooltip("Can this bird appear at any time? (overrides time range)")]
-    public bool appearsAnytime = false;
-    
-    [Header("Friendship System")]
-    [Tooltip("Maximum friendship level achievable with this bird")]
-    [Range(1, 10)]
-    public int maxFriendshipLevel = 4;
-    
-    [Tooltip("Friendship points needed for each level")]
-    public List<int> friendshipLevelThresholds = new List<int> { 0, 25, 75, 150 };
-    
-    [Header("Unlockable Information")]
-    [Tooltip("Information revealed at each friendship level")]
-    public List<FriendshipLevelInfo> friendshipUnlocks = new List<FriendshipLevelInfo>();
-    
-    [Header("Habitat and Diet")]
-    [Tooltip("Preferred diet type")]
-    public DietType dietType;
-    
-    [Tooltip("Natural habitat description")]
-    [TextArea(2, 4)]
-    public string habitat;
-    
-    [Tooltip("Habitat map/sprite (optional)")]
-    public Sprite habitatMap;
-    
-    [Header("Identification")]
-    [Tooltip("Extended information on how to identify this bird")]
-    [TextArea(3, 6)]
-    public string identificationInfo;
-    
-    [Tooltip("Is this species threatened/endangered?")]
-    public bool isThreatened = false;
-    
-    [Tooltip("Conservation status")]
-    public string conservationStatus;
-    
-    [Header("Audio")]
-    [Tooltip("Bird song/call audio clip")]
-    public AudioClip birdSong;
-    
-    [Header("Gifts and Rewards")]
-    [Tooltip("Items this bird can leave as gifts at high friendship")]
-    public List<GiftItem> possibleGifts = new List<GiftItem>();
-    
-    [Header("Requirements")]
-    [Tooltip("Habitat upgrades required for this bird to appear")]
-    public List<string> requiredUpgradeIDs = new List<string>();
-    
-    [Tooltip("Minimum habitat level required")]
-    public int minimumHabitatLevel = 0;
-    
-    [Header("Special Behaviors")]
-    [Tooltip("Does this bird have special animations? (e.g., woodpecker pecking)")]
-    public bool hasSpecialAnimation = false;
-    
-    [Tooltip("Special animation description")]
-    public string specialAnimationDescription;
-    
     /// <summary>
-    /// Gets the friendship points required to reach a specific level
+    /// ScriptableObject that contains all static information for a bird species.
+    /// This data is used by the BirdManager to spawn and manage birds.
+    /// Based on the design document specifications.
     /// </summary>
-    public int GetFriendshipRequirement(int level)
+    [CreateAssetMenu(fileName = "New Bird", menuName = "Idle Bird/Bird Data")]
+    public class BirdData : ScriptableObject
     {
-        if (level < 0 || level >= friendshipLevelThresholds.Count)
-            return int.MaxValue;
-        return friendshipLevelThresholds[level];
-    }
-    
-    /// <summary>
-    /// Checks if the bird can appear at the current time
-    /// </summary>
-    public bool CanAppearAtTime(int currentHour)
-    {
-        if (appearsAnytime) return true;
-        return appearanceTimeRange.IsTimeInRange(currentHour);
-    }
-    
-    /// <summary>
-    /// Gets the rarity multiplier for golden seed rewards
-    /// </summary>
-    public float GetRarityMultiplier()
-    {
-        return rarity switch
-        {
-            BirdRarity.Common => 1.0f,
-            BirdRarity.Uncommon => 1.5f,
-            BirdRarity.Rare => 2.5f,
-            BirdRarity.VeryRare => 3.5f,
-            BirdRarity.Legendary => 5.0f,
-            _ => 1.0f
-        };
-    }
-}
+        [Header("Basic Information")]
+        [SerializeField]
+        [Tooltip("Common name of the bird (e.g., 'Pit-roig')")]
+        private string m_birdName;
 
-[Serializable]
-public class TimeRange
-{
-    [Range(0, 23)]
-    public int startHour = 8;
-    
-    [Range(0, 23)]
-    public int endHour = 18;
-    
-    /// <summary>
-    /// Checks if a given hour is within this time range
-    /// Handles wrap-around (e.g., 22:00 to 4:00)
-    /// </summary>
-    public bool IsTimeInRange(int hour)
-    {
-        if (startHour <= endHour)
+        [SerializeField]
+        [Tooltip("Scientific name (e.g., 'Erithacus rubecula')")]
+        private string m_scientificName;
+
+        [SerializeField]
+        [Tooltip("Bird species ID for save system")]
+        private string m_birdID;
+
+        [SerializeField]
+        [TextArea(3, 5)]
+        [Tooltip("Basic description (3 lines max)")]
+        private string m_basicDescription;
+
+        [Header("Visual Data")]
+        [SerializeField]
+        [Tooltip("Prefab of the bird for spawning")]
+        private GameObject m_birdPrefab;
+
+        [SerializeField]
+        [Tooltip("Photo/sprite for the diary")]
+        private Sprite m_birdPhoto;
+
+        [SerializeField]
+        [Tooltip("Size category")]
+        private BirdSize m_size;
+
+        [Header("Rarity System")]
+        [SerializeField]
+        [Tooltip("Rarity affects spawn probability and rewards")]
+        private BirdRarity m_rarity = BirdRarity.Common;
+
+        [SerializeField]
+        [Tooltip("Base weight for weighted spawn system (higher = more likely)")]
+        [Range(1, 100)]
+        private int m_baseSpawnWeight = 50;
+
+        [Header("Time Availability")]
+        [SerializeField]
+        [Tooltip("Time range when this bird can appear (24h format)")]
+        private TimeRange m_appearanceTimeRange;
+
+        [SerializeField]
+        [Tooltip("Can this bird appear at any time? (overrides time range)")]
+        private bool m_appearsAnytime = false;
+
+        [Header("Friendship System")]
+        [SerializeField]
+        [Tooltip("Maximum friendship level achievable with this bird")]
+        [Range(1, 10)]
+        private int m_maxFriendshipLevel = 4;
+
+        [SerializeField]
+        [Tooltip("Friendship points needed for each level")]
+        private List<int> m_friendshipLevelThresholds = new List<int> { 0, 25, 75, 150 };
+
+        [Header("Unlockable Information")]
+        [SerializeField]
+        [Tooltip("Information revealed at each friendship level")]
+        private List<FriendshipLevelInfo> m_friendshipUnlocks = new List<FriendshipLevelInfo>();
+
+        [Header("Habitat and Diet")]
+        [SerializeField]
+        [Tooltip("Preferred diet type")]
+        private DietType m_dietType;
+
+        [SerializeField]
+        [Tooltip("Natural habitat description")]
+        [TextArea(2, 4)]
+        private string m_habitat;
+
+        [SerializeField]
+        [Tooltip("Habitat map/sprite (optional)")]
+        private Sprite m_habitatMap;
+
+        [Header("Identification")]
+        [SerializeField]
+        [Tooltip("Extended information on how to identify this bird")]
+        [TextArea(3, 6)]
+        private string m_identificationInfo;
+
+        [SerializeField]
+        [Tooltip("Is this species threatened/endangered?")]
+        private bool m_isThreatened = false;
+
+        [SerializeField]
+        [Tooltip("Conservation status")]
+        private string m_conservationStatus;
+
+        [Header("Audio")]
+        [SerializeField]
+        [Tooltip("Bird song/call audio clip")]
+        private AudioClip m_birdSong;
+
+        [Header("Gifts and Rewards")]
+        [SerializeField]
+        [Tooltip("Items this bird can leave as gifts at high friendship")]
+        private List<GiftItem> m_possibleGifts = new List<GiftItem>();
+
+        [Header("Requirements")]
+        [SerializeField]
+        [Tooltip("Habitat upgrades required for this bird to appear")]
+        private List<string> m_requiredUpgradeIDs = new List<string>();
+
+        [SerializeField]
+        [Tooltip("Minimum habitat level required")]
+        private int m_minimumHabitatLevel = 0;
+
+        [Header("Special Behaviors")]
+        [SerializeField]
+        [Tooltip("Does this bird have special animations? (e.g., woodpecker pecking)")]
+        private bool m_hasSpecialAnimation = false;
+
+        [SerializeField]
+        [Tooltip("Special animation description")]
+        private string m_specialAnimationDescription;
+
+        public string BirdName
         {
-            // Normal range (e.g., 8 to 18)
-            return hour >= startHour && hour <= endHour;
+            get => m_birdName;
+            set => m_birdName = value;
         }
-        else
+
+        public string ScientificName
         {
-            // Wrap-around range (e.g., 22 to 4)
-            return hour >= startHour || hour <= endHour;
+            get => m_scientificName;
+            set => m_scientificName = value;
+        }
+
+        public string BirdID
+        {
+            get => m_birdID;
+            set => m_birdID = value;
+        }
+
+        public string BasicDescription
+        {
+            get => m_basicDescription;
+            set => m_basicDescription = value;
+        }
+
+        public GameObject BirdPrefab
+        {
+            get => m_birdPrefab;
+            set => m_birdPrefab = value;
+        }
+
+        public Sprite BirdPhoto
+        {
+            get => m_birdPhoto;
+            set => m_birdPhoto = value;
+        }
+
+        public BirdSize Size
+        {
+            get => m_size;
+            set => m_size = value;
+        }
+
+        public BirdRarity Rarity
+        {
+            get => m_rarity;
+            set => m_rarity = value;
+        }
+
+        public int BaseSpawnWeight
+        {
+            get => m_baseSpawnWeight;
+            set => m_baseSpawnWeight = value;
+        }
+
+        public TimeRange AppearanceTimeRange
+        {
+            get => m_appearanceTimeRange;
+            set => m_appearanceTimeRange = value;
+        }
+
+        public bool AppearsAnytime
+        {
+            get => m_appearsAnytime;
+            set => m_appearsAnytime = value;
+        }
+
+        public int MaxFriendshipLevel
+        {
+            get => m_maxFriendshipLevel;
+            set => m_maxFriendshipLevel = value;
+        }
+
+        public List<int> FriendshipLevelThresholds
+        {
+            get => m_friendshipLevelThresholds;
+            set => m_friendshipLevelThresholds = value;
+        }
+
+        public List<FriendshipLevelInfo> FriendshipUnlocks
+        {
+            get => m_friendshipUnlocks;
+            set => m_friendshipUnlocks = value;
+        }
+
+        public DietType DietType
+        {
+            get => m_dietType;
+            set => m_dietType = value;
+        }
+
+        public string Habitat
+        {
+            get => m_habitat;
+            set => m_habitat = value;
+        }
+
+        public Sprite HabitatMap
+        {
+            get => m_habitatMap;
+            set => m_habitatMap = value;
+        }
+
+        public string IdentificationInfo
+        {
+            get => m_identificationInfo;
+            set => m_identificationInfo = value;
+        }
+
+        public bool IsThreatened
+        {
+            get => m_isThreatened;
+            set => m_isThreatened = value;
+        }
+
+        public string ConservationStatus
+        {
+            get => m_conservationStatus;
+            set => m_conservationStatus = value;
+        }
+
+        public AudioClip BirdSong
+        {
+            get => m_birdSong;
+            set => m_birdSong = value;
+        }
+
+        public List<GiftItem> PossibleGifts
+        {
+            get => m_possibleGifts;
+            set => m_possibleGifts = value;
+        }
+
+        public List<string> RequiredUpgradeIDs
+        {
+            get => m_requiredUpgradeIDs;
+            set => m_requiredUpgradeIDs = value;
+        }
+
+        public int MinimumHabitatLevel
+        {
+            get => m_minimumHabitatLevel;
+            set => m_minimumHabitatLevel = value;
+        }
+
+        public bool HasSpecialAnimation
+        {
+            get => m_hasSpecialAnimation;
+            set => m_hasSpecialAnimation = value;
+        }
+
+        public string SpecialAnimationDescription
+        {
+            get => m_specialAnimationDescription;
+            set => m_specialAnimationDescription = value;
+        }
+
+        /// <summary>
+        /// Gets the friendship points required to reach a specific level
+        /// </summary>
+        public int GetFriendshipRequirement(int level)
+        {
+            if (level < 0 || level >= m_friendshipLevelThresholds.Count)
+            {
+                return int.MaxValue;
+            }
+
+            return m_friendshipLevelThresholds[level];
+        }
+
+        /// <summary>
+        /// Checks if the bird can appear at the current time
+        /// </summary>
+        public bool CanAppearAtTime(int currentHour)
+        {
+            if (m_appearsAnytime)
+            {
+                return true;
+            }
+
+            return m_appearanceTimeRange.IsTimeInRange(currentHour);
+        }
+
+        /// <summary>
+        /// Gets the rarity multiplier for golden seed rewards
+        /// </summary>
+        public float GetRarityMultiplier()
+        {
+            return m_rarity switch
+            {
+                BirdRarity.Common => 1.0f,
+                BirdRarity.Uncommon => 1.5f,
+                BirdRarity.Rare => 2.5f,
+                BirdRarity.VeryRare => 3.5f,
+                BirdRarity.Legendary => 5.0f,
+                _ => 1.0f
+            };
         }
     }
-}
-
-[Serializable]
-public class FriendshipLevelInfo
-{
-    public int level;
-    
-    [Tooltip("Title of the unlock (e.g., 'First Contact', 'Known', 'Friend')")]
-    public string levelTitle;
-    
-    [TextArea(2, 4)]
-    [Tooltip("Information or anecdote unlocked at this level")]
-    public string unlockedInfo;
-    
-    [Tooltip("Does this level unlock gifts?")]
-    public bool unlocksGifts = false;
-}
-
-[Serializable]
-public class GiftItem
-{
-    public string itemName;
-    public Sprite itemIcon;
-    public string itemDescription;
-}
-
-public enum BirdRarity
-{
-    Common,      // x1.0 multiplier
-    Uncommon,    // x1.5 multiplier
-    Rare,        // x2.5 multiplier
-    VeryRare,    // x3.5 multiplier
-    Legendary    // x5.0 multiplier
-}
-
-public enum BirdSize
-{
-    VerySmall,  // Hummingbird
-    Small,      // Sparrow
-    Medium,     // Robin
-    Large,      // Crow
-    VeryLarge   // Eagle
-}
-
-public enum DietType
-{
-    Seeds,
-    Insects,
-    Nectar,
-    Fruits,
-    Mixed,
-    Carnivorous
 }

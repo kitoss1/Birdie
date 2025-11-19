@@ -1,6 +1,8 @@
 using UnityEngine;
 
-public class TestIde
+namespace Birdie.Core
 {
-    
+    internal sealed class TestIde
+    {
+    }
 }

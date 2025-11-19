@@ -1,49 +1,53 @@
 using UnityEngine;
 
-/// <summary>
-/// Base class for all manager classes in the game.
-/// Provides a standard initialization pattern using Dependency Injection.
-/// All managers should inherit from this class.
-/// </summary>
-public abstract class BaseManager : MonoBehaviour
+namespace Birdie.Managers
 {
-    protected GameManager _gameManager;
-    protected bool _isInitialized = false;
-
     /// <summary>
-    /// Initializes the manager with a reference to the GameManager.
-    /// This is called by GameManager during its initialization phase.
-    /// Override this in child classes to add custom initialization logic.
+    /// Base class for all manager classes in the game.
+    /// Provides a standard initialization pattern using Dependency Injection.
+    /// All managers should inherit from this class.
     /// </summary>
-    public virtual void Initialize(GameManager gameManager)
+    public abstract class BaseManager : MonoBehaviour
     {
-        if (_isInitialized)
+        protected GameManager m_gameManager;
+        protected bool m_isInitialized = false;
+
+        /// <summary>
+        /// Initializes the manager with a reference to the GameManager.
+        /// This is called by GameManager during its initialization phase.
+        /// Override this in child classes to add custom initialization logic.
+        /// </summary>
+        public virtual void Initialize(GameManager gameManager)
         {
-            Debug.LogWarning($"[{GetType().Name}] Already initialized!");
-            return;
+            if (m_isInitialized)
+            {
+                Debug.LogWarning($"[{GetType().Name}] Already initialized!");
+                return;
+            }
+
+            m_gameManager = gameManager;
+            m_isInitialized = true;
+
+            Debug.Log($"[{GetType().Name}] Initialized successfully");
         }
 
-        _gameManager = gameManager;
-        _isInitialized = true;
+        /// <summary>
+        /// Checks if the manager has been properly initialized
+        /// </summary>
+        public bool IsInitialized => m_isInitialized;
 
-        Debug.Log($"[{GetType().Name}] Initialized successfully");
-    }
-
-    /// <summary>
-    /// Checks if the manager has been properly initialized
-    /// </summary>
-    public bool IsInitialized => _isInitialized;
-
-    /// <summary>
-    /// Protected helper to ensure manager is initialized before use
-    /// </summary>
-    protected bool EnsureInitialized()
-    {
-        if (!_isInitialized)
+        /// <summary>
+        /// Protected helper to ensure manager is initialized before use
+        /// </summary>
+        protected bool EnsureInitialized()
         {
-            Debug.LogError($"[{GetType().Name}] Not initialized! Call Initialize() first.");
-            return false;
+            if (!m_isInitialized)
+            {
+                Debug.LogError($"[{GetType().Name}] Not initialized! Call Initialize() first.");
+                return false;
+            }
+
+            return true;
         }
-        return true;
     }
 }

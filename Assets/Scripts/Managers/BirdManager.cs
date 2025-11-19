@@ -1,40 +1,45 @@
 using UnityEngine;
 
-/// <summary>
-/// Manages all bird-related logic: spawning, appearance times, weighted selection, pity system.
-/// Responsible for the core loop of birds visiting the habitat.
-/// </summary>
-public class BirdManager : BaseManager
+namespace Birdie.Managers
 {
-    [Header("Bird Spawning")]
-    [SerializeField] private float spawnCheckInterval = 30f;
-    [SerializeField] private Transform spawnParent;
-    
-    private bool _isSpawningPaused = false;
-
-    public override void Initialize(GameManager gameManager)
-    {
-        base.Initialize(gameManager);
-        
-        // Custom initialization here
-        Debug.Log("[BirdManager] Setting up bird spawning system...");
-    }
-
     /// <summary>
-    /// Pauses bird spawning (called when minigame starts)
+    /// Manages all bird-related logic: spawning, appearance times, weighted selection, pity system.
+    /// Responsible for the core loop of birds visiting the habitat.
     /// </summary>
-    public void PauseBirdSpawning()
+    public class BirdManager : BaseManager
     {
-        _isSpawningPaused = true;
-        Debug.Log("[BirdManager] Bird spawning paused");
-    }
+        [Header("Bird Spawning")]
+        [SerializeField]
+        private float m_spawnCheckInterval = 30f;
 
-    /// <summary>
-    /// Resumes bird spawning (called when minigame ends)
-    /// </summary>
-    public void ResumeBirdSpawning()
-    {
-        _isSpawningPaused = false;
-        Debug.Log("[BirdManager] Bird spawning resumed");
+        [SerializeField]
+        private Transform m_spawnParent;
+
+        private bool m_isSpawningPaused = false;
+
+        public override void Initialize(GameManager gameManager)
+        {
+            base.Initialize(gameManager);
+
+            Debug.Log($"[{nameof(BirdManager)}] Setting up bird spawning system...");
+        }
+
+        /// <summary>
+        /// Pauses bird spawning (called when minigame starts)
+        /// </summary>
+        public void PauseBirdSpawning()
+        {
+            m_isSpawningPaused = true;
+            Debug.Log($"[{nameof(BirdManager)}] Bird spawning paused");
+        }
+
+        /// <summary>
+        /// Resumes bird spawning (called when minigame ends)
+        /// </summary>
+        public void ResumeBirdSpawning()
+        {
+            m_isSpawningPaused = false;
+            Debug.Log($"[{nameof(BirdManager)}] Bird spawning resumed");
+        }
     }
 }
