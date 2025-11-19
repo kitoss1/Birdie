@@ -20,9 +20,6 @@
 - **UniTask.DOTween** - DOTween integration for async animations
 
 ### Development & Debugging
-- **QFSW Quantum Console** - In-game debug console system
-- **Asset Usage Detector** - Editor tool for finding asset references
-- **Asset Bundle Browser** - Unity asset bundle management tool
 
 ### Unity Bridge Server
 External tool communication system
