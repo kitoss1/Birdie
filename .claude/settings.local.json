@@ -3,7 +3,8 @@
     "allow": [
       "Bash(claude mcp list:*)",
       "Bash(claude mcp:*)",
-      "mcp__UnityMCP__manage_gameobject"
+      "mcp__UnityMCP__manage_gameobject",
+      "mcp__UnityMCP__read_resource"
     ],
     "deny": [],
     "ask": []
