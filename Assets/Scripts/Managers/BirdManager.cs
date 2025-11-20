@@ -1,3 +1,4 @@
+using Birdie.Debug;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -21,7 +22,7 @@ namespace Birdie.Managers
         {
             base.Initialize(gameManager);
 
-            Debug.Log($"[{nameof(BirdManager)}] Setting up bird spawning system...");
+            DebugBase.Log($"[{nameof(BirdManager)}] Setting up bird spawning system...");
         }
 
         /// <summary>
@@ -30,7 +31,7 @@ namespace Birdie.Managers
         public void PauseBirdSpawning()
         {
             m_isSpawningPaused = true;
-            Debug.Log($"[{nameof(BirdManager)}] Bird spawning paused");
+            DebugBase.Log($"[{nameof(BirdManager)}] Bird spawning paused");
         }
 
         /// <summary>
@@ -39,7 +40,7 @@ namespace Birdie.Managers
         public void ResumeBirdSpawning()
         {
             m_isSpawningPaused = false;
-            Debug.Log($"[{nameof(BirdManager)}] Bird spawning resumed");
+            DebugBase.Log($"[{nameof(BirdManager)}] Bird spawning resumed");
         }
     }
 }

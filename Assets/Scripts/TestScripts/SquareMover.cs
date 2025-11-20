@@ -1,3 +1,4 @@
+using Birdie.Debug;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -44,12 +45,12 @@ namespace Birdie.Testing
 
             if (m_rectTransform == null)
             {
-                Debug.LogError($"[{nameof(SquareMover)}] RectTransform component not found!");
+                DebugBase.LogError($"[{nameof(SquareMover)}] RectTransform component not found!");
             }
 
             if (m_image == null)
             {
-                Debug.LogError($"[{nameof(SquareMover)}] Image component not found!");
+                DebugBase.LogError($"[{nameof(SquareMover)}] Image component not found!");
             }
 
             m_direction = new Vector2(1, 1).normalized;
@@ -59,7 +60,7 @@ namespace Birdie.Testing
                 m_image.color = m_colors[0];
             }
 
-            Debug.Log($"[{nameof(SquareMover)}] Initialized");
+            DebugBase.Log($"[{nameof(SquareMover)}] Initialized");
         }
 
         private void Update()
@@ -135,7 +136,7 @@ namespace Birdie.Testing
             m_currentColorIndex = (m_currentColorIndex + 1) % m_colors.Length;
             m_image.color = m_colors[m_currentColorIndex];
 
-            Debug.Log($"[{nameof(SquareMover)}] Color changed to {m_colors[m_currentColorIndex]}");
+            DebugBase.Log($"[{nameof(SquareMover)}] Color changed to {m_colors[m_currentColorIndex]}");
         }
     }
 }

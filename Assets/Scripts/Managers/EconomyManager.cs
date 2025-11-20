@@ -1,3 +1,4 @@
+using Birdie.Debug;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -17,7 +18,7 @@ namespace Birdie.Managers
         public override void Initialize(GameManager gameManager)
         {
             base.Initialize(gameManager);
-            Debug.Log($"[{nameof(EconomyManager)}] Economy system initialized");
+            DebugBase.Log($"[{nameof(EconomyManager)}] Economy system initialized");
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace Birdie.Managers
             }
 
             m_goldenSeeds += amount;
-            Debug.Log($"[{nameof(EconomyManager)}] Added {amount} golden seeds. Total: {m_goldenSeeds}");
+            DebugBase.Log($"[{nameof(EconomyManager)}] Added {amount} golden seeds. Total: {m_goldenSeeds}");
         }
 
         /// <summary>
@@ -55,11 +56,11 @@ namespace Birdie.Managers
             if (CanAfford(cost))
             {
                 m_goldenSeeds -= cost;
-                Debug.Log($"[{nameof(EconomyManager)}] Purchase successful. Remaining: {m_goldenSeeds}");
+                DebugBase.Log($"[{nameof(EconomyManager)}] Purchase successful. Remaining: {m_goldenSeeds}");
                 return true;
             }
 
-            Debug.LogWarning($"[{nameof(EconomyManager)}] Insufficient golden seeds");
+            DebugBase.LogWarning($"[{nameof(EconomyManager)}] Insufficient golden seeds");
             return false;
         }
     }

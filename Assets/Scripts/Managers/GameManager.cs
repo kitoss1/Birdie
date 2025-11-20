@@ -1,5 +1,6 @@
 using System;
 using Birdie.Core;
+using Birdie.Debug;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -26,7 +27,7 @@ namespace Birdie.Managers
                     GameState previousState = m_currentState;
                     m_currentState = value;
                     OnGameStateChanged?.Invoke(previousState, m_currentState);
-                    Debug.Log($"[{nameof(GameManager)}] State changed: {previousState} → {m_currentState}");
+                    DebugBase.Log($"[{nameof(GameManager)}] State changed: {previousState} → {m_currentState}");
                 }
             }
         }
@@ -72,14 +73,14 @@ namespace Birdie.Managers
         /// </summary>
         private void InitializeManagers()
         {
-            Debug.Log($"[{nameof(GameManager)}] Initializing managers...");
+            DebugBase.Log($"[{nameof(GameManager)}] Initializing managers...");
 
             ValidateManagerReferences();
 
             InjectDependencies();
 
             m_isInitialized = true;
-            Debug.Log($"[{nameof(GameManager)}] Managers initialized successfully");
+            DebugBase.Log($"[{nameof(GameManager)}] Managers initialized successfully");
         }
 
         /// <summary>
@@ -89,17 +90,17 @@ namespace Birdie.Managers
         {
             if (m_birdManager == null)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] BirdManager is not assigned!");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] BirdManager is not assigned!");
             }
 
             if (m_economyManager == null)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] EconomyManager is not assigned!");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] EconomyManager is not assigned!");
             }
 
             if (m_friendshipManager == null)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] FriendshipManager is not assigned!");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] FriendshipManager is not assigned!");
             }
         }
 
@@ -132,7 +133,7 @@ namespace Birdie.Managers
         {
             if (CurrentState == GameState.Playing)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] Game is already playing");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] Game is already playing");
                 return;
             }
 
@@ -140,7 +141,7 @@ namespace Birdie.Managers
             m_currentOpenMenu = MenuType.None;
             OnGameStarted?.Invoke();
 
-            Debug.Log($"[{nameof(GameManager)}] Game started");
+            DebugBase.Log($"[{nameof(GameManager)}] Game started");
         }
 
         /// <summary>
@@ -151,7 +152,7 @@ namespace Birdie.Managers
         {
             if (CurrentState == GameState.InMinigame)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] Cannot open menu while in minigame");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] Cannot open menu while in minigame");
                 return;
             }
 
@@ -159,7 +160,7 @@ namespace Birdie.Managers
             m_currentOpenMenu = menuType;
 
             OnMenuOpened?.Invoke();
-            Debug.Log($"[{nameof(GameManager)}] Menu opened: {menuType}");
+            DebugBase.Log($"[{nameof(GameManager)}] Menu opened: {menuType}");
         }
 
         /// <summary>
@@ -169,7 +170,7 @@ namespace Birdie.Managers
         {
             if (CurrentState != GameState.MenuOpen)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] No menu is open");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] No menu is open");
                 return;
             }
 
@@ -178,7 +179,7 @@ namespace Birdie.Managers
             m_currentOpenMenu = MenuType.None;
 
             OnMenuClosed?.Invoke();
-            Debug.Log($"[{nameof(GameManager)}] Menu closed: {closedMenu}");
+            DebugBase.Log($"[{nameof(GameManager)}] Menu closed: {closedMenu}");
         }
 
         /// <summary>
@@ -195,7 +196,7 @@ namespace Birdie.Managers
             }
 
             OnMinigameStarted?.Invoke();
-            Debug.Log($"[{nameof(GameManager)}] Minigame started");
+            DebugBase.Log($"[{nameof(GameManager)}] Minigame started");
         }
 
         /// <summary>
@@ -205,7 +206,7 @@ namespace Birdie.Managers
         {
             if (CurrentState != GameState.InMinigame)
             {
-                Debug.LogWarning($"[{nameof(GameManager)}] Not in minigame state");
+                DebugBase.LogWarning($"[{nameof(GameManager)}] Not in minigame state");
                 return;
             }
 
@@ -217,7 +218,7 @@ namespace Birdie.Managers
             }
 
             OnMinigameEnded?.Invoke();
-            Debug.Log($"[{nameof(GameManager)}] Minigame ended");
+            DebugBase.Log($"[{nameof(GameManager)}] Minigame ended");
         }
 
         /// <summary>
@@ -303,7 +304,7 @@ namespace Birdie.Managers
         private void OnApplicationQuit()
         {
             SaveGame();
-            Debug.Log($"[{nameof(GameManager)}] Application quitting, game saved");
+            DebugBase.Log($"[{nameof(GameManager)}] Application quitting, game saved");
         }
 
         private void OnApplicationPause(bool pauseStatus)
@@ -311,7 +312,7 @@ namespace Birdie.Managers
             if (pauseStatus)
             {
                 SaveGame();
-                Debug.Log($"[{nameof(GameManager)}] Application paused, game saved");
+                DebugBase.Log($"[{nameof(GameManager)}] Application paused, game saved");
             }
         }
 
@@ -319,7 +320,7 @@ namespace Birdie.Managers
         [ContextMenu("Log Managers Status")]
         private void DebugLogManagersStatus()
         {
-            Debug.Log(GetManagersStatus());
+            DebugBase.Log(GetManagersStatus());
         }
 
         [ContextMenu("Force Save")]

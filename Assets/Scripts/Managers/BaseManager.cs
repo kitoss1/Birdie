@@ -1,3 +1,4 @@
+using Birdie.Debug;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -21,14 +22,14 @@ namespace Birdie.Managers
         {
             if (m_isInitialized)
             {
-                Debug.LogWarning($"[{GetType().Name}] Already initialized!");
+                DebugBase.LogWarning($"[{GetType().Name}] Already initialized!");
                 return;
             }
 
             m_gameManager = gameManager;
             m_isInitialized = true;
 
-            Debug.Log($"[{GetType().Name}] Initialized successfully");
+            DebugBase.Log($"[{GetType().Name}] Initialized successfully");
         }
 
         /// <summary>
@@ -43,7 +44,7 @@ namespace Birdie.Managers
         {
             if (!m_isInitialized)
             {
-                Debug.LogError($"[{GetType().Name}] Not initialized! Call Initialize() first.");
+                DebugBase.LogError($"[{GetType().Name}] Not initialized! Call Initialize() first.");
                 return false;
             }
 

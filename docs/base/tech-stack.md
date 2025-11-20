@@ -20,6 +20,7 @@
 - **UniTask.DOTween** - DOTween integration for async animations
 
 ### Development & Debugging
+ -**Debugging** - For debugging we use the DebugManager so that we can enable and disable the diferent logs. Every log should include his type
 
 ### Unity Bridge Server
 External tool communication system

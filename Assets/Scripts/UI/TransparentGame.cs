@@ -1,10 +1,11 @@
-using UnityEngine;
-using System.Runtime.InteropServices;
 using System;
+using System.Collections.Generic;
+using System.Runtime.InteropServices;
+using Birdie.Debug;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class TransparentGame : MonoBehaviour
 {
@@ -81,6 +82,9 @@ public class TransparentGame : MonoBehaviour
 
     void Start()
     {
+        // Enable running in background to prevent pause when window loses focus
+        Application.runInBackground = true;
+
 #if UNITY_STANDALONE_WIN && !UNITY_EDITOR
         hwnd = GetActiveWindow();
 
@@ -102,7 +106,7 @@ public class TransparentGame : MonoBehaviour
         exStyle |= (int)WS_EX_LAYERED;
         SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
 #else
-        Debug.LogWarning($"[{nameof(TransparentGame)}] Transparent Game only works in Windows builds");
+        DebugBase.LogWarning($"[{nameof(TransparentGame)}] Transparent Game only works in Windows builds", DebugCategory.Transparency);
 
 #endif
     }
@@ -129,7 +133,7 @@ public class TransparentGame : MonoBehaviour
             return new Vector2(cursorPos.x, Screen.height - cursorPos.y);
         }
 
-        Debug.LogError($"[{nameof(TransparentGame)}] GetCursorPos failed!");
+        DebugBase.LogError($"[{nameof(TransparentGame)}] GetCursorPos failed!");
         return Vector2.zero;
 #else
         // In editor, use Input System
@@ -162,7 +166,7 @@ public class TransparentGame : MonoBehaviour
 
         if (results.Count > 0)
         {
-            Debug.Log($"[{nameof(TransparentGame)}] UI element detected: {results[0].gameObject.name}");
+            DebugBase.Log($"[{nameof(TransparentGame)}] UI element detected: {results[0].gameObject.name}", DebugCategory.Mouse);
             return true;
         }
 
@@ -187,7 +191,7 @@ public class TransparentGame : MonoBehaviour
     {
         // Get mouse position using Windows API (works even with WS_EX_TRANSPARENT)
         Vector2 mousePosition = GetMousePosition();
-        Debug.Log($"[{nameof(TransparentGame)}] Checking raycast at screen position: {mousePosition}");
+        DebugBase.Log($"[{nameof(TransparentGame)}] Checking raycast at screen position: {mousePosition}", DebugCategory.Mouse);
 
         // Check if mouse is over UI element using manual raycast
         if (IsMouseOverUI(mousePosition))
@@ -198,7 +202,7 @@ public class TransparentGame : MonoBehaviour
         // Early return if camera is not available
         if (m_mainCamera == null)
         {
-            Debug.LogError($"[{nameof(TransparentGame)}] Camera is NULL in ShouldBlockClick!");
+            DebugBase.LogError($"[{nameof(TransparentGame)}] Camera is NULL in ShouldBlockClick!");
             return false;
         }
 
@@ -206,7 +210,7 @@ public class TransparentGame : MonoBehaviour
         Ray ray = m_mainCamera.ScreenPointToRay(mousePosition);
         if (Physics.Raycast(ray, out RaycastHit hit))
         {
-            Debug.Log($"[{nameof(TransparentGame)}] 3D object detected: {hit.collider.gameObject.name}");
+            DebugBase.Log($"[{nameof(TransparentGame)}] 3D object detected: {hit.collider.gameObject.name}", DebugCategory.Mouse);
             return true;
         }
 
@@ -215,11 +219,11 @@ public class TransparentGame : MonoBehaviour
         RaycastHit2D hit2D = Physics2D.Raycast(worldPoint, Vector2.zero);
         if (hit2D.collider != null)
         {
-            Debug.Log($"[{nameof(TransparentGame)}] 2D object detected: {hit2D.collider.gameObject.name}");
+            DebugBase.Log($"[{nameof(TransparentGame)}] 2D object detected: {hit2D.collider.gameObject.name}", DebugCategory.Mouse);
             return true;
         }
 
-        Debug.Log($"[{nameof(TransparentGame)}] No object detected - click should pass through");
+        DebugBase.Log($"[{nameof(TransparentGame)}] No object detected - click should pass through", DebugCategory.Mouse);
         return false;
     }
     
@@ -230,9 +234,9 @@ public class TransparentGame : MonoBehaviour
             exStyle |= (int)WS_EX_TRANSPARENT;
             SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
 #endif
-        
+
         m_isClickThroughEnabled = true;
-        Debug.Log("Enable click-through for the window");
+        DebugBase.Log($"[{nameof(TransparentGame)}] Click-through enabled for the window", DebugCategory.Transparency);
     }
 
     private void DisableClickThrough()
@@ -242,9 +246,9 @@ public class TransparentGame : MonoBehaviour
             exStyle &= ~(int)WS_EX_TRANSPARENT;
             SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
 #endif
-        
+
         m_isClickThroughEnabled = false;
-        Debug.Log("Disable click-through for the window");
+        DebugBase.Log($"[{nameof(TransparentGame)}] Click-through disabled for the window", DebugCategory.Transparency);
     }
 
     public void SetClickThrough(bool enabled)

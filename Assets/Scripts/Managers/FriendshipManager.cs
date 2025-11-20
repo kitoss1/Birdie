@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Birdie.Data;
+using Birdie.Debug;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -15,7 +16,7 @@ namespace Birdie.Managers
         public override void Initialize(GameManager gameManager)
         {
             base.Initialize(gameManager);
-            Debug.Log($"[{nameof(FriendshipManager)}] Friendship system initialized");
+            DebugBase.Log($"[{nameof(FriendshipManager)}] Friendship system initialized");
         }
 
         /// <summary>
@@ -34,7 +35,7 @@ namespace Birdie.Managers
             }
 
             m_birdFriendshipPoints[birdID] += points;
-            Debug.Log($"[{nameof(FriendshipManager)}] Added {points} friendship to {birdID}. Total: {m_birdFriendshipPoints[birdID]}");
+            DebugBase.Log($"[{nameof(FriendshipManager)}] Added {points} friendship to {birdID}. Total: {m_birdFriendshipPoints[birdID]}");
         }
 
         /// <summary>
