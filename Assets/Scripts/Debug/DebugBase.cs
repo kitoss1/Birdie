@@ -76,7 +76,8 @@ namespace Birdie.Debug
         /// </summary>
         /// <param name="message">The error message to log.</param>
         /// <param name="context">The Unity object this log is related to.</param>
-        public static void LogError(string message, Object context)
+        /// <param name="category"></param>
+        public static void LogError(string message, Object context, DebugCategory category = DebugCategory.General)
         {
             UnityEngine.Debug.LogError(message, context);
         }

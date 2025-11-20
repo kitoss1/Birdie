@@ -124,6 +124,15 @@ namespace Birdie.Data
         [Tooltip("Minimum habitat level required")]
         private int m_minimumHabitatLevel = 0;
 
+        [Header("Visit Behavior")]
+        [SerializeField]
+        [Tooltip("Minimum duration this bird stays during a visit (seconds)")]
+        private float m_visitDurationMin = 60f;
+
+        [SerializeField]
+        [Tooltip("Maximum duration this bird stays during a visit (seconds)")]
+        private float m_visitDurationMax = 180f;
+
         [Header("Special Behaviors")]
         [SerializeField]
         [Tooltip("Does this bird have special animations? (e.g., woodpecker pecking)")]
@@ -287,6 +296,18 @@ namespace Birdie.Data
         {
             get => m_specialAnimationDescription;
             set => m_specialAnimationDescription = value;
+        }
+
+        public float VisitDurationMin
+        {
+            get => m_visitDurationMin;
+            set => m_visitDurationMin = value;
+        }
+
+        public float VisitDurationMax
+        {
+            get => m_visitDurationMax;
+            set => m_visitDurationMax = value;
         }
 
         /// <summary>
