@@ -261,8 +261,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7077d9b5e2938e7478e8382603c73993, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.BirdManager
+  m_birdDataPath: ScriptableObjects/Birds
   m_spawnCheckInterval: 30
-  m_spawnParent: {fileID: 1451152260}
+  m_spawnPoints: {fileID: 0}
+  m_maxSimultaneousBirds: 3
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

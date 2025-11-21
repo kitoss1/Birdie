@@ -22,15 +22,12 @@ namespace Birdie.Managers
         private float m_spawnCheckInterval = 30f;
 
         [SerializeField]
-        private Transform m_spawnParent;
+        [Tooltip("Reference to BirdSpawnPoints component that defines spawn locations")]
+        private BirdSpawnPoints m_spawnPoints;
 
         [SerializeField]
         [Tooltip("Maximum number of birds that can be present at once")]
         private int m_maxSimultaneousBirds = 3;
-
-        [SerializeField]
-        [Tooltip("Spawn position offset range (random within bounds)")]
-        private Vector2 m_spawnPositionRange = new Vector2(2f, 1f);
 
         private bool m_isSpawningPaused = false;
         private float m_nextSpawnCheckTime = 0f;
@@ -157,7 +154,7 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Spawns a bird instance at the spawn parent location.
+        /// Spawns a bird instance at a random spawn point location.
         /// </summary>
         private void SpawnBird(BirdData birdData)
         {
@@ -167,8 +164,16 @@ namespace Birdie.Managers
                 return;
             }
 
-            Vector3 spawnPosition = CalculateSpawnPosition();
-            GameObject birdInstance = Instantiate(birdData.BirdPrefab, spawnPosition, Quaternion.identity, m_spawnParent);
+            if (m_spawnPoints == null)
+            {
+                DebugBase.LogError($"[{nameof(BirdManager)}] BirdSpawnPoints not assigned!", DebugCategory.Birds);
+                return;
+            }
+
+            Vector3 spawnPosition = m_spawnPoints.GetRandomSpawnPosition();
+            Transform spawnParent = m_spawnPoints.BirdsContainer;
+
+            GameObject birdInstance = Instantiate(birdData.BirdPrefab, spawnPosition, Quaternion.identity, spawnParent);
             birdInstance.name = $"{birdData.BirdName}_{System.DateTime.Now:HHmmss}";
 
             Bird birdComponent = birdInstance.GetComponent<Bird>();
@@ -183,18 +188,6 @@ namespace Birdie.Managers
                 DebugBase.LogError($"[{nameof(BirdManager)}] Bird prefab is missing Bird component!", DebugCategory.Birds);
                 Destroy(birdInstance);
             }
-        }
-
-        /// <summary>
-        /// Calculates a random spawn position within the defined range.
-        /// </summary>
-        private Vector3 CalculateSpawnPosition()
-        {
-            Vector3 basePosition = m_spawnParent != null ? m_spawnParent.position : Vector3.zero;
-            float randomX = Random.Range(-m_spawnPositionRange.x, m_spawnPositionRange.x);
-            float randomY = Random.Range(-m_spawnPositionRange.y, m_spawnPositionRange.y);
-
-            return new Vector3(basePosition.x + randomX, basePosition.y + randomY, basePosition.z);
         }
 
         /// <summary>
