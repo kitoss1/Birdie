@@ -1,5 +1,6 @@
 using Birdie.Data;
 using Birdie.Debug;
+using Birdie.Managers;
 using Cysharp.Threading.Tasks;
 using System;
 using UnityEngine;
@@ -19,6 +20,8 @@ namespace Birdie.Birds
         private BirdState m_currentState = BirdState.Appearing;
         private float m_visitEndTime;
         private bool m_isInteractable = false;
+        private bool m_hasBeenClickedThisVisit = false;
+        private GameManager m_gameManager;
 
         public BirdData BirdData
         {
@@ -46,9 +49,10 @@ namespace Birdie.Birds
         /// Initializes the bird with specific BirdData.
         /// Called by BirdManager when spawning.
         /// </summary>
-        public void Initialize(BirdData birdData)
+        public void Initialize(BirdData birdData, GameManager gameManager)
         {
             m_birdData = birdData;
+            m_gameManager = gameManager;
             DebugBase.Log($"[{nameof(Bird)}] Initialized: {birdData.BirdName}", DebugCategory.Birds);
         }
 
@@ -116,15 +120,38 @@ namespace Birdie.Birds
         /// </summary>
         public void OnBirdClicked()
         {
-            if (!m_isInteractable)
+            if (!m_isInteractable || m_hasBeenClickedThisVisit)
             {
                 return;
             }
 
+            if (m_gameManager == null || m_gameManager.DiaryManager == null)
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] GameManager or DiaryManager is null, cannot record encounter", DebugCategory.Birds);
+                return;
+            }
+
+            m_hasBeenClickedThisVisit = true;
+
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} was clicked", DebugCategory.Birds);
 
+            bool isNewDiscovery = m_gameManager.DiaryManager.RecordBirdEncounter(m_birdData);
+
+            if (isNewDiscovery)
+            {
+                DebugBase.Log($"[{nameof(Bird)}] ⭐ NEW BIRD DISCOVERED: {m_birdData.BirdName}!", DebugCategory.Birds);
+                // TODO: Show new discovery UI/animation
+            }
+
             // TODO: Open bird detail UI
-            // TODO: Add to diary if first encounter
+        }
+
+        /// <summary>
+        /// Detects mouse clicks on the bird (for testing).
+        /// </summary>
+        private void OnMouseDown()
+        {
+            OnBirdClicked();
         }
 
         /// <summary>

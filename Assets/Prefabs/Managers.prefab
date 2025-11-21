@@ -155,6 +155,50 @@ MonoBehaviour:
   - m_category: 9
     m_isEnabled: 1
   m_enableAllLogging: 1
+--- !u!1 &1622548627829127834
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6868221251254450418}
+  - component: {fileID: 1901936386541877613}
+  m_Layer: 0
+  m_Name: DiaryManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6868221251254450418
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622548627829127834}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1945811201683040692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1901936386541877613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1622548627829127834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e28d6348c8274144fa1b33173ca2c792, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.DiaryManager
 --- !u!1 &4131136064855099855
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,6 +247,7 @@ MonoBehaviour:
   m_birdManager: {fileID: 8501847587352634142}
   m_economyManager: {fileID: 2340949048868403612}
   m_friendshipManager: {fileID: 3103716932249964032}
+  m_diaryManager: {fileID: 1901936386541877613}
 --- !u!1 &5952294990666354834
 GameObject:
   m_ObjectHideFlags: 0
@@ -283,6 +328,7 @@ Transform:
   - {fileID: 2584617335662672426}
   - {fileID: 8459918944650953812}
   - {fileID: 4808532810188561615}
+  - {fileID: 6868221251254450418}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7541330469607521562

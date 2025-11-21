@@ -1,6 +1,7 @@
 using System;
 using Birdie.Core;
 using Birdie.Debug;
+using Birdie.Save;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -49,14 +50,21 @@ namespace Birdie.Managers
         [SerializeField]
         private FriendshipManager m_friendshipManager;
 
+        [SerializeField]
+        private DiaryManager m_diaryManager;
+
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
         public FriendshipManager FriendshipManager => m_friendshipManager;
+        public DiaryManager DiaryManager => m_diaryManager;
 
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
 
         private bool m_isInitialized = false;
+        private SaveManager m_saveManager;
+
+        public SaveManager SaveManager => m_saveManager;
 
         private void Awake()
         {
@@ -75,12 +83,26 @@ namespace Birdie.Managers
         {
             DebugBase.Log($"[{nameof(GameManager)}] Initializing managers...");
 
+            InitializeSaveSystem();
+
             ValidateManagerReferences();
 
             InjectDependencies();
 
             m_isInitialized = true;
             DebugBase.Log($"[{nameof(GameManager)}] Managers initialized successfully");
+        }
+
+        /// <summary>
+        /// Initializes the save system and loads game data.
+        /// </summary>
+        private void InitializeSaveSystem()
+        {
+            m_saveManager = new SaveManager();
+            m_saveManager.Initialize();
+            m_saveManager.LoadGame();
+
+            DebugBase.Log($"[{nameof(GameManager)}] Save system initialized", DebugCategory.General);
         }
 
         /// <summary>
@@ -101,6 +123,11 @@ namespace Birdie.Managers
             if (m_friendshipManager == null)
             {
                 DebugBase.LogWarning($"[{nameof(GameManager)}] FriendshipManager is not assigned!");
+            }
+
+            if (m_diaryManager == null)
+            {
+                DebugBase.LogWarning($"[{nameof(GameManager)}] DiaryManager is not assigned!");
             }
         }
 
@@ -123,6 +150,12 @@ namespace Birdie.Managers
             if (m_friendshipManager != null)
             {
                 m_friendshipManager.Initialize(this);
+            }
+
+            if (m_diaryManager != null)
+            {
+                m_diaryManager.Initialize(this);
+                m_diaryManager.SetSaveManager(m_saveManager);
             }
         }
 
@@ -266,7 +299,11 @@ namespace Birdie.Managers
         /// </summary>
         public void SaveGame()
         {
-            // TODO: Implement save system
+            if (m_saveManager != null)
+            {
+                m_saveManager.SaveGame();
+                DebugBase.Log($"[{nameof(GameManager)}] Game saved", DebugCategory.General);
+            }
         }
 
         /// <summary>
@@ -274,7 +311,11 @@ namespace Birdie.Managers
         /// </summary>
         public void LoadGame()
         {
-            // TODO: Implement load system
+            if (m_saveManager != null)
+            {
+                m_saveManager.LoadGame();
+                DebugBase.Log($"[{nameof(GameManager)}] Game loaded", DebugCategory.General);
+            }
         }
 
         /// <summary>
@@ -283,9 +324,11 @@ namespace Birdie.Managers
         public string GetManagersStatus()
         {
             string status = "=== MANAGERS STATUS ===\n";
+            status += $"SaveManager: {(m_saveManager != null ? "✓" : "✗")}\n";
             status += $"BirdManager: {(m_birdManager != null ? "✓" : "✗")}\n";
             status += $"EconomyManager: {(m_economyManager != null ? "✓" : "✗")}\n";
             status += $"FriendshipManager: {(m_friendshipManager != null ? "✓" : "✗")}\n";
+            status += $"DiaryManager: {(m_diaryManager != null ? "✓" : "✗")}\n";
             status += $"Game State: {CurrentState}\n";
             status += $"Current Menu: {m_currentOpenMenu}";
             return status;
@@ -296,9 +339,11 @@ namespace Birdie.Managers
         /// </summary>
         public bool AreAllManagersReady()
         {
-            return m_birdManager != null &&
+            return m_saveManager != null &&
+                   m_birdManager != null &&
                    m_economyManager != null &&
-                   m_friendshipManager != null;
+                   m_friendshipManager != null &&
+                   m_diaryManager != null;
         }
 
         private void OnApplicationQuit()

@@ -179,7 +179,7 @@ namespace Birdie.Managers
             Bird birdComponent = birdInstance.GetComponent<Bird>();
             if (birdComponent != null)
             {
-                birdComponent.Initialize(birdData);
+                birdComponent.Initialize(birdData, m_gameManager);
                 m_activeBirds.Add(birdComponent);
                 DebugBase.Log($"[{nameof(BirdManager)}] Spawned {birdData.BirdName} at {spawnPosition}", DebugCategory.Birds);
             }
