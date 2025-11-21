@@ -77,28 +77,18 @@ namespace Birdie.Debug
         /// <param name="message">The error message to log.</param>
         /// <param name="context">The Unity object this log is related to.</param>
         /// <param name="category"></param>
-        public static void LogError(string message, Object context, DebugCategory category = DebugCategory.General)
+        public static void LogError(string message, DebugCategory category = DebugCategory.General)
         {
-            UnityEngine.Debug.LogError(message, context);
+            UnityEngine.Debug.LogError(message);
         }
 
         /// <summary>
         /// Logs an exception. Exceptions are always logged regardless of category settings.
         /// </summary>
         /// <param name="exception">The exception to log.</param>
-        public static void LogException(System.Exception exception)
+        public static void LogException(System.Exception exception, DebugCategory category = DebugCategory.General)
         {
             UnityEngine.Debug.LogException(exception);
-        }
-
-        /// <summary>
-        /// Logs an exception with a context object. Exceptions are always logged regardless of category settings.
-        /// </summary>
-        /// <param name="exception">The exception to log.</param>
-        /// <param name="context">The Unity object this log is related to.</param>
-        public static void LogException(System.Exception exception, Object context)
-        {
-            UnityEngine.Debug.LogException(exception, context);
         }
     }
 }

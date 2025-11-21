@@ -34,7 +34,7 @@ namespace Birdie.Birds
         {
             if (m_birdData == null)
             {
-                DebugBase.LogError($"[{nameof(Bird)}] BirdData is not assigned!", this, DebugCategory.Birds);
+                DebugBase.LogError($"[{nameof(Bird)}] BirdData is not assigned!", DebugCategory.Birds);
                 Destroy(gameObject);
                 return;
             }
