@@ -27,7 +27,7 @@ namespace Birdie.Managers
 
         [SerializeField]
         [Tooltip("Maximum number of birds that can be present at once")]
-        private int m_maxSimultaneousBirds = 3;
+        private int m_maxSimultaneousBirds = 1;
 
         private bool m_isSpawningPaused = false;
         private float m_nextSpawnCheckTime = 0f;
