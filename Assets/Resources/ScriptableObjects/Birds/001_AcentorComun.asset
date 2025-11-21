@@ -16,7 +16,7 @@ MonoBehaviour:
   m_scientificName: Prunella modularis
   m_birdID: 001
   m_basicDescription: 
-  m_birdPrefab: {fileID: 5859770825557845991, guid: bae2360d2c76ccf43b1811f14bfecb41, type: 3}
+  m_birdPrefab: {fileID: 7991333266149840317, guid: 6b1cbfbf7eaa6814d91394694816c7e5, type: 3}
   m_birdPhoto: {fileID: 8813797069034322958, guid: c8c82f2b6667ec440a13cd9d562a2935, type: 3}
   m_size: 1
   m_rarity: 0
@@ -38,5 +38,7 @@ MonoBehaviour:
   m_possibleGifts: []
   m_requiredUpgradeIDs: []
   m_minimumHabitatLevel: 0
+  m_visitDurationMin: 60
+  m_visitDurationMax: 180
   m_hasSpecialAnimation: 0
   m_specialAnimationDescription: 

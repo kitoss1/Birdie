@@ -8,6 +8,7 @@
 - **Project Type**: Idle cosy game
 
 ### Architecture
+- **Graphics**: All the game graphics will be made with UI and canvas.
 
 ## Tools, Frameworks & Third Party Dependencies
 
