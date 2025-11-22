@@ -8,7 +8,7 @@ namespace Birdie.Debug
     /// </summary>
     public sealed class DebugTestCommands : MonoBehaviour
     {
-        [DebugCommand("Spawn Test Bird", "Birds")]
+        /*[DebugCommand("Spawn Test Bird", "Birds")]
         public void SpawnTestBird()
         {
             // TODO: Implement bird spawning test
@@ -69,6 +69,6 @@ namespace Birdie.Debug
         public static void TestStaticCommand()
         {
             UnityEngine.Debug.Log("[DebugTestCommands] This is a static test command!");
-        }
+        }*/
     }
 }

@@ -53,10 +53,14 @@ namespace Birdie.Managers
         [SerializeField]
         private DiaryManager m_diaryManager;
 
+        [SerializeField]
+        private MenuManager m_menuManager;
+
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
         public FriendshipManager FriendshipManager => m_friendshipManager;
         public DiaryManager DiaryManager => m_diaryManager;
+        public MenuManager MenuManager => m_menuManager;
 
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
@@ -129,6 +133,11 @@ namespace Birdie.Managers
             {
                 DebugBase.LogWarning($"[{nameof(GameManager)}] DiaryManager is not assigned!");
             }
+
+            if (m_menuManager == null)
+            {
+                DebugBase.LogWarning($"[{nameof(GameManager)}] MenuManager is not assigned!");
+            }
         }
 
         /// <summary>
@@ -156,6 +165,11 @@ namespace Birdie.Managers
             {
                 m_diaryManager.Initialize(this);
                 m_diaryManager.SetSaveManager(m_saveManager);
+            }
+
+            if (m_menuManager != null)
+            {
+                m_menuManager.Initialize(this);
             }
         }
 
@@ -329,6 +343,7 @@ namespace Birdie.Managers
             status += $"EconomyManager: {(m_economyManager != null ? "✓" : "✗")}\n";
             status += $"FriendshipManager: {(m_friendshipManager != null ? "✓" : "✗")}\n";
             status += $"DiaryManager: {(m_diaryManager != null ? "✓" : "✗")}\n";
+            status += $"MenuManager: {(m_menuManager != null ? "✓" : "✗")}\n";
             status += $"Game State: {CurrentState}\n";
             status += $"Current Menu: {m_currentOpenMenu}";
             return status;
@@ -343,7 +358,8 @@ namespace Birdie.Managers
                    m_birdManager != null &&
                    m_economyManager != null &&
                    m_friendshipManager != null &&
-                   m_diaryManager != null;
+                   m_diaryManager != null &&
+                   m_menuManager != null;
         }
 
         private void OnApplicationQuit()
