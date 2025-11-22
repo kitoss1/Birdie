@@ -53,6 +53,11 @@ namespace Birdie.Debug
         /// <summary>
         /// Physics and collision logs.
         /// </summary>
-        Physics
+        Physics,
+        
+        /// <summary>
+        /// Debug menu logs.
+        /// </summary>
+        Debug
     }
 }
