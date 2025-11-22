@@ -100,6 +100,7 @@ namespace Birdie.Managers
 
         /// <summary>
         /// Called when a menu button is clicked.
+        /// If the menu is already open, it will be closed (toggle behavior).
         /// </summary>
         private void OnMenuButtonClicked(MenuType menuType)
         {
@@ -116,11 +117,25 @@ namespace Birdie.Managers
 
             if (IsOverlayMenu(menuType))
             {
-                OpenOverlayMenu(menuType);
+                if (IsMenuOpen(menuType))
+                {
+                    CloseOverlayMenu(menuType);
+                }
+                else
+                {
+                    OpenOverlayMenu(menuType);
+                }
             }
             else
             {
-                OpenMenu(menuType);
+                if (m_currentOpenMenu == menuType)
+                {
+                    CloseCurrentMenu();
+                }
+                else
+                {
+                    OpenMenu(menuType);
+                }
             }
         }
 
