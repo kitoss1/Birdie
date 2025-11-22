@@ -10,18 +10,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70219269baca5b648af64fe42e11e0ed, type: 3}
-  m_Name: 001_AcentorComun
+  m_Name: 002_PetirrojoEuropeo
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.BirdData
-  m_birdName: "Acentor Com\xFAn"
-  m_scientificName: Prunella modularis
-  m_birdID: 001
-  m_basicDescription: "Ave frecuente en zonas de monta\xF1a con abundancia de matorral
-    y de sotobosque. En la mitad norte peninsular aparece en ambientes m\xE1s diversos,
-    pero en el sur se restringe a los sistemas monta\xF1osos. Espa\xF1a alberga una
-    poblaci\xF3n residente, a la que se unen en invierno acentores europeos pertenecientes
-    a otra subespecie."
-  m_birdPrefab: {fileID: 7991333266149840317, guid: 6b1cbfbf7eaa6814d91394694816c7e5, type: 3}
-  m_birdPhoto: {fileID: 8813797069034322958, guid: c8c82f2b6667ec440a13cd9d562a2935, type: 3}
+  m_birdName: 'Petirrojo AEuropeo '
+  m_scientificName: Erithacus rubecula
+  m_birdID: 002
+  m_basicDescription: "El petirrojo europeo es uno de los p\xE1jaros m\xE1s populares
+    y f\xE1cilmente reconocibles, al que se distingue por su llamativa mancha anaranjada
+    en el pecho, la garganta y la cara. En invierno resulta muy com\xFAn en casi
+    cualquier ambiente, incluyendo parques y jardines; pero en primavera cr\xEDa
+    preferentemente en parajes frescos. Es territorial, tanto en invierno como en
+    verano, y muy a menudo suele dejarse ver entre los arbustos o en el suelo mientras
+    busca insectos."
+  m_birdPrefab: {fileID: 0}
+  m_birdPhoto: {fileID: 0}
   m_size: 1
   m_rarity: 0
   m_baseSpawnWeight: 50
