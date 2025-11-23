@@ -218,6 +218,13 @@ namespace Birdie.Managers
             {
                 pageUI.DescriptionText.text = birdData.BasicDescription;
             }
+
+            // Set interaction counter
+            if (pageUI.InteractionCounterText != null)
+            {
+                int encounterCount = m_diaryManager.GetEncounterCount(birdData);
+                pageUI.InteractionCounterText.text = $"Interactions: {encounterCount}";
+            }
         }
 
         /// <summary>
@@ -256,6 +263,12 @@ namespace Birdie.Managers
             if (pageUI.DescriptionText != null)
             {
                 pageUI.DescriptionText.text = m_lockedDescriptionText;
+            }
+
+            // Set locked interaction counter
+            if (pageUI.InteractionCounterText != null)
+            {
+                pageUI.InteractionCounterText.text = "Interactions: ???";
             }
         }
 

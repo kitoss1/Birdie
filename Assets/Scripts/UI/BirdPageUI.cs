@@ -33,9 +33,12 @@ namespace Birdie.UI
         [Tooltip("Text displaying the bird's common name")]
         private TextMeshProUGUI m_nameText;
 
-        [SerializeField]
-        [Tooltip("Text displaying the bird's description")]
+        [SerializeField] [Tooltip("Text displaying the bird's description")]
         private TextMeshProUGUI m_descriptionText;
+            
+        [SerializeField]
+        [Tooltip("Text displaying the numbers of times a player interacted with a bird")]
+        private TextMeshProUGUI m_interactionCounterText;
 
         public Image BirdPhoto => m_birdPhoto;
         public TextMeshProUGUI RarityText => m_rarityText;
@@ -43,6 +46,7 @@ namespace Birdie.UI
         public TextMeshProUGUI FoodText => m_foodText;
         public TextMeshProUGUI NameText => m_nameText;
         public TextMeshProUGUI DescriptionText => m_descriptionText;
+        public TextMeshProUGUI InteractionCounterText => m_interactionCounterText;
 
 #if UNITY_EDITOR
         /// <summary>
@@ -78,6 +82,11 @@ namespace Birdie.UI
             if (m_descriptionText == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Description Text reference is missing!", this);
+            }
+            
+            if (m_interactionCounterText == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Interaction Counter Text reference is missing!", this);
             }
         }
 #endif
