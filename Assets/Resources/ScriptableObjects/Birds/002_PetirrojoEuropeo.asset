@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70219269baca5b648af64fe42e11e0ed, type: 3}
   m_Name: 002_PetirrojoEuropeo
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.BirdData
-  m_birdName: 'Petirrojo AEuropeo '
+  m_birdName: 'Petirrojo Europeo '
   m_scientificName: Erithacus rubecula
   m_birdID: 002
   m_basicDescription: "El petirrojo europeo es uno de los p\xE1jaros m\xE1s populares
@@ -22,8 +22,8 @@ MonoBehaviour:
     preferentemente en parajes frescos. Es territorial, tanto en invierno como en
     verano, y muy a menudo suele dejarse ver entre los arbustos o en el suelo mientras
     busca insectos."
-  m_birdPrefab: {fileID: 0}
-  m_birdPhoto: {fileID: 0}
+  m_birdPrefab: {fileID: 7991333266149840317, guid: 1cb212801e3eb294fa5c86c10a750010, type: 3}
+  m_birdPhoto: {fileID: 7967206330880185377, guid: 4413fbc8e53598e4faafabcc9ea1ab84, type: 3}
   m_size: 1
   m_rarity: 0
   m_baseSpawnWeight: 50

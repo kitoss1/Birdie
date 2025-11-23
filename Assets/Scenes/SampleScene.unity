@@ -1448,6 +1448,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 274562036791961383, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 441782782657557796, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -2196,6 +2200,7 @@ GameObject:
   - component: {fileID: 1962845342210136591}
   - component: {fileID: 9157581277178172970}
   - component: {fileID: 9157581277178172969}
+  - component: {fileID: 9157581277178172971}
   m_Layer: 5
   m_Name: DebugCanvas
   m_TagString: Untagged
@@ -2254,6 +2259,20 @@ MonoBehaviour:
   m_menuContent: {fileID: 1443718554}
   m_menuPanel: {fileID: 1055218398}
   m_buttonPrefab: {fileID: 3452198685361276404, guid: 263732ad301a8364c85c0da81d219336, type: 3}
+--- !u!114 &9157581277178172971
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9003102292340867418}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cebb60ff26966f4fa3fd073fe5eb417, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Debug.ClickDebugger
+  m_enableLogging: 1
+  m_showDetailedInfo: 1
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

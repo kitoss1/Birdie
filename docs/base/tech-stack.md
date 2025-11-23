@@ -1,6 +1,7 @@
 # Tech Stack
 
 ## Unity
+--**Input system**: We are using the new input system on all the project
 
 ### Version & Platforms
 - **Unity Version**: 6000.2.10f1

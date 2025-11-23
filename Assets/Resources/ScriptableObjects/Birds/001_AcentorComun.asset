@@ -21,7 +21,7 @@ MonoBehaviour:
     poblaci\xF3n residente, a la que se unen en invierno acentores europeos pertenecientes
     a otra subespecie."
   m_birdPrefab: {fileID: 7991333266149840317, guid: 6b1cbfbf7eaa6814d91394694816c7e5, type: 3}
-  m_birdPhoto: {fileID: 8813797069034322958, guid: c8c82f2b6667ec440a13cd9d562a2935, type: 3}
+  m_birdPhoto: {fileID: 707028069783305357, guid: 344a027a7bf5e63499a455592e89c2c7, type: 3}
   m_size: 1
   m_rarity: 0
   m_baseSpawnWeight: 50

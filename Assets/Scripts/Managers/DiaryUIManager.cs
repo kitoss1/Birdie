@@ -61,8 +61,29 @@ namespace Birdie.Managers
 
             SetupNavigation();
             CreateBirdPages();
+            SubscribeToEvents();
 
             DebugBase.Log($"[{nameof(DiaryUIManager)}] Diary UI initialized");
+        }
+
+        /// <summary>
+        /// Subscribes to DiaryManager events.
+        /// </summary>
+        private void SubscribeToEvents()
+        {
+            if (m_diaryManager != null)
+            {
+                m_diaryManager.OnBirdDiscovered += OnBirdDiscovered;
+            }
+        }
+
+        /// <summary>
+        /// Called when a new bird is discovered.
+        /// </summary>
+        private void OnBirdDiscovered(BirdData birdData)
+        {
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] New bird discovered: {birdData.BirdName}, refreshing diary pages", DebugCategory.UI);
+            RefreshAllPages();
         }
 
         /// <summary>
@@ -362,6 +383,11 @@ namespace Birdie.Managers
             if (m_nextButton != null)
             {
                 m_nextButton.onClick.RemoveListener(ShowNextPage);
+            }
+
+            if (m_diaryManager != null)
+            {
+                m_diaryManager.OnBirdDiscovered -= OnBirdDiscovered;
             }
         }
 

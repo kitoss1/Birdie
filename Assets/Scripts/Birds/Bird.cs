@@ -135,15 +135,7 @@ namespace Birdie.Birds
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} was clicked", DebugCategory.Birds);
 
-            bool isNewDiscovery = m_gameManager.DiaryManager.RecordBirdEncounter(m_birdData);
-
-            if (isNewDiscovery)
-            {
-                DebugBase.Log($"[{nameof(Bird)}] ⭐ NEW BIRD DISCOVERED: {m_birdData.BirdName}!", DebugCategory.Birds);
-                // TODO: Show new discovery UI/animation
-            }
-
-            // TODO: Open bird detail UI
+            m_gameManager.DiaryManager.RecordBirdEncounter(m_birdData);
         }
 
         /// <summary>

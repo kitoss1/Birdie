@@ -21,8 +21,8 @@ MonoBehaviour:
     de por su colorido, uno de los m\xE1s llamativos de las aves europeas, resulta
     muy f\xE1cil de reconocer por su caracter\xEDstico reclamo, que emite constantemente
     mientras vuela y que puede ser o\xEDdo desde largas distancias."
-  m_birdPrefab: {fileID: 0}
-  m_birdPhoto: {fileID: 0}
+  m_birdPrefab: {fileID: 7991333266149840317, guid: d31bf339db277d1419165902742d4651, type: 3}
+  m_birdPhoto: {fileID: -6406183802253512785, guid: 7df73efd677d81045bdcccb77bbb5b59, type: 3}
   m_size: 1
   m_rarity: 0
   m_baseSpawnWeight: 50
