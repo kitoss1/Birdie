@@ -240,5 +240,10 @@ namespace Birdie.Managers
             CleanupInactiveBirds();
             return m_activeBirds.Count;
         }
+
+        /// <summary>
+        /// Gets all available bird data (read-only).
+        /// </summary>
+        public IReadOnlyList<BirdData> AvailableBirds => m_availableBirds;
     }
 }

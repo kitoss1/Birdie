@@ -171,6 +171,7 @@ GameObject:
   - component: {fileID: 7693512700322394347}
   - component: {fileID: 7007563590850700839}
   - component: {fileID: 134388962330292660}
+  - component: {fileID: 4062717470153100130}
   m_Layer: 5
   m_Name: DiaryCanvas
   m_TagString: Untagged
@@ -261,6 +262,26 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &4062717470153100130
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2085028005830604709}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 790e65e780f22ad4aba70271d3048dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.DiaryUIManager
+  m_diaryManager: {fileID: 0}
+  m_birdPagePrefab: {fileID: 274562036791961383}
+  m_pagesContainer: {fileID: 8988046512808972271}
+  m_previousButton: {fileID: 4302566805467143152}
+  m_nextButton: {fileID: 5394297092159644058}
+  m_lockedNameText: ???
+  m_lockedDescriptionText: This bird has not been discovered yet.
+  m_lockedPhotoTint: {r: 0.2, g: 0.2, b: 0.2, a: 1}
 --- !u!1 &3211215850863182254
 GameObject:
   m_ObjectHideFlags: 0
@@ -917,6 +938,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3f23c84e68a450e4bbe6c8e25e34e5a6, type: 3}
+--- !u!1 &274562036791961383 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 538668772146045955, guid: 3f23c84e68a450e4bbe6c8e25e34e5a6, type: 3}
+  m_PrefabInstance: {fileID: 339684029875258148}
+  m_PrefabAsset: {fileID: 0}
 --- !u!224 &4423481583032472385 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4167397298981343333, guid: 3f23c84e68a450e4bbe6c8e25e34e5a6, type: 3}

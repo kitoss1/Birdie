@@ -18,6 +18,7 @@ namespace Birdie.Managers
         private readonly Dictionary<string, int> m_encounterCounts = new Dictionary<string, int>();
 
         private SaveManager m_saveManager;
+        private BirdManager m_birdManager;
 
         public event Action<BirdData> OnBirdDiscovered;
         public event Action<BirdData> OnBirdEncountered;
@@ -36,6 +37,31 @@ namespace Birdie.Managers
         {
             m_saveManager = saveManager;
             LoadFromSaveData();
+        }
+
+        /// <summary>
+        /// Sets the bird manager reference.
+        /// </summary>
+        public void SetBirdManager(BirdManager birdManager)
+        {
+            m_birdManager = birdManager;
+        }
+
+        /// <summary>
+        /// Gets all birds sorted by ID for diary display.
+        /// </summary>
+        public List<BirdData> GetAllBirdsForDiary()
+        {
+            if (m_birdManager == null)
+            {
+                DebugBase.LogError($"[{nameof(DiaryManager)}] BirdManager is not set!", DebugCategory.General);
+                return new List<BirdData>();
+            }
+
+            List<BirdData> sortedBirds = new List<BirdData>(m_birdManager.AvailableBirds);
+            sortedBirds.Sort((a, b) => string.Compare(a.BirdID, b.BirdID, System.StringComparison.Ordinal));
+
+            return sortedBirds;
         }
 
         /// <summary>

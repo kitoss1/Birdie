@@ -165,6 +165,7 @@ namespace Birdie.Managers
             {
                 m_diaryManager.Initialize(this);
                 m_diaryManager.SetSaveManager(m_saveManager);
+                m_diaryManager.SetBirdManager(m_birdManager);
             }
 
             if (m_menuManager != null)
