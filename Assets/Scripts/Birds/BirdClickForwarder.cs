@@ -38,7 +38,6 @@ namespace Birdie.Birds
 
         public void OnPointerClick(PointerEventData eventData)
         {
-            DebugBase.LogWarning($"[{nameof(BirdClickForwarder)}] Bird clicked", DebugCategory.Birds);
             if (m_bird == null)
             {
                 DebugBase.LogWarning($"[{nameof(BirdClickForwarder)}] Bird reference is not assigned!", DebugCategory.Birds);

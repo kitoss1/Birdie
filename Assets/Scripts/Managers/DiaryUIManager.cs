@@ -1,5 +1,6 @@
 using Birdie.Data;
 using Birdie.Debug;
+using Birdie.UI;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -159,134 +160,102 @@ namespace Birdie.Managers
         {
             bool isDiscovered = m_diaryManager.IsBirdDiscovered(birdData);
 
-            // Find UI elements in the page
-            Transform leftPage = pageInstance.transform.Find("LeftPage");
-            Transform rightPage = pageInstance.transform.Find("RightPage");
-
-            if (leftPage == null || rightPage == null)
+            // Get the BirdPageUI component
+            BirdPageUI pageUI = pageInstance.GetComponent<BirdPageUI>();
+            if (pageUI == null)
             {
-                DebugBase.LogError($"[{nameof(DiaryUIManager)}] Could not find LeftPage or RightPage in prefab!", DebugCategory.UI);
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] BirdPageUI component not found on page instance!", DebugCategory.UI);
                 return;
             }
-
-            // Left page elements
-            Transform photoMask = leftPage.Find("PhotoMask");
-            Transform leftTexts = leftPage.Find("LeftTexts");
-
-            // Right page elements
-            TextMeshProUGUI nameText = rightPage.Find("NameText")?.GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI descriptionText = rightPage.Find("DescriptionContainer/DescriptionText")?.GetComponent<TextMeshProUGUI>();
 
             if (isDiscovered)
             {
                 // Show discovered bird data
-                PopulateDiscoveredBird(birdData, photoMask, leftTexts, nameText, descriptionText);
+                PopulateDiscoveredBird(birdData, pageUI);
             }
             else
             {
                 // Show locked bird placeholder
-                PopulateLockedBird(photoMask, leftTexts, nameText, descriptionText);
+                PopulateLockedBird(pageUI);
             }
         }
 
         /// <summary>
         /// Populates page with discovered bird data.
         /// </summary>
-        private void PopulateDiscoveredBird(BirdData birdData, Transform photoMask, Transform leftTexts, TextMeshProUGUI nameText, TextMeshProUGUI descriptionText)
+        private void PopulateDiscoveredBird(BirdData birdData, BirdPageUI pageUI)
         {
             // Set bird photo
-            if (photoMask != null)
+            if (pageUI.BirdPhoto != null && birdData.BirdPhoto != null)
             {
-                Image photoImage = photoMask.Find("BirdPhoto")?.GetComponent<Image>();
-                if (photoImage != null && birdData.BirdPhoto != null)
-                {
-                    photoImage.sprite = birdData.BirdPhoto;
-                    photoImage.color = Color.white;
-                }
+                pageUI.BirdPhoto.sprite = birdData.BirdPhoto;
+                pageUI.BirdPhoto.color = Color.white;
             }
 
             // Set left page texts
-            if (leftTexts != null)
+            if (pageUI.RarityText != null)
             {
-                TextMeshProUGUI rarityText = leftTexts.Find("RarityText")?.GetComponent<TextMeshProUGUI>();
-                TextMeshProUGUI scientificNameText = leftTexts.Find("ScientificNameText")?.GetComponent<TextMeshProUGUI>();
-                TextMeshProUGUI foodText = leftTexts.Find("FoodText")?.GetComponent<TextMeshProUGUI>();
+                pageUI.RarityText.text = $"Rarity: {birdData.Rarity}";
+            }
 
-                if (rarityText != null)
-                {
-                    rarityText.text = $"Rarity: {birdData.Rarity}";
-                }
+            if (pageUI.ScientificNameText != null)
+            {
+                pageUI.ScientificNameText.text = birdData.ScientificName;
+            }
 
-                if (scientificNameText != null)
-                {
-                    scientificNameText.text = birdData.ScientificName;
-                }
-
-                if (foodText != null)
-                {
-                    foodText.text = $"Diet: {birdData.DietType}";
-                }
+            if (pageUI.FoodText != null)
+            {
+                pageUI.FoodText.text = $"Diet: {birdData.DietType}";
             }
 
             // Set right page texts
-            if (nameText != null)
+            if (pageUI.NameText != null)
             {
-                nameText.text = birdData.BirdName;
+                pageUI.NameText.text = birdData.BirdName;
             }
 
-            if (descriptionText != null)
+            if (pageUI.DescriptionText != null)
             {
-                descriptionText.text = birdData.BasicDescription;
+                pageUI.DescriptionText.text = birdData.BasicDescription;
             }
         }
 
         /// <summary>
         /// Populates page with locked/undiscovered bird placeholder.
         /// </summary>
-        private void PopulateLockedBird(Transform photoMask, Transform leftTexts, TextMeshProUGUI nameText, TextMeshProUGUI descriptionText)
+        private void PopulateLockedBird(BirdPageUI pageUI)
         {
             // Set locked photo tint
-            if (photoMask != null)
+            if (pageUI.BirdPhoto != null)
             {
-                Image photoImage = photoMask.Find("BirdPhoto")?.GetComponent<Image>();
-                if (photoImage != null)
-                {
-                    photoImage.color = m_lockedPhotoTint;
-                }
+                pageUI.BirdPhoto.color = m_lockedPhotoTint;
             }
 
             // Set locked left page texts
-            if (leftTexts != null)
+            if (pageUI.RarityText != null)
             {
-                TextMeshProUGUI rarityText = leftTexts.Find("RarityText")?.GetComponent<TextMeshProUGUI>();
-                TextMeshProUGUI scientificNameText = leftTexts.Find("ScientificNameText")?.GetComponent<TextMeshProUGUI>();
-                TextMeshProUGUI foodText = leftTexts.Find("FoodText")?.GetComponent<TextMeshProUGUI>();
+                pageUI.RarityText.text = "Rarity: ???";
+            }
 
-                if (rarityText != null)
-                {
-                    rarityText.text = "Rarity: ???";
-                }
+            if (pageUI.ScientificNameText != null)
+            {
+                pageUI.ScientificNameText.text = "???";
+            }
 
-                if (scientificNameText != null)
-                {
-                    scientificNameText.text = "???";
-                }
-
-                if (foodText != null)
-                {
-                    foodText.text = "Diet: ???";
-                }
+            if (pageUI.FoodText != null)
+            {
+                pageUI.FoodText.text = "Diet: ???";
             }
 
             // Set locked right page texts
-            if (nameText != null)
+            if (pageUI.NameText != null)
             {
-                nameText.text = m_lockedNameText;
+                pageUI.NameText.text = m_lockedNameText;
             }
 
-            if (descriptionText != null)
+            if (pageUI.DescriptionText != null)
             {
-                descriptionText.text = m_lockedDescriptionText;
+                pageUI.DescriptionText.text = m_lockedDescriptionText;
             }
         }
 
