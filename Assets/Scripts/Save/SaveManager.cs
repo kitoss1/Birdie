@@ -16,7 +16,7 @@ namespace Birdie.Save
         private const string SaveFolderName = "Birdie";
 
         private SaveData m_currentSaveData;
-        private string m_saveFolderPath;
+        private static string m_saveFolderPath;
         private string m_saveFilePath;
         private string m_backupFilePath;
 
@@ -231,7 +231,8 @@ namespace Birdie.Save
         /// <summary>
         /// Opens the save folder in the system file explorer.
         /// </summary>
-        public void OpenSaveFolder()
+        [DebugCommand("OpenSaveFolderPath", "SaveManger")]
+        public static void OpenSaveFolder()
         {
             if (Directory.Exists(m_saveFolderPath))
             {
