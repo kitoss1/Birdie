@@ -13,9 +13,9 @@ namespace Birdie.Managers
     {
         private Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
 
-        public override void Initialize(GameManager gameManager)
+        public override void Initialize()
         {
-            base.Initialize(gameManager);
+            base.Initialize();
             DebugBase.Log($"[{nameof(FriendshipManager)}] Friendship system initialized");
         }
 

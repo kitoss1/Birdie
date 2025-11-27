@@ -15,9 +15,9 @@ namespace Birdie.Managers
 
         public int GoldenSeeds => m_goldenSeeds;
 
-        public override void Initialize(GameManager gameManager)
+        public override void Initialize()
         {
-            base.Initialize(gameManager);
+            base.Initialize();
             DebugBase.Log($"[{nameof(EconomyManager)}] Economy system initialized");
         }
 

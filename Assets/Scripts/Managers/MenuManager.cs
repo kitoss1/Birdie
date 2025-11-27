@@ -43,9 +43,9 @@ namespace Birdie.Managers
         private MenuType m_currentOpenMenu = MenuType.None;
         private bool m_isSettingsOpen = false;
 
-        public override void Initialize(GameManager gameManager)
+        public override void Initialize()
         {
-            base.Initialize(gameManager);
+            base.Initialize();
 
             InitializeMenuPanels();
             SubscribeToEvents();
@@ -76,10 +76,10 @@ namespace Birdie.Managers
         /// </summary>
         private void SubscribeToEvents()
         {
-            if (m_gameManager != null)
+            if (GameManager.Instance != null)
             {
-                m_gameManager.OnMenuOpened += OnMenuOpenedFromGameManager;
-                m_gameManager.OnMenuClosed += OnMenuClosedFromGameManager;
+                GameManager.Instance.OnMenuOpened += OnMenuOpenedFromGameManager;
+                GameManager.Instance.OnMenuClosed += OnMenuClosedFromGameManager;
             }
         }
 
@@ -193,7 +193,7 @@ namespace Birdie.Managers
             ShowMenuPanel(menuType, menuPanel);
             m_currentOpenMenu = menuType;
 
-            m_gameManager.OpenMenu(menuType);
+            GameManager.Instance.OpenMenu(menuType);
 
             DebugBase.Log($"[{nameof(MenuManager)}] Opened menu: {menuType}");
         }
@@ -320,7 +320,7 @@ namespace Birdie.Managers
             }
 
             CloseMainMenu();
-            m_gameManager.CloseMenu();
+            GameManager.Instance.CloseMenu();
 
             DebugBase.Log($"[{nameof(MenuManager)}] Closed current menu");
         }
@@ -440,10 +440,10 @@ namespace Birdie.Managers
 
         private void OnDestroy()
         {
-            if (m_gameManager != null)
+            if (GameManager.Instance != null)
             {
-                m_gameManager.OnMenuOpened -= OnMenuOpenedFromGameManager;
-                m_gameManager.OnMenuClosed -= OnMenuClosedFromGameManager;
+                GameManager.Instance.OnMenuOpened -= OnMenuOpenedFromGameManager;
+                GameManager.Instance.OnMenuClosed -= OnMenuClosedFromGameManager;
             }
 
             BaseMenuButton[] menuButtons = FindObjectsByType<BaseMenuButton>(FindObjectsSortMode.None);

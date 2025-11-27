@@ -18,14 +18,13 @@ namespace Birdie.Managers
         private readonly Dictionary<string, int> m_encounterCounts = new Dictionary<string, int>();
 
         private SaveManager m_saveManager;
-        private BirdManager m_birdManager;
 
         public event Action<BirdData> OnBirdDiscovered;
         public event Action<BirdData> OnBirdEncountered;
 
-        public override void Initialize(GameManager gameManager)
+        public override void Initialize()
         {
-            base.Initialize(gameManager);
+            base.Initialize();
 
             DebugBase.Log($"[{nameof(DiaryManager)}] Diary system initialized", DebugCategory.General);
         }
@@ -40,25 +39,17 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Sets the bird manager reference.
-        /// </summary>
-        public void SetBirdManager(BirdManager birdManager)
-        {
-            m_birdManager = birdManager;
-        }
-
-        /// <summary>
         /// Gets all birds sorted by ID for diary display.
         /// </summary>
         public List<BirdData> GetAllBirdsForDiary()
         {
-            if (m_birdManager == null)
+            if (GameManager.Instance == null || GameManager.Instance.BirdManager == null)
             {
-                DebugBase.LogError($"[{nameof(DiaryManager)}] BirdManager is not set!", DebugCategory.General);
+                DebugBase.LogError($"[{nameof(DiaryManager)}] GameManager or BirdManager is not available!", DebugCategory.General);
                 return new List<BirdData>();
             }
 
-            List<BirdData> sortedBirds = new List<BirdData>(m_birdManager.AvailableBirds);
+            List<BirdData> sortedBirds = new List<BirdData>(GameManager.Instance.BirdManager.AvailableBirds);
             sortedBirds.Sort((a, b) => string.Compare(a.BirdID, b.BirdID, System.StringComparison.Ordinal));
 
             return sortedBirds;

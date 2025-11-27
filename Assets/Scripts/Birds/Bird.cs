@@ -21,7 +21,6 @@ namespace Birdie.Birds
         private float m_visitEndTime;
         private bool m_isInteractable = false;
         private bool m_hasBeenClickedThisVisit = false;
-        private GameManager m_gameManager;
 
         public BirdData BirdData
         {
@@ -49,10 +48,9 @@ namespace Birdie.Birds
         /// Initializes the bird with specific BirdData.
         /// Called by BirdManager when spawning.
         /// </summary>
-        public void Initialize(BirdData birdData, GameManager gameManager)
+        public void Initialize(BirdData birdData)
         {
             m_birdData = birdData;
-            m_gameManager = gameManager;
             DebugBase.Log($"[{nameof(Bird)}] Initialized: {birdData.BirdName}", DebugCategory.Birds);
         }
 
@@ -125,7 +123,7 @@ namespace Birdie.Birds
                 return;
             }
 
-            if (m_gameManager == null || m_gameManager.DiaryManager == null)
+            if (GameManager.Instance == null || GameManager.Instance.DiaryManager == null)
             {
                 DebugBase.LogWarning($"[{nameof(Bird)}] GameManager or DiaryManager is null, cannot record encounter", DebugCategory.Birds);
                 return;
@@ -135,7 +133,7 @@ namespace Birdie.Birds
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} was clicked", DebugCategory.Birds);
 
-            m_gameManager.DiaryManager.RecordBirdEncounter(m_birdData);
+            GameManager.Instance.DiaryManager.RecordBirdEncounter(m_birdData);
         }
 
         /// <summary>

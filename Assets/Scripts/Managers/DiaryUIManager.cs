@@ -1,6 +1,7 @@
 using Birdie.Data;
 using Birdie.Debug;
 using Birdie.UI;
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -10,14 +11,10 @@ namespace Birdie.Managers
 {
     /// <summary>
     /// Manages the diary UI, handling page display and navigation.
-    /// Gets all data from DiaryManager.
+    /// Gets all data from DiaryManager via GameManager.Instance.
     /// </summary>
     public class DiaryUIManager : MonoBehaviour
     {
-        [Header("Manager References")]
-        [SerializeField]
-        [Tooltip("Reference to DiaryManager for bird data and discovery status")]
-        private DiaryManager m_diaryManager;
 
         [Header("UI Components")]
         [SerializeField]
@@ -52,13 +49,9 @@ namespace Birdie.Managers
         private List<GameObject> m_instantiatedPages = new List<GameObject>();
         private int m_currentPageIndex = 0;
 
-        private void Start()
+        private async void Start()
         {
-            if (m_diaryManager == null)
-            {
-                DebugBase.LogError($"[{nameof(DiaryUIManager)}] DiaryManager reference is not assigned!", DebugCategory.UI);
-                return;
-            }
+            await WaitForGameManagerAsync();
 
             SetupNavigation();
             CreateBirdPages();
@@ -68,13 +61,26 @@ namespace Birdie.Managers
         }
 
         /// <summary>
+        /// Waits for GameManager to be fully initialized before proceeding.
+        /// </summary>
+        private async UniTask WaitForGameManagerAsync()
+        {
+            while (GameManager.Instance == null || !GameManager.Instance.AreAllManagersReady())
+            {
+                await UniTask.Yield();
+            }
+
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] GameManager ready, proceeding with initialization", DebugCategory.UI);
+        }
+
+        /// <summary>
         /// Subscribes to DiaryManager events.
         /// </summary>
         private void SubscribeToEvents()
         {
-            if (m_diaryManager != null)
+            if (GameManager.Instance != null && GameManager.Instance.DiaryManager != null)
             {
-                m_diaryManager.OnBirdDiscovered += OnBirdDiscovered;
+                GameManager.Instance.DiaryManager.OnBirdDiscovered += OnBirdDiscovered;
             }
         }
 
@@ -134,7 +140,7 @@ namespace Birdie.Managers
             m_instantiatedPages.Clear();
 
             // Get birds from DiaryManager (already sorted)
-            List<BirdData> allBirds = m_diaryManager.GetAllBirdsForDiary();
+            List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
 
             // Instantiate a page for each bird
             foreach (BirdData bird in allBirds)
@@ -158,7 +164,7 @@ namespace Birdie.Managers
         /// </summary>
         private void PopulateBirdPage(GameObject pageInstance, BirdData birdData)
         {
-            bool isDiscovered = m_diaryManager.IsBirdDiscovered(birdData);
+            bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
 
             // Get the BirdPageUI component
             BirdPageUI pageUI = pageInstance.GetComponent<BirdPageUI>();
@@ -222,7 +228,7 @@ namespace Birdie.Managers
             // Set interaction counter
             if (pageUI.InteractionCounterText != null)
             {
-                int encounterCount = m_diaryManager.GetEncounterCount(birdData);
+                int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
                 pageUI.InteractionCounterText.text = $"Interactions: {encounterCount}";
             }
         }
@@ -367,9 +373,9 @@ namespace Birdie.Managers
                 m_nextButton.onClick.RemoveListener(ShowNextPage);
             }
 
-            if (m_diaryManager != null)
+            if (GameManager.Instance != null && GameManager.Instance.DiaryManager != null)
             {
-                m_diaryManager.OnBirdDiscovered -= OnBirdDiscovered;
+                GameManager.Instance.DiaryManager.OnBirdDiscovered -= OnBirdDiscovered;
             }
         }
 

@@ -5,20 +5,20 @@ namespace Birdie.Managers
 {
     /// <summary>
     /// Base class for all manager classes in the game.
-    /// Provides a standard initialization pattern using Dependency Injection.
+    /// Provides a standard initialization pattern.
     /// All managers should inherit from this class.
+    /// Managers can access GameManager via GameManager.Instance.
     /// </summary>
     public abstract class BaseManager : MonoBehaviour
     {
-        protected GameManager m_gameManager;
         protected bool m_isInitialized = false;
 
         /// <summary>
-        /// Initializes the manager with a reference to the GameManager.
+        /// Initializes the manager.
         /// This is called by GameManager during its initialization phase.
         /// Override this in child classes to add custom initialization logic.
         /// </summary>
-        public virtual void Initialize(GameManager gameManager)
+        public virtual void Initialize()
         {
             if (m_isInitialized)
             {
@@ -26,7 +26,6 @@ namespace Birdie.Managers
                 return;
             }
 
-            m_gameManager = gameManager;
             m_isInitialized = true;
 
             DebugBase.Log($"[{GetType().Name}] Initialized successfully");

@@ -34,9 +34,9 @@ namespace Birdie.Managers
         private readonly List<Bird> m_activeBirds = new List<Bird>();
         private List<BirdData> m_availableBirds = new List<BirdData>();
 
-        public override void Initialize(GameManager gameManager)
+        public override void Initialize()
         {
-            base.Initialize(gameManager);
+            base.Initialize();
 
             DebugBase.Log($"[{nameof(BirdManager)}] Setting up bird spawning system...", DebugCategory.Birds);
 
@@ -179,7 +179,7 @@ namespace Birdie.Managers
             Bird birdComponent = birdInstance.GetComponent<Bird>();
             if (birdComponent != null)
             {
-                birdComponent.Initialize(birdData, m_gameManager);
+                birdComponent.Initialize(birdData);
                 m_activeBirds.Add(birdComponent);
                 DebugBase.Log($"[{nameof(BirdManager)}] Spawned {birdData.BirdName} at {spawnPosition}", DebugCategory.Birds);
             }

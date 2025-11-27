@@ -2,6 +2,7 @@ using System;
 using Birdie.Core;
 using Birdie.Debug;
 using Birdie.Save;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -10,10 +11,16 @@ namespace Birdie.Managers
     /// Central manager that maintains the overall game state and provides access to other managers.
     /// This is the core coordinator that manages all game systems.
     /// Based on the design document's architecture.
-    /// Uses Dependency Injection instead of singleton pattern.
+    /// Uses Singleton pattern for easy global access.
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        private static GameManager s_instance;
+
+        /// <summary>
+        /// Singleton instance of GameManager. Provides global access to all game systems.
+        /// </summary>
+        public static GameManager Instance => s_instance;
         [Header("Game State")]
         [SerializeField]
         private GameState m_currentState = GameState.Playing;
@@ -65,14 +72,24 @@ namespace Birdie.Managers
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
 
-        private bool m_isInitialized = false;
         private SaveManager m_saveManager;
+        private bool m_initializationComplete = false;
 
         public SaveManager SaveManager => m_saveManager;
 
-        private void Awake()
+        /// <summary>
+        /// Returns true when GameManager has completed async initialization.
+        /// </summary>
+        public bool IsInitializationComplete => m_initializationComplete;
+
+        private async void Awake()
         {
-            InitializeManagers();
+            if (!ValidateSingleton())
+            {
+                return;
+            }
+
+            await InitializeAsync();
         }
 
         private void Start()
@@ -81,32 +98,107 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Initializes all manager references and injects dependencies
+        /// Validates the singleton instance. Ensures only one GameManager exists.
         /// </summary>
-        private void InitializeManagers()
+        private bool ValidateSingleton()
         {
-            DebugBase.Log($"[{nameof(GameManager)}] Initializing managers...");
+            if (s_instance != null && s_instance != this)
+            {
+                DebugBase.LogWarning($"[{nameof(GameManager)}] Duplicate instance destroyed");
+                Destroy(gameObject);
+                return false;
+            }
 
-            InitializeSaveSystem();
+            s_instance = this;
 
-            ValidateManagerReferences();
+            // Only call DontDestroyOnLoad if this is a root GameObject
+            if (transform.parent == null)
+            {
+                DontDestroyOnLoad(gameObject);
+            }
+            else
+            {
+                DebugBase.LogWarning($"[{nameof(GameManager)}] GameManager is not a root GameObject. DontDestroyOnLoad not applied.");
+            }
 
-            InjectDependencies();
-
-            m_isInitialized = true;
-            DebugBase.Log($"[{nameof(GameManager)}] Managers initialized successfully");
+            return true;
         }
 
         /// <summary>
-        /// Initializes the save system and loads game data.
+        /// Initializes the game in clear, sequential phases.
+        /// Each phase can depend on previous phases being complete.
         /// </summary>
-        private void InitializeSaveSystem()
+        private async UniTask InitializeAsync()
         {
+            DebugBase.Log($"[{nameof(GameManager)}] Starting initialization...");
+
+            // PHASE 1: Load persistent data (must happen first)
+            await InitializeSaveSystemAsync();
+
+            // PHASE 2: Initialize core managers (can depend on save data)
+            await InitializeManagersAsync();
+
+            // PHASE 3: Post-initialization setup (all managers ready)
+            await PostInitializationAsync();
+
+            m_initializationComplete = true;
+            DebugBase.Log($"[{nameof(GameManager)}] Initialization complete!");
+        }
+
+        /// <summary>
+        /// Phase 1: Initialize save system and load game data.
+        /// All subsequent phases can depend on save data being available.
+        /// </summary>
+        private async UniTask InitializeSaveSystemAsync()
+        {
+            DebugBase.Log($"[{nameof(GameManager)}] Phase 1: Initializing save system...");
+
             m_saveManager = new SaveManager();
             m_saveManager.Initialize();
             m_saveManager.LoadGame();
 
-            DebugBase.Log($"[{nameof(GameManager)}] Save system initialized", DebugCategory.General);
+            // Ensure save data is fully processed
+            await UniTask.Yield();
+
+            DebugBase.Log($"[{nameof(GameManager)}] Save system ready");
+        }
+
+        /// <summary>
+        /// Phase 2: Initialize all game managers.
+        /// Save data is guaranteed to be loaded at this point.
+        /// </summary>
+        private async UniTask InitializeManagersAsync()
+        {
+            DebugBase.Log($"[{nameof(GameManager)}] Phase 2: Initializing managers...");
+
+            ValidateManagerReferences();
+
+            // Initialize managers that don't depend on each other (can run in parallel)
+            await UniTask.WhenAll(
+                InitializeEconomyManagerAsync(),
+                InitializeBirdManagerAsync(),
+                InitializeFriendshipManagerAsync()
+            );
+
+            // Initialize managers that depend on other managers (sequential)
+            await InitializeDiaryManagerAsync(); // Depends on BirdManager, SaveManager
+            await InitializeMenuManagerAsync();  // Depends on all other managers
+
+            DebugBase.Log($"[{nameof(GameManager)}] All managers initialized");
+        }
+
+        /// <summary>
+        /// Phase 3: Post-initialization tasks.
+        /// All managers are guaranteed to be ready.
+        /// </summary>
+        private async UniTask PostInitializationAsync()
+        {
+            DebugBase.Log($"[{nameof(GameManager)}] Phase 3: Post-initialization...");
+
+            // Placeholder for future post-initialization logic
+            await UniTask.Yield();
+
+            DebugBase.Log($"[{nameof(GameManager)}] Post-initialization complete");
         }
 
         /// <summary>
@@ -141,36 +233,63 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Injects this GameManager into other managers that need it
-        /// Each manager should have an Initialize(GameManager) or similar method
+        /// Initializes EconomyManager.
         /// </summary>
-        private void InjectDependencies()
+        private async UniTask InitializeEconomyManagerAsync()
+        {
+            if (m_economyManager != null)
+            {
+                m_economyManager.Initialize();
+                await UniTask.Yield();
+            }
+        }
+
+        /// <summary>
+        /// Initializes BirdManager.
+        /// </summary>
+        private async UniTask InitializeBirdManagerAsync()
         {
             if (m_birdManager != null)
             {
-                m_birdManager.Initialize(this);
+                m_birdManager.Initialize();
+                await UniTask.Yield();
             }
+        }
 
-            if (m_economyManager != null)
-            {
-                m_economyManager.Initialize(this);
-            }
-
+        /// <summary>
+        /// Initializes FriendshipManager.
+        /// </summary>
+        private async UniTask InitializeFriendshipManagerAsync()
+        {
             if (m_friendshipManager != null)
             {
-                m_friendshipManager.Initialize(this);
+                m_friendshipManager.Initialize();
+                await UniTask.Yield();
             }
+        }
 
+        /// <summary>
+        /// Initializes DiaryManager. Depends on SaveManager and BirdManager.
+        /// </summary>
+        private async UniTask InitializeDiaryManagerAsync()
+        {
             if (m_diaryManager != null)
             {
-                m_diaryManager.Initialize(this);
+                m_diaryManager.Initialize();
                 m_diaryManager.SetSaveManager(m_saveManager);
-                m_diaryManager.SetBirdManager(m_birdManager);
+                await UniTask.Yield();
             }
+        }
 
+        /// <summary>
+        /// Initializes MenuManager.
+        /// </summary>
+        private async UniTask InitializeMenuManagerAsync()
+        {
             if (m_menuManager != null)
             {
-                m_menuManager.Initialize(this);
+                m_menuManager.Initialize();
+                await UniTask.Yield();
             }
         }
 
@@ -351,11 +470,12 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Checks if all critical managers are initialized
+        /// Checks if all critical managers are initialized and async initialization is complete.
         /// </summary>
         public bool AreAllManagersReady()
         {
-            return m_saveManager != null &&
+            return m_initializationComplete &&
+                   m_saveManager != null &&
                    m_birdManager != null &&
                    m_economyManager != null &&
                    m_friendshipManager != null &&
