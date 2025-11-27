@@ -47,6 +47,12 @@ namespace Birdie.Managers
         public event Action OnMinigameStarted;
         public event Action OnMinigameEnded;
 
+        /// <summary>
+        /// Event fired when initialization progress updates.
+        /// Parameters: progress (0-1), phase description
+        /// </summary>
+        public event Action<float, string> OnInitializationProgress;
+
         [Header("Manager References")]
         [SerializeField]
         private BirdManager m_birdManager;
@@ -131,17 +137,22 @@ namespace Birdie.Managers
         private async UniTask InitializeAsync()
         {
             DebugBase.Log($"[{nameof(GameManager)}] Starting initialization...");
+            OnInitializationProgress?.Invoke(0f, "Starting...");
 
             // PHASE 1: Load persistent data (must happen first)
+            OnInitializationProgress?.Invoke(0.1f, "Loading save data...");
             await InitializeSaveSystemAsync();
 
             // PHASE 2: Initialize core managers (can depend on save data)
+            OnInitializationProgress?.Invoke(0.3f, "Initializing systems...");
             await InitializeManagersAsync();
 
             // PHASE 3: Post-initialization setup (all managers ready)
+            OnInitializationProgress?.Invoke(0.9f, "Finalizing...");
             await PostInitializationAsync();
 
             m_initializationComplete = true;
+            OnInitializationProgress?.Invoke(1f, "Ready!");
             DebugBase.Log($"[{nameof(GameManager)}] Initialization complete!");
         }
 
