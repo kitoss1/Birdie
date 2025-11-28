@@ -47,6 +47,7 @@ namespace Birdie.Managers
         private Color m_lockedPhotoTint = new Color(0.2f, 0.2f, 0.2f, 1f);
 
         private List<GameObject> m_instantiatedPages = new List<GameObject>();
+        private Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
         private int m_currentPageIndex = 0;
 
         private async void Start()
@@ -81,6 +82,7 @@ namespace Birdie.Managers
             if (GameManager.Instance != null && GameManager.Instance.DiaryManager != null)
             {
                 GameManager.Instance.DiaryManager.OnBirdDiscovered += OnBirdDiscovered;
+                GameManager.Instance.DiaryManager.OnBirdEncountered += OnBirdEncountered;
             }
         }
 
@@ -89,8 +91,17 @@ namespace Birdie.Managers
         /// </summary>
         private void OnBirdDiscovered(BirdData birdData)
         {
-            DebugBase.Log($"[{nameof(DiaryUIManager)}] New bird discovered: {birdData.BirdName}, refreshing diary pages", DebugCategory.UI);
-            RefreshAllPages();
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] New bird discovered: {birdData.BirdName}, refreshing page", DebugCategory.UI);
+            RefreshSinglePage(birdData);
+        }
+
+        /// <summary>
+        /// Called when a bird is encountered (interaction count updated).
+        /// </summary>
+        private void OnBirdEncountered(BirdData birdData)
+        {
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Bird encountered: {birdData.BirdName}, refreshing page", DebugCategory.UI);
+            RefreshSinglePage(birdData);
         }
 
         /// <summary>
@@ -138,16 +149,20 @@ namespace Birdie.Managers
             }
 
             m_instantiatedPages.Clear();
+            m_birdIDToPageIndex.Clear();
 
             // Get birds from DiaryManager (already sorted)
             List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
 
             // Instantiate a page for each bird
+            int pageIndex = 0;
             foreach (BirdData bird in allBirds)
             {
                 GameObject pageInstance = Instantiate(m_birdPagePrefab, m_pagesContainer);
                 PopulateBirdPage(pageInstance, bird);
                 m_instantiatedPages.Add(pageInstance);
+                m_birdIDToPageIndex[bird.BirdID] = pageIndex;
+                pageIndex++;
             }
 
             // Show first page, hide others
@@ -361,6 +376,35 @@ namespace Birdie.Managers
             DebugBase.Log($"[{nameof(DiaryUIManager)}] Refreshed all diary pages", DebugCategory.UI);
         }
 
+        /// <summary>
+        /// Refreshes a single bird page without recreating all pages.
+        /// </summary>
+        private void RefreshSinglePage(BirdData birdData)
+        {
+            if (birdData == null)
+            {
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Cannot refresh page for null BirdData", DebugCategory.UI);
+                return;
+            }
+
+            if (!m_birdIDToPageIndex.TryGetValue(birdData.BirdID, out int pageIndex))
+            {
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Bird {birdData.BirdName} ({birdData.BirdID}) not found in page index", DebugCategory.UI);
+                return;
+            }
+
+            if (pageIndex < 0 || pageIndex >= m_instantiatedPages.Count)
+            {
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] Invalid page index {pageIndex} for bird {birdData.BirdName}", DebugCategory.UI);
+                return;
+            }
+
+            GameObject pageInstance = m_instantiatedPages[pageIndex];
+            PopulateBirdPage(pageInstance, birdData);
+
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Refreshed page for {birdData.BirdName}", DebugCategory.UI);
+        }
+
         private void OnDestroy()
         {
             if (m_previousButton != null)
@@ -376,6 +420,7 @@ namespace Birdie.Managers
             if (GameManager.Instance != null && GameManager.Instance.DiaryManager != null)
             {
                 GameManager.Instance.DiaryManager.OnBirdDiscovered -= OnBirdDiscovered;
+                GameManager.Instance.DiaryManager.OnBirdEncountered -= OnBirdEncountered;
             }
         }
 
