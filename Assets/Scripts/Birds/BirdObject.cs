@@ -1,0 +1,102 @@
+using Birdie.Managers;
+using UnityEngine;
+
+namespace Birdie.Birds
+{
+    /// <summary>
+    /// Base class for all interactive objects that birds can interact with.
+    /// Examples: bird feeders, bird baths, toys, decorations, etc.
+    /// Automatically registers with EnvironmentManager on Enable.
+    /// </summary>
+    public abstract class BirdObject : MonoBehaviour
+    {
+        [Header("Object Settings")]
+        [SerializeField]
+        [Tooltip("Unique identifier for this object type")]
+        private string m_objectID;
+
+        [SerializeField]
+        [Tooltip("Type of interaction this object provides")]
+        private BirdObjectType m_objectType;
+
+        [SerializeField]
+        [Tooltip("How attractive this object is to birds (affects behavior weight)")]
+        [Range(1, 100)]
+        private int m_attractiveness = 50;
+
+        [Header("Position Settings")]
+        [SerializeField]
+        [Tooltip("Position where bird should move to interact with this object")]
+        private Transform m_interactionPoint;
+
+        // Properties
+        public string ObjectID => m_objectID;
+        public BirdObjectType ObjectType => m_objectType;
+        public int Attractiveness => m_attractiveness;
+        public Vector3 InteractionPosition => m_interactionPoint != null ? m_interactionPoint.position : transform.position;
+
+        /// <summary>
+        /// Called when a bird starts interacting with this object.
+        /// </summary>
+        public virtual void OnBirdStartInteraction(Bird bird)
+        {
+            // Override in derived classes
+        }
+
+        /// <summary>
+        /// Called when a bird stops interacting with this object.
+        /// </summary>
+        public virtual void OnBirdEndInteraction(Bird bird)
+        {
+            // Override in derived classes
+        }
+
+        /// <summary>
+        /// Checks if this object can be used by the bird.
+        /// </summary>
+        public virtual bool CanBeUsedBy(Bird bird)
+        {
+            return true;
+        }
+
+        protected virtual void Start()
+        {
+            // Register with EnvironmentManager
+            if (GameManager.Instance?.EnvironmentManager != null)
+            {
+                GameManager.Instance.EnvironmentManager.RegisterObject(this);
+            }
+        }
+
+        protected virtual void OnDestroy()
+        {
+            // Unregister from EnvironmentManager
+            if (GameManager.Instance?.EnvironmentManager != null)
+            {
+                GameManager.Instance.EnvironmentManager.UnregisterObject(this);
+            }
+        }
+
+        private void OnDrawGizmos()
+        {
+            // Draw interaction point in editor
+            if (m_interactionPoint != null)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.DrawWireSphere(m_interactionPoint.position, 0.2f);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Types of bird objects that can be placed in the scene.
+    /// </summary>
+    public enum BirdObjectType
+    {
+        Feeder,
+        BirdBath,
+        Toy,
+        Decoration,
+        Perch
+    }
+}

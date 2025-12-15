@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Birdie.Birds;
 using UnityEngine;
 
 namespace Birdie.Data
@@ -9,7 +10,7 @@ namespace Birdie.Data
     /// This data is used by the BirdManager to spawn and manage birds.
     /// Based on the design document specifications.
     /// </summary>
-    [CreateAssetMenu(fileName = "New Bird", menuName = "Idle Bird/Bird Data")]
+    [CreateAssetMenu(fileName = "New Bird", menuName = "Birdie/Bird Data")]
     public class BirdData : ScriptableObject
     {
         [Header("Basic Information")]
@@ -132,6 +133,19 @@ namespace Birdie.Data
         [SerializeField]
         [Tooltip("Maximum duration this bird stays during a visit (seconds)")]
         private float m_visitDurationMax = 180f;
+
+        [SerializeField]
+        [Tooltip("Bonus seconds added to visit duration per nearby object")]
+        [Range(0, 30)]
+        private float m_objectBonusSeconds = 5f;
+
+        [SerializeField]
+        [Tooltip("Movement speed when moving between objects (units per second)")]
+        private float m_movementSpeed = 2f;
+
+        [SerializeField]
+        [Tooltip("List of possible behaviors this bird species can perform")]
+        private List<BirdBehaviorState> m_possibleBehaviors = new List<BirdBehaviorState>();
 
         [Header("Special Behaviors")]
         [SerializeField]
@@ -308,6 +322,24 @@ namespace Birdie.Data
         {
             get => m_visitDurationMax;
             set => m_visitDurationMax = value;
+        }
+
+        public float MovementSpeed
+        {
+            get => m_movementSpeed;
+            set => m_movementSpeed = value;
+        }
+
+        public float ObjectBonusSeconds
+        {
+            get => m_objectBonusSeconds;
+            set => m_objectBonusSeconds = value;
+        }
+
+        public List<BirdBehaviorState> PossibleBehaviors
+        {
+            get => m_possibleBehaviors;
+            set => m_possibleBehaviors = value;
         }
 
         /// <summary>

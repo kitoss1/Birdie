@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8eb30fb084b4e5d4fbfeeb6a7ca5f97d, type: 3}
+  m_Name: IdleBehavior
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.IdleBehavior
+  m_minDuration: 2
+  m_maxDuration: 5
+  m_requiredFriendshipLevel: 0
+  m_requiresSceneObject: 0
+  m_canBeInterrupted: 1
+  m_baseWeight: 40
+  m_friendshipReward: 0
