@@ -16,7 +16,7 @@ namespace Birdie.Managers
     public class DiaryUIManager : MonoBehaviour
     {
 
-        [Header("UI Components")]
+        [Header("General UI")]
         [SerializeField]
         [Tooltip("Prefab for bird page layout (two-page spread)")]
         private GameObject m_birdPagePrefab;
@@ -33,6 +33,13 @@ namespace Birdie.Managers
         [Tooltip("Next page button")]
         private Button m_nextButton;
 
+        [SerializeField] private GameObject m_firstPage;
+
+        [Header("Parameters to costumize")]
+        [SerializeField]
+        [Tooltip("Duration of page turn animation in seconds")]
+        private float m_pageTurnDuration = 0.5f;
+        
         [Header("Locked Bird Settings")]
         [SerializeField]
         [Tooltip("Text to display for undiscovered bird names")]
@@ -123,7 +130,11 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Creates a page for each bird in the database.
+        /// Creates pages for each bird in the database.
+        /// Structure: Each page shows two parts of birds:
+        /// - Front: Right page (name, description) of previous bird
+        /// - Back: Left page (photo, stats) of next bird
+        /// Special case: Introduction page (m_firstPage) shows first bird's left page on back.
         /// </summary>
         private void CreateBirdPages()
         {
@@ -136,6 +147,12 @@ namespace Birdie.Managers
             if (m_pagesContainer == null)
             {
                 DebugBase.LogError($"[{nameof(DiaryUIManager)}] Pages container is not assigned!", DebugCategory.UI);
+                return;
+            }
+
+            if (m_firstPage == null)
+            {
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] First page reference is not assigned!", DebugCategory.UI);
                 return;
             }
 
@@ -154,157 +171,173 @@ namespace Birdie.Managers
             // Get birds from DiaryManager (already sorted)
             List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
 
-            // Instantiate a page for each bird
-            int pageIndex = 0;
-            foreach (BirdData bird in allBirds)
+            if (allBirds.Count == 0)
             {
-                GameObject pageInstance = Instantiate(m_birdPagePrefab, m_pagesContainer);
-                PopulateBirdPage(pageInstance, bird);
-                m_instantiatedPages.Add(pageInstance);
-                m_birdIDToPageIndex[bird.BirdID] = pageIndex;
-                pageIndex++;
-            }
-
-            // Show first page, hide others
-            if (m_instantiatedPages.Count > 0)
-            {
-                ShowPage(0);
-            }
-
-            DebugBase.Log($"[{nameof(DiaryUIManager)}] Created {m_instantiatedPages.Count} bird pages", DebugCategory.UI);
-        }
-
-        /// <summary>
-        /// Populates a bird page with data, showing locked state if not discovered.
-        /// </summary>
-        private void PopulateBirdPage(GameObject pageInstance, BirdData birdData)
-        {
-            bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
-
-            // Get the BirdPageUI component
-            BirdPageUI pageUI = pageInstance.GetComponent<BirdPageUI>();
-            if (pageUI == null)
-            {
-                DebugBase.LogError($"[{nameof(DiaryUIManager)}] BirdPageUI component not found on page instance!", DebugCategory.UI);
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] No birds found in diary!", DebugCategory.UI);
                 return;
             }
 
-            if (isDiscovered)
+            // Populate introduction page's BACK with first bird's LEFT page
+            BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
+            if (introPageUI != null)
             {
-                // Show discovered bird data
-                PopulateDiscoveredBird(birdData, pageUI);
+                PopulateLeftPage(introPageUI.m_backParent, introPageUI.BirdPhoto, introPageUI.RarityText,
+                    introPageUI.ScientificNameText, introPageUI.FoodText, introPageUI.InteractionCounterText, allBirds[0]);
+
+                // Initialize introduction page to show front (0 degrees rotation)
+                introPageUI.SetPageSide(showingBack: false);
             }
             else
             {
-                // Show locked bird placeholder
-                PopulateLockedBird(pageUI);
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] BirdPageUI component not found on first page!", DebugCategory.UI);
             }
+
+            // Create pages for each bird (page i shows bird[i-1] right and bird[i] left)
+            for (int i = 0; i < allBirds.Count; i++)
+            {
+                GameObject pageInstance = Instantiate(m_birdPagePrefab, m_pagesContainer);
+                BirdPageUI pageUI = pageInstance.GetComponent<BirdPageUI>();
+
+                if (pageUI == null)
+                {
+                    DebugBase.LogError($"[{nameof(DiaryUIManager)}] BirdPageUI component not found on instantiated page!", DebugCategory.UI);
+                    continue;
+                }
+
+                // Populate FRONT with bird[i]'s RIGHT page (name, description)
+                PopulateRightPage(pageUI.m_frontParent, pageUI.NameText, pageUI.DescriptionText, allBirds[i]);
+
+                // Populate BACK with bird[i+1]'s LEFT page (if exists)
+                if (i + 1 < allBirds.Count)
+                {
+                    PopulateLeftPage(pageUI.m_backParent, pageUI.BirdPhoto, pageUI.RarityText,
+                        pageUI.ScientificNameText, pageUI.FoodText, pageUI.InteractionCounterText, allBirds[i + 1]);
+                }
+                else
+                {
+                    // Last page - disable back content
+                    if (pageUI.m_backParent != null)
+                    {
+                        pageUI.m_backParent.SetActive(false);
+                    }
+                }
+
+                // Initialize all bird pages to show front (0 degrees rotation)
+                pageUI.SetPageSide(showingBack: false);
+
+                m_instantiatedPages.Add(pageInstance);
+                m_birdIDToPageIndex[allBirds[i].BirdID] = i;
+            }
+
+            // Show introduction page initially (index -1), hide all instantiated pages
+            ShowPage(-1);
+
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Created {m_instantiatedPages.Count} bird pages for {allBirds.Count} birds", DebugCategory.UI);
         }
 
         /// <summary>
-        /// Populates page with discovered bird data.
+        /// Populates the LEFT page (photo, stats) of a bird.
+        /// Shown on the back of pages.
         /// </summary>
-        private void PopulateDiscoveredBird(BirdData birdData, BirdPageUI pageUI)
+        private void PopulateLeftPage(GameObject parentObject, Image birdPhoto, TextMeshProUGUI rarityText,
+            TextMeshProUGUI scientificNameText, TextMeshProUGUI foodText, TextMeshProUGUI interactionCounterText,
+            BirdData birdData)
         {
+            if (parentObject != null)
+            {
+                parentObject.SetActive(true);
+            }
+
+            bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
+
             // Set bird photo
-            if (pageUI.BirdPhoto != null && birdData.BirdPhoto != null)
+            if (birdPhoto != null)
             {
-                pageUI.BirdPhoto.sprite = birdData.BirdPhoto;
-                pageUI.BirdPhoto.color = Color.white;
+                if (isDiscovered && birdData.BirdPhoto != null)
+                {
+                    birdPhoto.sprite = birdData.BirdPhoto;
+                    birdPhoto.color = Color.white;
+                }
+                else
+                {
+                    birdPhoto.color = m_lockedPhotoTint;
+                }
             }
 
-            // Set left page texts
-            if (pageUI.RarityText != null)
+            // Set rarity text
+            if (rarityText != null)
             {
-                pageUI.RarityText.text = $"Rarity: {birdData.Rarity}";
+                rarityText.text = isDiscovered ? $"Rarity: {birdData.Rarity}" : "Rarity: ???";
             }
 
-            if (pageUI.ScientificNameText != null)
+            // Set scientific name
+            if (scientificNameText != null)
             {
-                pageUI.ScientificNameText.text = birdData.ScientificName;
+                scientificNameText.text = isDiscovered ? birdData.ScientificName : "???";
             }
 
-            if (pageUI.FoodText != null)
+            // Set food/diet text
+            if (foodText != null)
             {
-                pageUI.FoodText.text = $"Diet: {birdData.DietType}";
-            }
-
-            // Set right page texts
-            if (pageUI.NameText != null)
-            {
-                pageUI.NameText.text = birdData.BirdName;
-            }
-
-            if (pageUI.DescriptionText != null)
-            {
-                pageUI.DescriptionText.text = birdData.BasicDescription;
+                foodText.text = isDiscovered ? $"Diet: {birdData.DietType}" : "Diet: ???";
             }
 
             // Set interaction counter
-            if (pageUI.InteractionCounterText != null)
+            if (interactionCounterText != null)
             {
-                int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
-                pageUI.InteractionCounterText.text = $"Interactions: {encounterCount}";
+                if (isDiscovered)
+                {
+                    int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
+                    interactionCounterText.text = $"Interactions: {encounterCount}";
+                }
+                else
+                {
+                    interactionCounterText.text = "Interactions: ???";
+                }
             }
         }
 
         /// <summary>
-        /// Populates page with locked/undiscovered bird placeholder.
+        /// Populates the RIGHT page (name, description) of a bird.
+        /// Shown on the front of pages.
         /// </summary>
-        private void PopulateLockedBird(BirdPageUI pageUI)
+        private void PopulateRightPage(GameObject parentObject, TextMeshProUGUI nameText,
+            TextMeshProUGUI descriptionText, BirdData birdData)
         {
-            // Set locked photo tint
-            if (pageUI.BirdPhoto != null)
+            if (parentObject != null)
             {
-                pageUI.BirdPhoto.color = m_lockedPhotoTint;
+                parentObject.SetActive(true);
             }
 
-            // Set locked left page texts
-            if (pageUI.RarityText != null)
+            bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
+
+            // Set bird name
+            if (nameText != null)
             {
-                pageUI.RarityText.text = "Rarity: ???";
+                nameText.text = isDiscovered ? birdData.BirdName : m_lockedNameText;
             }
 
-            if (pageUI.ScientificNameText != null)
+            // Set description
+            if (descriptionText != null)
             {
-                pageUI.ScientificNameText.text = "???";
-            }
-
-            if (pageUI.FoodText != null)
-            {
-                pageUI.FoodText.text = "Diet: ???";
-            }
-
-            // Set locked right page texts
-            if (pageUI.NameText != null)
-            {
-                pageUI.NameText.text = m_lockedNameText;
-            }
-
-            if (pageUI.DescriptionText != null)
-            {
-                pageUI.DescriptionText.text = m_lockedDescriptionText;
-            }
-
-            // Set locked interaction counter
-            if (pageUI.InteractionCounterText != null)
-            {
-                pageUI.InteractionCounterText.text = "Interactions: ???";
+                descriptionText.text = isDiscovered ? birdData.BasicDescription : m_lockedDescriptionText;
             }
         }
 
         /// <summary>
-        /// Shows a specific page by index.
+        /// Shows a specific page by index, displaying it as a book spread.
+        /// Index -1 shows the introduction page alone.
+        /// Index 0+ shows the back of the previous page (left) and front of current page (right).
         /// </summary>
         private void ShowPage(int pageIndex)
         {
-            if (pageIndex < 0 || pageIndex >= m_instantiatedPages.Count)
+            if (pageIndex < -1 || pageIndex >= m_instantiatedPages.Count)
             {
                 DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Invalid page index: {pageIndex}", DebugCategory.UI);
                 return;
             }
 
-            // Hide all pages
+            // Hide all instantiated pages first
             foreach (GameObject page in m_instantiatedPages)
             {
                 if (page != null)
@@ -313,71 +346,306 @@ namespace Birdie.Managers
                 }
             }
 
-            // Show requested page
-            m_instantiatedPages[pageIndex].SetActive(true);
+            if (pageIndex == -1)
+            {
+                // Show only introduction page
+                if (m_firstPage != null)
+                {
+                    m_firstPage.SetActive(true);
+                }
+                DebugBase.Log($"[{nameof(DiaryUIManager)}] Showing introduction page", DebugCategory.UI);
+            }
+            else
+            {
+                // Hide introduction page when viewing bird pages
+                if (m_firstPage != null)
+                {
+                    m_firstPage.SetActive(false);
+                }
+
+                // For bird pages, show as a spread:
+                // - Previous page (to see its back/left side)
+                // - Current page (to see its front/right side)
+
+                // Show previous page for its back content (left side of spread)
+                if (pageIndex == 0)
+                {
+                    // First bird page: show introduction page for its back
+                    if (m_firstPage != null)
+                    {
+                        m_firstPage.SetActive(true);
+                    }
+                }
+                else if (pageIndex > 0)
+                {
+                    // Other pages: show previous instantiated page for its back
+                    m_instantiatedPages[pageIndex - 1].SetActive(true);
+                }
+
+                // Show current page for its front content (right side of spread)
+                if (pageIndex >= 0 && pageIndex < m_instantiatedPages.Count)
+                {
+                    m_instantiatedPages[pageIndex].SetActive(true);
+                }
+
+                DebugBase.Log($"[{nameof(DiaryUIManager)}] Showing page {pageIndex + 1}/{m_instantiatedPages.Count} as spread", DebugCategory.UI);
+            }
+
             m_currentPageIndex = pageIndex;
-
             UpdateNavigationButtons();
-
-            DebugBase.Log($"[{nameof(DiaryUIManager)}] Showing page {pageIndex + 1}/{m_instantiatedPages.Count}", DebugCategory.UI);
         }
 
         /// <summary>
-        /// Shows the next page.
+        /// Shows the next page with animation.
         /// </summary>
-        public void ShowNextPage()
+        public async void ShowNextPage()
         {
             if (m_currentPageIndex < m_instantiatedPages.Count - 1)
             {
-                ShowPage(m_currentPageIndex + 1);
+                await ShowPageWithAnimationAsync(m_currentPageIndex + 1);
             }
         }
 
         /// <summary>
-        /// Shows the previous page.
+        /// Shows the previous page with animation.
+        /// Can go back to introduction page (index -1) from first bird page (index 0).
         /// </summary>
-        public void ShowPreviousPage()
+        public async void ShowPreviousPage()
         {
-            if (m_currentPageIndex > 0)
+            if (m_currentPageIndex > -1)
             {
-                ShowPage(m_currentPageIndex - 1);
+                await ShowPageWithAnimationAsync(m_currentPageIndex - 1);
+            }
+        }
+
+        /// <summary>
+        /// Shows a specific page with page turn animation.
+        /// Animates 180-degree Y-axis rotation to simulate physical page turning.
+        /// </summary>
+        private async UniTask ShowPageWithAnimationAsync(int pageIndex)
+        {
+            if (pageIndex < -1 || pageIndex >= m_instantiatedPages.Count)
+            {
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Invalid page index: {pageIndex}", DebugCategory.UI);
+                return;
+            }
+
+            // Disable navigation during animation
+            SetNavigationEnabled(false);
+
+            bool isMovingForward = pageIndex > m_currentPageIndex;
+            GameObject pageToFlip = null;
+            BirdPageUI pageToFlipUI = null;
+
+            if (isMovingForward)
+            {
+                // Moving forward: flip the current right-side page to show its back on the left
+
+                // Step 1: Identify which page to flip
+                if (m_currentPageIndex == -1)
+                {
+                    pageToFlip = m_firstPage;
+                }
+                else if (m_currentPageIndex >= 0)
+                {
+                    pageToFlip = m_instantiatedPages[m_currentPageIndex];
+                }
+
+                // Step 2: Make the next page visible (showing front)
+                if (pageIndex >= 0 && pageIndex < m_instantiatedPages.Count)
+                {
+                    m_instantiatedPages[pageIndex].SetActive(true);
+                    BirdPageUI nextPageUI = m_instantiatedPages[pageIndex].GetComponent<BirdPageUI>();
+                    if (nextPageUI != null)
+                    {
+                        nextPageUI.SetPageSide(showingBack: false);
+                    }
+                }
+
+                // Step 3: Animate the page flip
+                if (pageToFlip != null)
+                {
+                    pageToFlipUI = pageToFlip.GetComponent<BirdPageUI>();
+                    if (pageToFlipUI != null)
+                    {
+                        // Bring flipping page to front so it appears on top during animation
+                        pageToFlipUI.BringToFront();
+
+                        await pageToFlipUI.TurnPageAsync(m_pageTurnDuration, showingBack: true);
+
+                        // Reset position after animation completes
+                        pageToFlipUI.ResetPosition();
+                    }
+                }
+
+                // Step 4: Clean up - hide pages no longer in view
+                if (pageIndex > 0)
+                {
+                    // Hide the introduction page if we're past the first bird page
+                    if (m_firstPage != null && pageIndex > 0)
+                    {
+                        m_firstPage.SetActive(false);
+                    }
+
+                    // Hide pages before the current spread
+                    if (pageIndex > 1 && m_instantiatedPages.Count > pageIndex - 2)
+                    {
+                        m_instantiatedPages[pageIndex - 2].SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                // Moving backward: flip the current left-side page to show its front on the right
+
+                // Step 1: Identify which page to flip
+                if (m_currentPageIndex == 0)
+                {
+                    pageToFlip = m_firstPage;
+                }
+                else if (m_currentPageIndex > 0)
+                {
+                    pageToFlip = m_instantiatedPages[m_currentPageIndex - 1];
+                }
+
+                // Step 2: Make necessary pages visible for the target spread
+                if (pageIndex == -1)
+                {
+                    // Going to introduction - ensure it's visible
+                    if (m_firstPage != null)
+                    {
+                        m_firstPage.SetActive(true);
+                    }
+                }
+                else if (pageIndex == 0)
+                {
+                    // Going to first bird page - need intro back + page 0 front
+                    if (m_firstPage != null)
+                    {
+                        m_firstPage.SetActive(true);
+                        BirdPageUI introUI = m_firstPage.GetComponent<BirdPageUI>();
+                        if (introUI != null)
+                        {
+                            introUI.SetPageSide(showingBack: true);
+                        }
+                    }
+                    if (m_instantiatedPages.Count > 0)
+                    {
+                        m_instantiatedPages[0].SetActive(true);
+                    }
+                }
+                else
+                {
+                    // Going to bird page > 0 - need previous page back + current page front
+                    if (pageIndex - 1 >= 0)
+                    {
+                        m_instantiatedPages[pageIndex - 1].SetActive(true);
+                    }
+                }
+
+                // Step 3: Animate the page flip
+                if (pageToFlip != null)
+                {
+                    pageToFlipUI = pageToFlip.GetComponent<BirdPageUI>();
+                    if (pageToFlipUI != null)
+                    {
+                        // Bring flipping page to front so it appears on top during animation
+                        pageToFlipUI.BringToFront();
+
+                        await pageToFlipUI.TurnPageAsync(m_pageTurnDuration, showingBack: false);
+
+                        // Reset position after animation completes
+                        pageToFlipUI.ResetPosition();
+                    }
+                }
+
+                // Step 4: Clean up - hide the page we just left
+                if (m_currentPageIndex >= 0 && m_currentPageIndex < m_instantiatedPages.Count)
+                {
+                    m_instantiatedPages[m_currentPageIndex].SetActive(false);
+                }
+
+                // Hide pages beyond the current spread
+                if (pageIndex >= 0 && m_currentPageIndex < m_instantiatedPages.Count && m_currentPageIndex + 1 < m_instantiatedPages.Count)
+                {
+                    m_instantiatedPages[m_currentPageIndex + 1].SetActive(false);
+                }
+            }
+
+            // Update the current index
+            m_currentPageIndex = pageIndex;
+            UpdateNavigationButtons();
+
+            // Re-enable navigation
+            SetNavigationEnabled(true);
+
+            if (pageIndex == -1)
+            {
+                DebugBase.Log($"[{nameof(DiaryUIManager)}] Animated to introduction page", DebugCategory.UI);
+            }
+            else
+            {
+                DebugBase.Log($"[{nameof(DiaryUIManager)}] Animated to page {pageIndex + 1}/{m_instantiatedPages.Count}", DebugCategory.UI);
+            }
+        }
+
+        /// <summary>
+        /// Enables or disables navigation buttons.
+        /// </summary>
+        private void SetNavigationEnabled(bool enabled)
+        {
+            if (m_previousButton != null)
+            {
+                // Can go back if enabled and we're beyond the introduction page (index > -1)
+                m_previousButton.interactable = enabled && m_currentPageIndex > -1;
+            }
+
+            if (m_nextButton != null)
+            {
+                // Can go forward if enabled and we're not on the last instantiated page
+                m_nextButton.interactable = enabled && m_currentPageIndex < m_instantiatedPages.Count - 1;
             }
         }
 
         /// <summary>
         /// Updates navigation button states based on current page.
+        /// Index -1 is the introduction page.
         /// </summary>
         private void UpdateNavigationButtons()
         {
             if (m_previousButton != null)
             {
-                m_previousButton.interactable = m_currentPageIndex > 0;
+                // Can go back if we're beyond the introduction page (index > -1)
+                m_previousButton.interactable = m_currentPageIndex > -1;
             }
 
             if (m_nextButton != null)
             {
+                // Can go forward if we're not on the last instantiated page
                 m_nextButton.interactable = m_currentPageIndex < m_instantiatedPages.Count - 1;
             }
         }
 
         /// <summary>
         /// Refreshes all bird pages (useful when a new bird is discovered).
+        /// Preserves the current page index, including the introduction page (index -1).
         /// </summary>
         public void RefreshAllPages()
         {
             int currentIndex = m_currentPageIndex;
             CreateBirdPages();
 
-            if (m_instantiatedPages.Count > 0)
-            {
-                ShowPage(Mathf.Min(currentIndex, m_instantiatedPages.Count - 1));
-            }
+            // Restore the previous page, clamping to valid range
+            // -1 is valid for introduction page, 0 to Count-1 for bird pages
+            int targetIndex = Mathf.Clamp(currentIndex, -1, m_instantiatedPages.Count - 1);
+            ShowPage(targetIndex);
 
             DebugBase.Log($"[{nameof(DiaryUIManager)}] Refreshed all diary pages", DebugCategory.UI);
         }
 
         /// <summary>
-        /// Refreshes a single bird page without recreating all pages.
+        /// Refreshes a single bird's pages without recreating all pages.
+        /// Since bird data is split across two sides, we refresh both left and right pages.
         /// </summary>
         private void RefreshSinglePage(BirdData birdData)
         {
@@ -387,22 +655,50 @@ namespace Birdie.Managers
                 return;
             }
 
-            if (!m_birdIDToPageIndex.TryGetValue(birdData.BirdID, out int pageIndex))
+            if (!m_birdIDToPageIndex.TryGetValue(birdData.BirdID, out int birdIndex))
             {
                 DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Bird {birdData.BirdName} ({birdData.BirdID}) not found in page index", DebugCategory.UI);
                 return;
             }
 
-            if (pageIndex < 0 || pageIndex >= m_instantiatedPages.Count)
+            List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
+
+            // Refresh LEFT page (photo, stats) - shown on back of intro page or previous page
+            if (birdIndex == 0)
             {
-                DebugBase.LogError($"[{nameof(DiaryUIManager)}] Invalid page index {pageIndex} for bird {birdData.BirdName}", DebugCategory.UI);
-                return;
+                // First bird's left page is on the intro page back
+                BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
+                if (introPageUI != null)
+                {
+                    PopulateLeftPage(introPageUI.m_backParent, introPageUI.BirdPhoto, introPageUI.RarityText,
+                        introPageUI.ScientificNameText, introPageUI.FoodText, introPageUI.InteractionCounterText, birdData);
+                }
+            }
+            else if (birdIndex - 1 >= 0 && birdIndex - 1 < m_instantiatedPages.Count)
+            {
+                // Bird's left page is on the back of the previous instantiated page
+                GameObject prevPage = m_instantiatedPages[birdIndex - 1];
+                BirdPageUI prevPageUI = prevPage.GetComponent<BirdPageUI>();
+                if (prevPageUI != null)
+                {
+                    PopulateLeftPage(prevPageUI.m_backParent, prevPageUI.BirdPhoto, prevPageUI.RarityText,
+                        prevPageUI.ScientificNameText, prevPageUI.FoodText, prevPageUI.InteractionCounterText, birdData);
+                }
             }
 
-            GameObject pageInstance = m_instantiatedPages[pageIndex];
-            PopulateBirdPage(pageInstance, birdData);
+            // Refresh RIGHT page (name, description) - shown on front of current page
+            if (birdIndex >= 0 && birdIndex < m_instantiatedPages.Count)
+            {
+                GameObject currentPage = m_instantiatedPages[birdIndex];
+                BirdPageUI currentPageUI = currentPage.GetComponent<BirdPageUI>();
+                if (currentPageUI != null)
+                {
+                    PopulateRightPage(currentPageUI.m_frontParent, currentPageUI.NameText,
+                        currentPageUI.DescriptionText, birdData);
+                }
+            }
 
-            DebugBase.Log($"[{nameof(DiaryUIManager)}] Refreshed page for {birdData.BirdName}", DebugCategory.UI);
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Refreshed pages for {birdData.BirdName}", DebugCategory.UI);
         }
 
         private void OnDestroy()
