@@ -150,6 +150,16 @@ namespace Birdie.UI
             transform.SetSiblingIndex(m_originalSiblingIndex);
         }
 
+        /// <summary>
+        /// Completes any running DOTween animation on this page instantly,
+        /// snapping it to its target rotation. Used when interrupting an animation
+        /// to start a new one.
+        /// </summary>
+        public void CompleteCurrentAnimation()
+        {
+            transform.DOComplete();
+        }
+
 #if UNITY_EDITOR
         /// <summary>
         /// Validates that all required UI references are assigned.

@@ -57,6 +57,10 @@ namespace Birdie.Managers
         private Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
         private int m_currentPageIndex = 0;
 
+        private bool m_isAnimating = false;
+        private int m_targetPageIndex = 0;
+        private BirdPageUI m_currentlyAnimatingPageUI = null;
+
         private async void Start()
         {
             await WaitForGameManagerAsync();
@@ -397,30 +401,34 @@ namespace Birdie.Managers
 
         /// <summary>
         /// Shows the next page with animation.
+        /// Uses m_targetPageIndex when animating so rapid clicks advance correctly.
         /// </summary>
         public async void ShowNextPage()
         {
-            if (m_currentPageIndex < m_instantiatedPages.Count - 1)
+            int effectiveIndex = m_isAnimating ? m_targetPageIndex : m_currentPageIndex;
+            if (effectiveIndex < m_instantiatedPages.Count - 1)
             {
-                await ShowPageWithAnimationAsync(m_currentPageIndex + 1);
+                await ShowPageWithAnimationAsync(effectiveIndex + 1);
             }
         }
 
         /// <summary>
         /// Shows the previous page with animation.
-        /// Can go back to introduction page (index -1) from first bird page (index 0).
+        /// Uses m_targetPageIndex when animating so rapid clicks go back correctly.
         /// </summary>
         public async void ShowPreviousPage()
         {
-            if (m_currentPageIndex > -1)
+            int effectiveIndex = m_isAnimating ? m_targetPageIndex : m_currentPageIndex;
+            if (effectiveIndex > -1)
             {
-                await ShowPageWithAnimationAsync(m_currentPageIndex - 1);
+                await ShowPageWithAnimationAsync(effectiveIndex - 1);
             }
         }
 
         /// <summary>
         /// Shows a specific page with page turn animation.
-        /// Animates 180-degree Y-axis rotation to simulate physical page turning.
+        /// Supports interruption: if called while animating, completes the current
+        /// animation instantly and starts the new one.
         /// </summary>
         private async UniTask ShowPageWithAnimationAsync(int pageIndex)
         {
@@ -430,8 +438,20 @@ namespace Birdie.Managers
                 return;
             }
 
-            // Disable navigation during animation
-            SetNavigationEnabled(false);
+            // If already animating, complete the current animation instantly and snap to its target state
+            if (m_isAnimating && m_currentlyAnimatingPageUI != null)
+            {
+                m_currentlyAnimatingPageUI.CompleteCurrentAnimation();
+                m_currentlyAnimatingPageUI.ResetPosition();
+                m_currentlyAnimatingPageUI = null;
+
+                // Snap to the target state of the interrupted animation
+                ShowPage(m_targetPageIndex);
+            }
+
+            // Track the target so rapid clicks can advance from the right index
+            m_targetPageIndex = pageIndex;
+            m_isAnimating = true;
 
             bool isMovingForward = pageIndex > m_currentPageIndex;
             GameObject pageToFlip = null;
@@ -468,26 +488,30 @@ namespace Birdie.Managers
                     pageToFlipUI = pageToFlip.GetComponent<BirdPageUI>();
                     if (pageToFlipUI != null)
                     {
-                        // Bring flipping page to front so it appears on top during animation
                         pageToFlipUI.BringToFront();
+                        m_currentlyAnimatingPageUI = pageToFlipUI;
 
                         await pageToFlipUI.TurnPageAsync(m_pageTurnDuration, showingBack: true);
 
-                        // Reset position after animation completes
+                        // If this animation was interrupted, skip cleanup
+                        if (m_targetPageIndex != pageIndex)
+                        {
+                            return;
+                        }
+
                         pageToFlipUI.ResetPosition();
+                        m_currentlyAnimatingPageUI = null;
                     }
                 }
 
                 // Step 4: Clean up - hide pages no longer in view
                 if (pageIndex > 0)
                 {
-                    // Hide the introduction page if we're past the first bird page
-                    if (m_firstPage != null && pageIndex > 0)
+                    if (m_firstPage != null)
                     {
                         m_firstPage.SetActive(false);
                     }
 
-                    // Hide pages before the current spread
                     if (pageIndex > 1 && m_instantiatedPages.Count > pageIndex - 2)
                     {
                         m_instantiatedPages[pageIndex - 2].SetActive(false);
@@ -511,7 +535,6 @@ namespace Birdie.Managers
                 // Step 2: Make necessary pages visible for the target spread
                 if (pageIndex == -1)
                 {
-                    // Going to introduction - ensure it's visible
                     if (m_firstPage != null)
                     {
                         m_firstPage.SetActive(true);
@@ -519,7 +542,6 @@ namespace Birdie.Managers
                 }
                 else if (pageIndex == 0)
                 {
-                    // Going to first bird page - need intro back + page 0 front
                     if (m_firstPage != null)
                     {
                         m_firstPage.SetActive(true);
@@ -536,7 +558,6 @@ namespace Birdie.Managers
                 }
                 else
                 {
-                    // Going to bird page > 0 - need previous page back + current page front
                     if (pageIndex - 1 >= 0)
                     {
                         m_instantiatedPages[pageIndex - 1].SetActive(true);
@@ -549,13 +570,19 @@ namespace Birdie.Managers
                     pageToFlipUI = pageToFlip.GetComponent<BirdPageUI>();
                     if (pageToFlipUI != null)
                     {
-                        // Bring flipping page to front so it appears on top during animation
                         pageToFlipUI.BringToFront();
+                        m_currentlyAnimatingPageUI = pageToFlipUI;
 
                         await pageToFlipUI.TurnPageAsync(m_pageTurnDuration, showingBack: false);
 
-                        // Reset position after animation completes
+                        // If this animation was interrupted, skip cleanup
+                        if (m_targetPageIndex != pageIndex)
+                        {
+                            return;
+                        }
+
                         pageToFlipUI.ResetPosition();
+                        m_currentlyAnimatingPageUI = null;
                     }
                 }
 
@@ -565,7 +592,6 @@ namespace Birdie.Managers
                     m_instantiatedPages[m_currentPageIndex].SetActive(false);
                 }
 
-                // Hide pages beyond the current spread
                 if (pageIndex >= 0 && m_currentPageIndex < m_instantiatedPages.Count && m_currentPageIndex + 1 < m_instantiatedPages.Count)
                 {
                     m_instantiatedPages[m_currentPageIndex + 1].SetActive(false);
@@ -574,10 +600,8 @@ namespace Birdie.Managers
 
             // Update the current index
             m_currentPageIndex = pageIndex;
+            m_isAnimating = false;
             UpdateNavigationButtons();
-
-            // Re-enable navigation
-            SetNavigationEnabled(true);
 
             if (pageIndex == -1)
             {
@@ -586,24 +610,6 @@ namespace Birdie.Managers
             else
             {
                 DebugBase.Log($"[{nameof(DiaryUIManager)}] Animated to page {pageIndex + 1}/{m_instantiatedPages.Count}", DebugCategory.UI);
-            }
-        }
-
-        /// <summary>
-        /// Enables or disables navigation buttons.
-        /// </summary>
-        private void SetNavigationEnabled(bool enabled)
-        {
-            if (m_previousButton != null)
-            {
-                // Can go back if enabled and we're beyond the introduction page (index > -1)
-                m_previousButton.interactable = enabled && m_currentPageIndex > -1;
-            }
-
-            if (m_nextButton != null)
-            {
-                // Can go forward if enabled and we're not on the last instantiated page
-                m_nextButton.interactable = enabled && m_currentPageIndex < m_instantiatedPages.Count - 1;
             }
         }
 
