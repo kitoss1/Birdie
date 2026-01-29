@@ -47,6 +47,21 @@ namespace Birdie.Managers
         }
 
         /// <summary>
+        /// Sets the friendship points for a specific bird to an exact value.
+        /// Primarily used for debugging purposes.
+        /// </summary>
+        public void SetFriendship(string birdID, int points)
+        {
+            if (!EnsureInitialized())
+            {
+                return;
+            }
+
+            m_birdFriendshipPoints[birdID] = Mathf.Max(0, points);
+            DebugBase.Log($"[{nameof(FriendshipManager)}] Set friendship for {birdID} to {points}", DebugCategory.Friendship);
+        }
+
+        /// <summary>
         /// Gets the friendship level for a specific bird based on thresholds in BirdData
         /// </summary>
         public int GetFriendshipLevel(string birdID, BirdData birdData)

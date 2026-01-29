@@ -163,12 +163,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1222973749009412890}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1945811201683040692}
+  m_Father: {fileID: 422116754750538526}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &532269451729600106
 MonoBehaviour:
@@ -190,7 +190,7 @@ MonoBehaviour:
   - m_category: 2
     m_isEnabled: 1
   - m_category: 3
-    m_isEnabled: 1
+    m_isEnabled: 0
   - m_category: 4
     m_isEnabled: 1
   - m_category: 5
@@ -248,7 +248,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e28d6348c8274144fa1b33173ca2c792, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.DiaryManager
---- !u!1 &4131136064855099855
+--- !u!1 &2385325607821269047
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -256,22 +256,69 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2270890666412883891}
-  - component: {fileID: 2013354574184893905}
+  - component: {fileID: 4426219283979078400}
+  - component: {fileID: 2697342335218226154}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: DebugBirdEditor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &2270890666412883891
+--- !u!4 &4426219283979078400
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4131136064855099855}
+  m_GameObject: {fileID: 2385325607821269047}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 422116754750538526}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2697342335218226154
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2385325607821269047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 03246445b305c4245bec159ecd36d71a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Debug.DebugBirdEditor
+  m_birdListPopupPrefab: {fileID: 2324834163090499804, guid: 3428594a0995ff548aba6b59019f77c0, type: 3}
+  m_birdDetailPopupPrefab: {fileID: 2054668801732456726, guid: 83eaf449a4254dd429cde1e3fceba002, type: 3}
+  m_popupParent: {fileID: 0}
+--- !u!1 &4516604024979412774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 535368232330251601}
+  - component: {fileID: 8063905682138039234}
+  m_Layer: 0
+  m_Name: EnvironmentManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &535368232330251601
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4516604024979412774}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -280,24 +327,51 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1945811201683040692}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2013354574184893905
+--- !u!114 &8063905682138039234
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4131136064855099855}
+  m_GameObject: {fileID: 4516604024979412774}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 798a64a6f35055d429e9c99865de46f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 27fc92bcd43a9d94ca04fc247e4c22a7, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.GameManager
-  m_currentState: 0
-  m_birdManager: {fileID: 8501847587352634142}
-  m_economyManager: {fileID: 2340949048868403612}
-  m_friendshipManager: {fileID: 3103716932249964032}
-  m_diaryManager: {fileID: 1901936386541877613}
-  m_menuManager: {fileID: 527053311901176551}
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.EnvironmentManager
+--- !u!1 &5161138079246478894
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 422116754750538526}
+  m_Layer: 0
+  m_Name: Debug
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &422116754750538526
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5161138079246478894}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5147250808605977547}
+  - {fileID: 4426219283979078400}
+  m_Father: {fileID: 1945811201683040692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5952294990666354834
 GameObject:
   m_ObjectHideFlags: 0
@@ -352,6 +426,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1945811201683040692}
+  - component: {fileID: 8671558228544210106}
   m_Layer: 0
   m_Name: Managers
   m_TagString: Untagged
@@ -373,16 +448,35 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5826750397888807867}
-  - {fileID: 5147250808605977547}
-  - {fileID: 2270890666412883891}
   - {fileID: 2584617335662672426}
   - {fileID: 8459918944650953812}
   - {fileID: 4808532810188561615}
   - {fileID: 6868221251254450418}
   - {fileID: 6688494974621824168}
   - {fileID: 5107053131709528807}
+  - {fileID: 535368232330251601}
+  - {fileID: 422116754750538526}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &8671558228544210106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5956790906576562354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 798a64a6f35055d429e9c99865de46f2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.GameManager
+  m_currentState: 0
+  m_birdManager: {fileID: 8501847587352634142}
+  m_economyManager: {fileID: 2340949048868403612}
+  m_friendshipManager: {fileID: 3103716932249964032}
+  m_diaryManager: {fileID: 1901936386541877613}
+  m_menuManager: {fileID: 527053311901176551}
+  m_environmentManager: {fileID: 8063905682138039234}
 --- !u!1 &7541330469607521562
 GameObject:
   m_ObjectHideFlags: 0
