@@ -361,3 +361,14 @@ public event EventHandler<ShapeEventArgs> ShapeChanged;
 // Event Handler, with On- prefix
 void OnShapeChanged(ShapeEventArgs e) { }
 ```
+
+## When you add the tag [SerializeField] to a var it should go to the same line and not above
+```
+// do
+    [SerializeField] private int m_foo;
+
+// don't
+	[SerializeField]
+	private int m_foo;
+
+```

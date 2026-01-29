@@ -208,8 +208,9 @@ namespace Birdie.Managers
                     continue;
                 }
 
-                // Populate FRONT with bird[i]'s RIGHT page (name, description)
-                PopulateRightPage(pageUI.m_frontParent, pageUI.NameText, pageUI.DescriptionText, allBirds[i]);
+                // Populate FRONT with bird[i]'s RIGHT page (name, description, friendship)
+                PopulateRightPage(pageUI.m_frontParent, pageUI.NameText, pageUI.DescriptionText,
+                    pageUI.FriendshipBar, pageUI.FriendshipLevelText, allBirds[i]);
 
                 // Populate BACK with bird[i+1]'s LEFT page (if exists)
                 if (i + 1 < allBirds.Count)
@@ -302,11 +303,12 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Populates the RIGHT page (name, description) of a bird.
+        /// Populates the RIGHT page (name, description, friendship) of a bird.
         /// Shown on the front of pages.
         /// </summary>
         private void PopulateRightPage(GameObject parentObject, TextMeshProUGUI nameText,
-            TextMeshProUGUI descriptionText, BirdData birdData)
+            TextMeshProUGUI descriptionText, ResourceBarTracker friendshipBar,
+            TextMeshProUGUI friendshipLevelText, BirdData birdData)
         {
             if (parentObject != null)
             {
@@ -325,6 +327,63 @@ namespace Birdie.Managers
             if (descriptionText != null)
             {
                 descriptionText.text = isDiscovered ? birdData.BasicDescription : m_lockedDescriptionText;
+            }
+
+            // Set friendship bar and level
+            PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered);
+        }
+
+        /// <summary>
+        /// Populates the friendship bar and level text for a bird.
+        /// Shows progress within the current level toward the next.
+        /// </summary>
+        private void PopulateFriendshipBar(ResourceBarTracker friendshipBar,
+            TextMeshProUGUI friendshipLevelText, BirdData birdData, bool isDiscovered)
+        {
+            if (!isDiscovered)
+            {
+                if (friendshipBar != null)
+                {
+                    friendshipBar.SetValues(0, 0);
+                }
+
+                if (friendshipLevelText != null)
+                {
+                    friendshipLevelText.text = "Lv. 0";
+                }
+
+                return;
+            }
+
+            FriendshipManager friendshipManager = GameManager.Instance.FriendshipManager;
+            int currentPoints = friendshipManager.GetFriendship(birdData.BirdID);
+            int currentLevel = friendshipManager.GetFriendshipLevel(birdData.BirdID, birdData);
+
+            if (friendshipLevelText != null)
+            {
+                friendshipLevelText.text = $"Lv. {currentLevel}";
+            }
+
+            if (friendshipBar != null)
+            {
+                int currentThreshold = birdData.GetFriendshipRequirement(currentLevel);
+                int nextLevel = currentLevel + 1;
+                int nextThreshold = birdData.GetFriendshipRequirement(nextLevel);
+
+                // At max level: bar is full
+                if (nextThreshold == int.MaxValue)
+                {
+                    int lastThreshold = birdData.GetFriendshipRequirement(currentLevel);
+                    int prevThreshold = currentLevel > 0 ? birdData.GetFriendshipRequirement(currentLevel - 1) : 0;
+                    int levelRange = lastThreshold - prevThreshold;
+                    friendshipBar.SetValues(levelRange, levelRange);
+                }
+                else
+                {
+                    int levelProgress = currentPoints - currentThreshold;
+                    int levelRange = nextThreshold - currentThreshold;
+                    friendshipBar.SetValues(levelProgress, levelRange);
+                }
             }
         }
 
@@ -700,7 +759,8 @@ namespace Birdie.Managers
                 if (currentPageUI != null)
                 {
                     PopulateRightPage(currentPageUI.m_frontParent, currentPageUI.NameText,
-                        currentPageUI.DescriptionText, birdData);
+                        currentPageUI.DescriptionText, currentPageUI.FriendshipBar,
+                        currentPageUI.FriendshipLevelText, birdData);
                 }
             }
 

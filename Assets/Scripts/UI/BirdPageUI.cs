@@ -58,7 +58,14 @@ namespace Birdie.UI
         [SerializeField]
         [Tooltip("Text displaying the bird's description")]
         private TextMeshProUGUI m_descriptionText;
-        
+
+        [SerializeField]
+        [Tooltip("Friendship progress bar tracker")]
+        private ResourceBarTracker m_friendshipBar;
+
+        [SerializeField]
+        [Tooltip("Text displaying the current friendship level")]
+        private TextMeshProUGUI m_friendshipLevelText;
 
         public Image BirdPhoto => m_birdPhoto;
         public TextMeshProUGUI RarityText => m_rarityText;
@@ -67,6 +74,8 @@ namespace Birdie.UI
         public TextMeshProUGUI NameText => m_nameText;
         public TextMeshProUGUI DescriptionText => m_descriptionText;
         public TextMeshProUGUI InteractionCounterText => m_interactionCounterText;
+        public ResourceBarTracker FriendshipBar => m_friendshipBar;
+        public TextMeshProUGUI FriendshipLevelText => m_friendshipLevelText;
 
         private int m_originalSiblingIndex;
 
@@ -223,6 +232,16 @@ namespace Birdie.UI
             if (m_interactionCounterText == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Interaction Counter Text reference is missing!", this);
+            }
+
+            if (m_friendshipBar == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Bar reference is missing!", this);
+            }
+
+            if (m_friendshipLevelText == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Level Text reference is missing!", this);
             }
         }
 #endif
