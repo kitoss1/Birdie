@@ -278,13 +278,14 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Initializes FriendshipManager.
+        /// Initializes FriendshipManager. Depends on SaveManager.
         /// </summary>
         private async UniTask InitializeFriendshipManagerAsync()
         {
             if (m_friendshipManager != null)
             {
                 m_friendshipManager.Initialize();
+                m_friendshipManager.SetSaveManager(m_saveManager);
                 await UniTask.Yield();
             }
         }

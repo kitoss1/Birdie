@@ -168,12 +168,12 @@ namespace Birdie.Debug
 
             if (m_currentBirdDetailPopup.CurrentFriendshipText != null)
             {
-                m_currentBirdDetailPopup.CurrentFriendshipText.text = $"Current: {currentPoints}";
+                m_currentBirdDetailPopup.CurrentFriendshipText.text = $"Current Friendship: {currentPoints}";
             }
 
             if (m_currentBirdDetailPopup.CurrentLevelText != null)
             {
-                m_currentBirdDetailPopup.CurrentLevelText.text = $"Level: {currentLevel}";
+                m_currentBirdDetailPopup.CurrentLevelText.text = $"Friendship Level: {currentLevel}";
             }
 
             if (m_currentBirdDetailPopup.FriendshipInput != null)

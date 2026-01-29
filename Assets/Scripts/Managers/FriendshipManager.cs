@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Birdie.Data;
 using Birdie.Debug;
+using Birdie.Save;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -12,11 +13,21 @@ namespace Birdie.Managers
     public class FriendshipManager : BaseManager
     {
         private Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
+        private SaveManager m_saveManager;
 
         public override void Initialize()
         {
             base.Initialize();
             DebugBase.Log($"[{nameof(FriendshipManager)}] Friendship system initialized");
+        }
+
+        /// <summary>
+        /// Sets the save manager reference and loads friendship data.
+        /// </summary>
+        public void SetSaveManager(SaveManager saveManager)
+        {
+            m_saveManager = saveManager;
+            LoadFromSaveData();
         }
 
         /// <summary>
@@ -36,6 +47,8 @@ namespace Birdie.Managers
 
             m_birdFriendshipPoints[birdID] += points;
             DebugBase.Log($"[{nameof(FriendshipManager)}] Added {points} friendship to {birdID}. Total: {m_birdFriendshipPoints[birdID]}");
+
+            SaveToSaveData();
         }
 
         /// <summary>
@@ -59,6 +72,8 @@ namespace Birdie.Managers
 
             m_birdFriendshipPoints[birdID] = Mathf.Max(0, points);
             DebugBase.Log($"[{nameof(FriendshipManager)}] Set friendship for {birdID} to {points}", DebugCategory.Friendship);
+
+            SaveToSaveData();
         }
 
         /// <summary>
@@ -77,6 +92,73 @@ namespace Birdie.Managers
             }
 
             return 0;
+        }
+
+        /// <summary>
+        /// Loads friendship data from the save manager.
+        /// </summary>
+        private void LoadFromSaveData()
+        {
+            if (m_saveManager == null || m_saveManager.CurrentSaveData == null)
+            {
+                DebugBase.LogWarning($"[{nameof(FriendshipManager)}] SaveManager or SaveData is null, cannot load", DebugCategory.Friendship);
+                return;
+            }
+
+            FriendshipSaveData friendshipData = m_saveManager.CurrentSaveData.friendship;
+
+            m_birdFriendshipPoints.Clear();
+
+            if (friendshipData.birdIDs != null && friendshipData.friendshipPoints != null)
+            {
+                for (int i = 0; i < friendshipData.birdIDs.Count && i < friendshipData.friendshipPoints.Count; i++)
+                {
+                    m_birdFriendshipPoints[friendshipData.birdIDs[i]] = friendshipData.friendshipPoints[i];
+                }
+            }
+
+            DebugBase.Log($"[{nameof(FriendshipManager)}] Loaded friendship data: {m_birdFriendshipPoints.Count} birds", DebugCategory.Friendship);
+        }
+
+        /// <summary>
+        /// Saves friendship data to the save manager.
+        /// </summary>
+        private void SaveToSaveData()
+        {
+            if (m_saveManager == null || m_saveManager.CurrentSaveData == null)
+            {
+                DebugBase.LogWarning($"[{nameof(FriendshipManager)}] SaveManager or SaveData is null, cannot save", DebugCategory.Friendship);
+                return;
+            }
+
+            FriendshipSaveData friendshipData = m_saveManager.CurrentSaveData.friendship;
+
+            friendshipData.birdIDs = new List<string>(m_birdFriendshipPoints.Keys);
+            friendshipData.friendshipPoints = new List<int>(m_birdFriendshipPoints.Values);
+
+            // Also store calculated levels for each bird (for potential offline reference)
+            friendshipData.friendshipLevels = new List<int>();
+            foreach (int points in m_birdFriendshipPoints.Values)
+            {
+                // Store the raw points value as a placeholder since we don't have BirdData here
+                // The actual level calculation happens in GetFriendshipLevel with BirdData
+                friendshipData.friendshipLevels.Add(0);
+            }
+
+            m_saveManager.SaveGame();
+
+            DebugBase.Log($"[{nameof(FriendshipManager)}] Saved friendship data: {m_birdFriendshipPoints.Count} birds", DebugCategory.Friendship);
+        }
+
+        /// <summary>
+        /// Clears all friendship data (for testing or reset functionality).
+        /// </summary>
+        public void ClearFriendshipData()
+        {
+            m_birdFriendshipPoints.Clear();
+            SaveToSaveData();
+
+            DebugBase.Log($"[{nameof(FriendshipManager)}] Friendship data cleared", DebugCategory.Friendship);
         }
     }
 }

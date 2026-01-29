@@ -411,10 +411,15 @@ namespace Birdie.Managers
 
             if (pageIndex == -1)
             {
-                // Show only introduction page
+                // Show only introduction page (front side visible)
                 if (m_firstPage != null)
                 {
                     m_firstPage.SetActive(true);
+                    BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
+                    if (introPageUI != null)
+                    {
+                        introPageUI.SetPageSide(showingBack: false);
+                    }
                 }
                 DebugBase.Log($"[{nameof(DiaryUIManager)}] Showing introduction page", DebugCategory.UI);
             }
@@ -437,18 +442,35 @@ namespace Birdie.Managers
                     if (m_firstPage != null)
                     {
                         m_firstPage.SetActive(true);
+                        BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
+                        if (introPageUI != null)
+                        {
+                            introPageUI.SetPageSide(showingBack: true);
+                        }
                     }
                 }
                 else if (pageIndex > 0)
                 {
                     // Other pages: show previous instantiated page for its back
-                    m_instantiatedPages[pageIndex - 1].SetActive(true);
+                    GameObject prevPage = m_instantiatedPages[pageIndex - 1];
+                    prevPage.SetActive(true);
+                    BirdPageUI prevPageUI = prevPage.GetComponent<BirdPageUI>();
+                    if (prevPageUI != null)
+                    {
+                        prevPageUI.SetPageSide(showingBack: true);
+                    }
                 }
 
                 // Show current page for its front content (right side of spread)
                 if (pageIndex >= 0 && pageIndex < m_instantiatedPages.Count)
                 {
-                    m_instantiatedPages[pageIndex].SetActive(true);
+                    GameObject currentPage = m_instantiatedPages[pageIndex];
+                    currentPage.SetActive(true);
+                    BirdPageUI currentPageUI = currentPage.GetComponent<BirdPageUI>();
+                    if (currentPageUI != null)
+                    {
+                        currentPageUI.SetPageSide(showingBack: false);
+                    }
                 }
 
                 DebugBase.Log($"[{nameof(DiaryUIManager)}] Showing page {pageIndex + 1}/{m_instantiatedPages.Count} as spread", DebugCategory.UI);
