@@ -616,5 +616,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a91153538a5da4ba76e0dd4e668af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.StoreManager
-  m_allStoreItems: []
+  m_allStoreItems:
+  - {fileID: 11400000, guid: 74ff30bf67868fd498dbdab6fed8f8d2, type: 2}
   m_sceneObjectsParent: {fileID: 0}
