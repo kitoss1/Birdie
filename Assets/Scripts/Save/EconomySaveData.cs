@@ -13,6 +13,7 @@ namespace Birdie.Save
         public int goldenSeeds = 0;
         public List<string> purchasedUpgradeIDs = new List<string>();
         public List<string> ownedItemIDs = new List<string>();
+        public List<string> disabledItemIDs = new List<string>();
         public int habitatLevel = 0;
 
         /// <summary>
@@ -29,6 +30,7 @@ namespace Birdie.Save
         {
             return purchasedUpgradeIDs != null &&
                    ownedItemIDs != null &&
+                   disabledItemIDs != null &&
                    goldenSeeds >= 0 &&
                    habitatLevel >= 0;
         }

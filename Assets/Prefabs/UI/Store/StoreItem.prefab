@@ -231,7 +231,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 0.3962264, g: 0.3962264, b: 0.3962264, a: 0.36078432}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -382,7 +382,7 @@ MonoBehaviour:
   m_buyButton: {fileID: 7955110040078145837}
   m_buyButtonText: {fileID: 0}
   m_ownedOverlay: {fileID: 4942855420484747320}
-  m_affordableColor: {r: 1, g: 1, b: 1, a: 1}
+  m_affordableColor: {r: 0, g: 0, b: 0, a: 1}
   m_unaffordableColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &6509532501815004086
 GameObject:

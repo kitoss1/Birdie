@@ -185,7 +185,9 @@ namespace Birdie.UI.Store
                     continue;
                 }
 
-                CreateItemUI(itemData, ownedItems.Contains(itemData.ItemID), currentCurrency >= itemData.Price);
+                bool isOwned = ownedItems.Contains(itemData.ItemID);
+                bool isEnabled = GameManager.Instance.StoreManager.IsItemEnabled(itemData.ItemID);
+                CreateItemUI(itemData, isOwned, isEnabled, currentCurrency >= itemData.Price);
             }
         }
 
@@ -196,6 +198,7 @@ namespace Birdie.UI.Store
                 if (item != null)
                 {
                     item.OnBuyClicked -= OnItemBuyClicked;
+                    item.OnToggleClicked -= OnItemToggleClicked;
                     Destroy(item.gameObject);
                 }
             }
@@ -203,7 +206,7 @@ namespace Birdie.UI.Store
             m_instantiatedItems.Clear();
         }
 
-        private void CreateItemUI(StoreItemData itemData, bool isOwned, bool canAfford)
+        private void CreateItemUI(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford)
         {
             if (m_storeItemPrefab == null || m_itemsContainer == null)
             {
@@ -215,8 +218,9 @@ namespace Birdie.UI.Store
 
             if (itemUI != null)
             {
-                itemUI.Setup(itemData, isOwned, canAfford);
+                itemUI.Setup(itemData, isOwned, isEnabled, canAfford);
                 itemUI.OnBuyClicked += OnItemBuyClicked;
+                itemUI.OnToggleClicked += OnItemToggleClicked;
                 m_instantiatedItems.Add(itemUI);
             }
         }
@@ -236,6 +240,17 @@ namespace Birdie.UI.Store
             }
         }
 
+        private void OnItemToggleClicked(StoreItemData itemData)
+        {
+            if (GameManager.Instance?.StoreManager == null)
+            {
+                return;
+            }
+
+            GameManager.Instance.StoreManager.ToggleItemEnabled(itemData.ItemID);
+            RefreshItemsDisplay();
+        }
+
         private void OnCurrencyChanged(int newBalance, int change)
         {
             RefreshCurrencyDisplay();
@@ -253,6 +268,11 @@ namespace Birdie.UI.Store
 
         private void UpdateItemAffordability()
         {
+            if (GameManager.Instance?.StoreManager == null)
+            {
+                return;
+            }
+
             int currentCurrency = GameManager.Instance?.EconomyManager?.GoldenSeeds ?? 0;
             HashSet<string> ownedItems = GetOwnedItemIDs();
 
@@ -261,8 +281,9 @@ namespace Birdie.UI.Store
                 if (itemUI?.ItemData != null)
                 {
                     bool isOwned = ownedItems.Contains(itemUI.ItemData.ItemID);
+                    bool isEnabled = GameManager.Instance.StoreManager.IsItemEnabled(itemUI.ItemData.ItemID);
                     bool canAfford = currentCurrency >= itemUI.ItemData.Price;
-                    itemUI.UpdateVisualState(isOwned, canAfford);
+                    itemUI.UpdateVisualState(isOwned, isEnabled, canAfford);
                 }
             }
         }

@@ -48,21 +48,28 @@ namespace Birdie.UI.Store
 
         private StoreItemData m_itemData;
         private bool m_isOwned;
+        private bool m_isEnabled;
 
         /// <summary>
-        /// Event fired when the buy button is clicked.
+        /// Event fired when the buy button is clicked (for non-owned items).
         /// </summary>
         public event Action<StoreItemData> OnBuyClicked;
+
+        /// <summary>
+        /// Event fired when the toggle button is clicked (for owned items).
+        /// </summary>
+        public event Action<StoreItemData> OnToggleClicked;
 
         public StoreItemData ItemData => m_itemData;
 
         /// <summary>
         /// Initializes the item display with data.
         /// </summary>
-        public void Setup(StoreItemData itemData, bool isOwned, bool canAfford)
+        public void Setup(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford)
         {
             m_itemData = itemData;
             m_isOwned = isOwned;
+            m_isEnabled = isEnabled;
 
             if (m_iconImage != null && itemData.Icon != null)
             {
@@ -74,20 +81,16 @@ namespace Birdie.UI.Store
                 m_nameText.text = itemData.ItemName;
             }
 
-            if (m_priceText != null)
-            {
-                m_priceText.text = itemData.Price.ToString();
-            }
-
-            UpdateVisualState(isOwned, canAfford);
+            UpdateVisualState(isOwned, isEnabled, canAfford);
         }
 
         /// <summary>
-        /// Updates the visual state based on ownership and affordability.
+        /// Updates the visual state based on ownership, enabled state, and affordability.
         /// </summary>
-        public void UpdateVisualState(bool isOwned, bool canAfford)
+        public void UpdateVisualState(bool isOwned, bool isEnabled, bool canAfford)
         {
             m_isOwned = isOwned;
+            m_isEnabled = isEnabled;
 
             if (m_ownedOverlay != null)
             {
@@ -96,17 +99,33 @@ namespace Birdie.UI.Store
 
             if (m_buyButton != null)
             {
-                m_buyButton.interactable = !isOwned && canAfford;
+                m_buyButton.interactable = isOwned || canAfford;
             }
 
             if (m_buyButtonText != null)
             {
-                m_buyButtonText.text = isOwned ? "Owned" : "Buy";
+                if (isOwned)
+                {
+                    m_buyButtonText.text = isEnabled ? "Enabled" : "Disabled";
+                }
+                else
+                {
+                    m_buyButtonText.text = "Buy";
+                }
             }
 
-            if (m_priceText != null && !isOwned)
+            if (m_priceText != null)
             {
-                m_priceText.color = canAfford ? m_affordableColor : m_unaffordableColor;
+                if (isOwned)
+                {
+                    m_priceText.text = isEnabled ? "Enabled" : "Disabled";
+                    m_priceText.color = m_affordableColor;
+                }
+                else
+                {
+                    m_priceText.text = m_itemData != null ? m_itemData.Price.ToString() : "0";
+                    m_priceText.color = canAfford ? m_affordableColor : m_unaffordableColor;
+                }
             }
         }
 
@@ -128,7 +147,16 @@ namespace Birdie.UI.Store
 
         private void OnBuyButtonClicked()
         {
-            if (m_itemData != null && !m_isOwned)
+            if (m_itemData == null)
+            {
+                return;
+            }
+
+            if (m_isOwned)
+            {
+                OnToggleClicked?.Invoke(m_itemData);
+            }
+            else
             {
                 OnBuyClicked?.Invoke(m_itemData);
             }

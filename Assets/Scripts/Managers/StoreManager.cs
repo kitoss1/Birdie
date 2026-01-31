@@ -23,6 +23,7 @@ namespace Birdie.Managers
         private Transform m_sceneObjectsParent;
 
         private HashSet<string> m_ownedItemIDs = new HashSet<string>();
+        private HashSet<string> m_disabledItemIDs = new HashSet<string>();
         private Dictionary<string, StoreItemData> m_itemLookup = new Dictionary<string, StoreItemData>();
         private Dictionary<string, GameObject> m_spawnedObjects = new Dictionary<string, GameObject>();
         private SaveManager m_saveManager;
@@ -31,6 +32,12 @@ namespace Birdie.Managers
         /// Event fired when an item is purchased.
         /// </summary>
         public event Action<StoreItemData> OnItemPurchased;
+
+        /// <summary>
+        /// Event fired when an item's enabled state is toggled.
+        /// Parameters: itemData, isEnabled
+        /// </summary>
+        public event Action<StoreItemData, bool> OnItemToggled;
 
         /// <summary>
         /// Event fired when owned items are loaded from save.
@@ -109,6 +116,56 @@ namespace Birdie.Managers
         }
 
         /// <summary>
+        /// Checks if an owned item is enabled (visible in scene).
+        /// </summary>
+        public bool IsItemEnabled(string itemID)
+        {
+            return IsItemOwned(itemID) && !m_disabledItemIDs.Contains(itemID);
+        }
+
+        /// <summary>
+        /// Toggles an owned item's enabled state.
+        /// </summary>
+        public void ToggleItemEnabled(string itemID)
+        {
+            if (!EnsureInitialized())
+            {
+                return;
+            }
+
+            if (!IsItemOwned(itemID))
+            {
+                DebugBase.LogWarning($"[{nameof(StoreManager)}] Cannot toggle unowned item: {itemID}");
+                return;
+            }
+
+            if (!m_itemLookup.TryGetValue(itemID, out StoreItemData itemData))
+            {
+                DebugBase.LogWarning($"[{nameof(StoreManager)}] Unknown item ID: {itemID}");
+                return;
+            }
+
+            bool isEnabled;
+            if (m_disabledItemIDs.Contains(itemID))
+            {
+                m_disabledItemIDs.Remove(itemID);
+                isEnabled = true;
+                SpawnObject(itemData);
+            }
+            else
+            {
+                m_disabledItemIDs.Add(itemID);
+                isEnabled = false;
+                DespawnObject(itemID);
+            }
+
+            SaveToSaveData();
+            OnItemToggled?.Invoke(itemData, isEnabled);
+
+            DebugBase.Log($"[{nameof(StoreManager)}] Toggled item {itemData.ItemName}: {(isEnabled ? "Enabled" : "Disabled")}");
+        }
+
+        /// <summary>
         /// Gets all owned item IDs.
         /// </summary>
         public IEnumerable<string> GetOwnedItemIDs()
@@ -171,7 +228,16 @@ namespace Birdie.Managers
                 }
             }
 
-            DebugBase.Log($"[{nameof(StoreManager)}] Loaded {m_ownedItemIDs.Count} owned items");
+            m_disabledItemIDs.Clear();
+            if (economyData.disabledItemIDs != null)
+            {
+                foreach (string itemID in economyData.disabledItemIDs)
+                {
+                    m_disabledItemIDs.Add(itemID);
+                }
+            }
+
+            DebugBase.Log($"[{nameof(StoreManager)}] Loaded {m_ownedItemIDs.Count} owned items, {m_disabledItemIDs.Count} disabled");
             OnOwnedItemsLoaded?.Invoke();
         }
 
@@ -185,16 +251,22 @@ namespace Birdie.Managers
 
             EconomySaveData economyData = m_saveManager.CurrentSaveData.economy;
             economyData.ownedItemIDs = new List<string>(m_ownedItemIDs);
+            economyData.disabledItemIDs = new List<string>(m_disabledItemIDs);
 
             m_saveManager.SaveGame();
 
-            DebugBase.Log($"[{nameof(StoreManager)}] Saved {m_ownedItemIDs.Count} owned items");
+            DebugBase.Log($"[{nameof(StoreManager)}] Saved {m_ownedItemIDs.Count} owned items, {m_disabledItemIDs.Count} disabled");
         }
 
         private void SpawnOwnedObjects()
         {
             foreach (string itemID in m_ownedItemIDs)
             {
+                if (m_disabledItemIDs.Contains(itemID))
+                {
+                    continue;
+                }
+
                 if (m_itemLookup.TryGetValue(itemID, out StoreItemData itemData))
                 {
                     SpawnObject(itemData);
@@ -225,6 +297,23 @@ namespace Birdie.Managers
             m_spawnedObjects[itemData.ItemID] = spawnedObj;
 
             DebugBase.Log($"[{nameof(StoreManager)}] Spawned object: {itemData.ItemName} at {itemData.SpawnPosition}");
+        }
+
+        private void DespawnObject(string itemID)
+        {
+            if (!m_spawnedObjects.TryGetValue(itemID, out GameObject spawnedObj))
+            {
+                return;
+            }
+
+            if (spawnedObj != null)
+            {
+                Destroy(spawnedObj);
+            }
+
+            m_spawnedObjects.Remove(itemID);
+
+            DebugBase.Log($"[{nameof(StoreManager)}] Despawned object: {itemID}");
         }
 
         /// <summary>
