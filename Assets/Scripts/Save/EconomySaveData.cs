@@ -10,7 +10,6 @@ namespace Birdie.Save
     [Serializable]
     public class EconomySaveData
     {
-        public int regularSeeds = 0;
         public int goldenSeeds = 0;
         public List<string> purchasedUpgradeIDs = new List<string>();
         public List<string> ownedItemIDs = new List<string>();
@@ -30,7 +29,6 @@ namespace Birdie.Save
         {
             return purchasedUpgradeIDs != null &&
                    ownedItemIDs != null &&
-                   regularSeeds >= 0 &&
                    goldenSeeds >= 0 &&
                    habitatLevel >= 0;
         }
