@@ -291,11 +291,7 @@ namespace Birdie.Debug
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(DebugBirdEditor)}] Bird Detail Popup Prefab reference is missing!", this);
             }
-
-            if (m_popupParent == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(DebugBirdEditor)}] Popup Parent reference is missing!", this);
-            }
+            
         }
 #endif
     }

@@ -22,8 +22,7 @@ namespace Birdie.Managers
         /// </summary>
         public static GameManager Instance => s_instance;
         [Header("Game State")]
-        [SerializeField]
-        private GameState m_currentState = GameState.Playing;
+        private GameState m_currentState = GameState.Loading;
 
         public GameState CurrentState
         {

@@ -54,7 +54,6 @@ namespace Birdie.Debug
             }
 
             s_instance = this;
-            DontDestroyOnLoad(gameObject);
             InitializeCategoryStates();
         }
 
