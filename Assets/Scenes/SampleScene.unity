@@ -2514,6 +2514,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 441782782657557796, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2085028005830604709, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_Name
       value: DiaryCanvas

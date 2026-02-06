@@ -13,6 +13,7 @@ namespace Birdie.UI
     public class BirdPageUI : MonoBehaviour
     {
         [Header("Page Structure")]
+
         [SerializeField]
         [Tooltip("Parent GameObject for back side elements")]
         public GameObject m_backParent;
@@ -51,6 +52,11 @@ namespace Birdie.UI
         private TextMeshProUGUI m_interactionCounterText;
 
         [Header("Front Elements")]
+        
+        [SerializeField]
+        [Tooltip("Mark as true for intro page which has different front elements")]
+        private bool m_isIntroPage;
+        
         [SerializeField]
         [Tooltip("Text displaying the bird's common name")]
         private TextMeshProUGUI m_nameText;
@@ -218,30 +224,33 @@ namespace Birdie.UI
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Food Text reference is missing!", this);
             }
 
-            // Validate front elements
-            if (m_nameText == null)
+            // Validate front elements (skip for intro page which has different elements)
+            if (!m_isIntroPage)
             {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Name Text reference is missing!", this);
-            }
+                if (m_nameText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Name Text reference is missing!", this);
+                }
 
-            if (m_descriptionText == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Description Text reference is missing!", this);
-            }
+                if (m_descriptionText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Description Text reference is missing!", this);
+                }
 
-            if (m_interactionCounterText == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Interaction Counter Text reference is missing!", this);
-            }
+                if (m_interactionCounterText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Interaction Counter Text reference is missing!", this);
+                }
 
-            if (m_friendshipBar == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Bar reference is missing!", this);
-            }
+                if (m_friendshipBar == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Bar reference is missing!", this);
+                }
 
-            if (m_friendshipLevelText == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Level Text reference is missing!", this);
+                if (m_friendshipLevelText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Level Text reference is missing!", this);
+                }
             }
         }
 #endif
