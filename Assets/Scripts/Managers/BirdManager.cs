@@ -13,26 +13,22 @@ namespace Birdie.Managers
     public class BirdManager : BaseManager
     {
         [Header("Bird Database")]
-        [SerializeField]
         [Tooltip("Path to load bird data from (relative to Resources folder)")]
-        private string m_birdDataPath = "ScriptableObjects/Birds";
+        [SerializeField] private string m_birdDataPath = "ScriptableObjects/Birds";
 
         [Header("Bird Spawning")]
-        [SerializeField]
-        private float m_spawnCheckInterval = 30f;
+        [SerializeField] private float m_spawnCheckInterval = 30f;
 
-        [SerializeField]
         [Tooltip("Reference to BirdSpawnPoints component that defines spawn locations")]
-        private BirdSpawnPoints m_spawnPoints;
+        [SerializeField] private BirdSpawnPoints m_spawnPoints;
 
-        [SerializeField]
         [Tooltip("Maximum number of birds that can be present at once")]
-        private int m_maxSimultaneousBirds = 1;
+        [SerializeField] private int m_maxSimultaneousBirds = 1;
 
         private bool m_isSpawningPaused = false;
         private float m_nextSpawnCheckTime = 0f;
         private readonly List<Bird> m_activeBirds = new List<Bird>();
-        private List<BirdData> m_availableBirds = new List<BirdData>();
+        private readonly List<BirdData> m_availableBirds = new List<BirdData>();
 
         public override void Initialize()
         {
@@ -60,7 +56,8 @@ namespace Birdie.Managers
                 return;
             }
 
-            m_availableBirds = new List<BirdData>(loadedBirds);
+            m_availableBirds.Clear();
+            m_availableBirds.AddRange(loadedBirds);
 
             foreach (BirdData bird in m_availableBirds)
             {
@@ -203,6 +200,11 @@ namespace Birdie.Managers
         /// </summary>
         public void PauseBirdSpawning()
         {
+            if (!EnsureInitialized())
+            {
+                return;
+            }
+
             m_isSpawningPaused = true;
             DebugBase.Log($"[{nameof(BirdManager)}] Bird spawning paused", DebugCategory.Birds);
         }
@@ -212,6 +214,11 @@ namespace Birdie.Managers
         /// </summary>
         public void ResumeBirdSpawning()
         {
+            if (!EnsureInitialized())
+            {
+                return;
+            }
+
             m_isSpawningPaused = false;
             DebugBase.Log($"[{nameof(BirdManager)}] Bird spawning resumed", DebugCategory.Birds);
         }
@@ -221,6 +228,11 @@ namespace Birdie.Managers
         /// </summary>
         public void ClearAllBirds()
         {
+            if (!EnsureInitialized())
+            {
+                return;
+            }
+
             foreach (Bird bird in m_activeBirds)
             {
                 if (bird != null)
@@ -237,6 +249,11 @@ namespace Birdie.Managers
         /// </summary>
         public int GetActiveBirdCount()
         {
+            if (!EnsureInitialized())
+            {
+                return 0;
+            }
+
             CleanupInactiveBirds();
             return m_activeBirds.Count;
         }
