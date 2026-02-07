@@ -21,7 +21,6 @@ namespace Birdie.Managers
         /// Singleton instance of GameManager. Provides global access to all game systems.
         /// </summary>
         public static GameManager Instance => s_instance;
-        [Header("Game State")]
         private GameState m_currentState = GameState.Loading;
 
         public GameState CurrentState
@@ -53,26 +52,13 @@ namespace Birdie.Managers
         public event Action<float, string> OnInitializationProgress;
 
         [Header("Manager References")]
-        [SerializeField]
-        private BirdManager m_birdManager;
-
-        [SerializeField]
-        private EconomyManager m_economyManager;
-
-        [SerializeField]
-        private FriendshipManager m_friendshipManager;
-
-        [SerializeField]
-        private DiaryManager m_diaryManager;
-
-        [SerializeField]
-        private MenuManager m_menuManager;
-
-        [SerializeField]
-        private EnvironmentManager m_environmentManager;
-
-        [SerializeField]
-        private StoreManager m_storeManager;
+        [SerializeField] private BirdManager m_birdManager;
+        [SerializeField] private EconomyManager m_economyManager;
+        [SerializeField] private FriendshipManager m_friendshipManager;
+        [SerializeField] private DiaryManager m_diaryManager;
+        [SerializeField] private MenuManager m_menuManager;
+        [SerializeField] private EnvironmentManager m_environmentManager;
+        [SerializeField] private StoreManager m_storeManager;
 
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
@@ -102,12 +88,14 @@ namespace Birdie.Managers
                 return;
             }
 
-            await InitializeAsync();
-        }
-
-        private void Start()
-        {
-            StartGame();
+            try
+            {
+                await InitializeAsync();
+            }
+            catch (Exception e)
+            {
+                DebugBase.LogError($"[{nameof(GameManager)}] Initialization failed: {e.Message}");
+            }
         }
 
         /// <summary>
@@ -161,6 +149,8 @@ namespace Birdie.Managers
             m_initializationComplete = true;
             OnInitializationProgress?.Invoke(1f, "Ready!");
             DebugBase.Log($"[{nameof(GameManager)}] Initialization complete!");
+
+            StartGame();
         }
 
         /// <summary>
@@ -228,37 +218,37 @@ namespace Birdie.Managers
         {
             if (m_birdManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] BirdManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] BirdManager is not assigned!");
             }
 
             if (m_economyManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] EconomyManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] EconomyManager is not assigned!");
             }
 
             if (m_friendshipManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] FriendshipManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] FriendshipManager is not assigned!");
             }
 
             if (m_diaryManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] DiaryManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] DiaryManager is not assigned!");
             }
 
             if (m_menuManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] MenuManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] MenuManager is not assigned!");
             }
 
             if (m_environmentManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] EnvironmentManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] EnvironmentManager is not assigned!");
             }
 
             if (m_storeManager == null)
             {
-                DebugBase.LogWarning($"[{nameof(GameManager)}] StoreManager is not assigned!");
+                DebugBase.LogError($"[{nameof(GameManager)}] StoreManager is not assigned!");
             }
         }
 
@@ -535,13 +525,13 @@ namespace Birdie.Managers
         {
             return m_initializationComplete &&
                    m_saveManager != null &&
-                   m_birdManager != null &&
-                   m_economyManager != null &&
-                   m_friendshipManager != null &&
-                   m_diaryManager != null &&
-                   m_menuManager != null &&
-                   m_environmentManager != null &&
-                   m_storeManager != null;
+                   m_birdManager != null && m_birdManager.IsInitialized &&
+                   m_economyManager != null && m_economyManager.IsInitialized &&
+                   m_friendshipManager != null && m_friendshipManager.IsInitialized &&
+                   m_diaryManager != null && m_diaryManager.IsInitialized &&
+                   m_menuManager != null && m_menuManager.IsInitialized &&
+                   m_environmentManager != null && m_environmentManager.IsInitialized &&
+                   m_storeManager != null && m_storeManager.IsInitialized;
         }
 
         private void OnApplicationQuit()
