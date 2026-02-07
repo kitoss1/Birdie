@@ -14,34 +14,25 @@ namespace Birdie.Managers
     public class MenuManager : BaseManager
     {
         [Header("Menu Panels")]
-        [SerializeField]
         [Tooltip("Parent canvas/transform containing all menu panels")]
-        private Transform m_menuContainer;
+        [SerializeField] private Transform m_menuContainer;
 
-        [SerializeField]
         [Tooltip("Diary menu panel")]
-        private GameObject m_diaryPanel;
+        [SerializeField] private GameObject m_diaryPanel;
 
-        [SerializeField]
         [Tooltip("Shop menu panel")]
-        private GameObject m_shopPanel;
+        [SerializeField] private GameObject m_shopPanel;
 
-        [SerializeField]
         [Tooltip("Settings menu panel (overlay)")]
-        private GameObject m_settingsPanel;
+        [SerializeField] private GameObject m_settingsPanel;
 
-        [SerializeField]
         [Tooltip("Tutorial menu panel")]
-        private GameObject m_tutorialPanel;
-
-        /*[Header("Animation Settings")]
-        [SerializeField]
-        [Tooltip("Duration for menu fade in/out animations")]
-        private float m_animationDuration = 0.3f;*/
+        [SerializeField] private GameObject m_tutorialPanel;
 
         private Dictionary<MenuType, GameObject> m_menuPanels;
         private MenuType m_currentOpenMenu = MenuType.None;
         private bool m_isSettingsOpen = false;
+        private BaseMenuButton[] m_registeredButtons;
 
         public override void Initialize()
         {
@@ -88,14 +79,14 @@ namespace Birdie.Managers
         /// </summary>
         private void RegisterMenuButtons()
         {
-            BaseMenuButton[] menuButtons = FindObjectsByType<BaseMenuButton>(FindObjectsSortMode.None);
-            foreach (BaseMenuButton button in menuButtons)
+            m_registeredButtons = FindObjectsByType<BaseMenuButton>(FindObjectsSortMode.None);
+            foreach (BaseMenuButton button in m_registeredButtons)
             {
                 button.OnMenuButtonClicked += OnMenuButtonClicked;
                 DebugBase.Log($"[{nameof(MenuManager)}] Registered button for menu: {button.MenuType}");
             }
 
-            DebugBase.Log($"[{nameof(MenuManager)}] Registered {menuButtons.Length} menu buttons");
+            DebugBase.Log($"[{nameof(MenuManager)}] Registered {m_registeredButtons.Length} menu buttons");
         }
 
         /// <summary>
@@ -128,7 +119,7 @@ namespace Birdie.Managers
             }
             else
             {
-                if (m_currentOpenMenu == menuType)
+                if (GameManager.Instance.CurrentOpenMenu == menuType)
                 {
                     CloseCurrentMenu();
                 }
@@ -332,16 +323,6 @@ namespace Birdie.Managers
         protected virtual void ShowMenuPanel(MenuType menuType, GameObject menuPanel)
         {
             menuPanel.SetActive(true);
-
-            // TODO: Add DOTween animation here when needed
-            // Example:
-            // CanvasGroup canvasGroup = menuPanel.GetComponent<CanvasGroup>();
-            // if (canvasGroup != null)
-            // {
-            //     canvasGroup.alpha = 0f;
-            //     canvasGroup.DOFade(1f, m_animationDuration);
-            // }
-
             DebugBase.Log($"[{nameof(MenuManager)}] Showing panel for menu: {menuType}");
         }
 
@@ -351,18 +332,6 @@ namespace Birdie.Managers
         /// </summary>
         protected virtual void HideMenuPanel(MenuType menuType, GameObject menuPanel)
         {
-            // TODO: Add DOTween animation here when needed
-            // Example:
-            // CanvasGroup canvasGroup = menuPanel.GetComponent<CanvasGroup>();
-            // if (canvasGroup != null)
-            // {
-            //     canvasGroup.DOFade(0f, m_animationDuration).OnComplete(() => menuPanel.SetActive(false));
-            // }
-            // else
-            // {
-            //     menuPanel.SetActive(false);
-            // }
-
             menuPanel.SetActive(false);
             DebugBase.Log($"[{nameof(MenuManager)}] Hiding panel for menu: {menuType}");
         }
@@ -372,24 +341,12 @@ namespace Birdie.Managers
         /// </summary>
         private void HideAllMenus()
         {
-            if (m_diaryPanel != null)
+            foreach (KeyValuePair<MenuType, GameObject> entry in m_menuPanels)
             {
-                m_diaryPanel.SetActive(false);
-            }
-
-            if (m_shopPanel != null)
-            {
-                m_shopPanel.SetActive(false);
-            }
-
-            if (m_settingsPanel != null)
-            {
-                m_settingsPanel.SetActive(false);
-            }
-
-            if (m_tutorialPanel != null)
-            {
-                m_tutorialPanel.SetActive(false);
+                if (entry.Value != null)
+                {
+                    entry.Value.SetActive(false);
+                }
             }
 
             DebugBase.Log($"[{nameof(MenuManager)}] All menu panels hidden");
@@ -425,13 +382,8 @@ namespace Birdie.Managers
                 return m_isSettingsOpen;
             }
 
-            return m_currentOpenMenu == menuType;
+            return GameManager.Instance.CurrentOpenMenu == menuType;
         }
-
-        /// <summary>
-        /// Gets the currently open main menu type (excludes overlay menus).
-        /// </summary>
-        public MenuType CurrentOpenMenu => m_currentOpenMenu;
 
         /// <summary>
         /// Checks if Settings overlay is currently open.
@@ -446,10 +398,15 @@ namespace Birdie.Managers
                 GameManager.Instance.OnMenuClosed -= OnMenuClosedFromGameManager;
             }
 
-            BaseMenuButton[] menuButtons = FindObjectsByType<BaseMenuButton>(FindObjectsSortMode.None);
-            foreach (BaseMenuButton button in menuButtons)
+            if (m_registeredButtons != null)
             {
-                button.OnMenuButtonClicked -= OnMenuButtonClicked;
+                foreach (BaseMenuButton button in m_registeredButtons)
+                {
+                    if (button != null)
+                    {
+                        button.OnMenuButtonClicked -= OnMenuButtonClicked;
+                    }
+                }
             }
         }
 
