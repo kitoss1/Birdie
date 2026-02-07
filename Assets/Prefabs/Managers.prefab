@@ -470,7 +470,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 798a64a6f35055d429e9c99865de46f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.GameManager
-  m_currentState: 0
   m_birdManager: {fileID: 8501847587352634142}
   m_economyManager: {fileID: 2340949048868403612}
   m_friendshipManager: {fileID: 3103716932249964032}
@@ -616,6 +615,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15a91153538a5da4ba76e0dd4e668af4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.StoreManager
-  m_allStoreItems:
-  - {fileID: 11400000, guid: 74ff30bf67868fd498dbdab6fed8f8d2, type: 2}
-  m_sceneObjectsParent: {fileID: 0}
+  m_storeItemReferences:
+  - m_itemData: {fileID: 11400000, guid: 74ff30bf67868fd498dbdab6fed8f8d2, type: 2}
+    m_sceneObject: {fileID: 0}
+  - m_itemData: {fileID: 11400000, guid: e106343459d2a1f4081cec934529c83b, type: 2}
+    m_sceneObject: {fileID: 0}

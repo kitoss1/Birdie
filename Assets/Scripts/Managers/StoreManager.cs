@@ -15,17 +15,13 @@ namespace Birdie.Managers
     {
         [Header("Store Configuration")]
         [SerializeField]
-        [Tooltip("All available store items")]
-        private List<StoreItemData> m_allStoreItems = new List<StoreItemData>();
-
-        [SerializeField]
-        [Tooltip("Parent transform for spawned scene objects")]
-        private Transform m_sceneObjectsParent;
+        [Tooltip("Store items mapped to their scene objects")]
+        private List<StoreItemSceneReference> m_storeItemReferences = new List<StoreItemSceneReference>();
 
         private HashSet<string> m_ownedItemIDs = new HashSet<string>();
         private HashSet<string> m_disabledItemIDs = new HashSet<string>();
         private Dictionary<string, StoreItemData> m_itemLookup = new Dictionary<string, StoreItemData>();
-        private Dictionary<string, GameObject> m_spawnedObjects = new Dictionary<string, GameObject>();
+        private Dictionary<string, GameObject> m_sceneObjects = new Dictionary<string, GameObject>();
         private SaveManager m_saveManager;
 
         /// <summary>
@@ -44,6 +40,8 @@ namespace Birdie.Managers
         /// </summary>
         public event Action OnOwnedItemsLoaded;
 
+        private List<StoreItemData> m_allStoreItems = new List<StoreItemData>();
+
         public IReadOnlyList<StoreItemData> AllStoreItems => m_allStoreItems;
 
         public override void Initialize()
@@ -60,7 +58,7 @@ namespace Birdie.Managers
         {
             m_saveManager = saveManager;
             LoadFromSaveData();
-            SpawnOwnedObjects();
+            RefreshSceneObjects();
         }
 
         /// <summary>
@@ -99,7 +97,7 @@ namespace Birdie.Managers
 
             m_ownedItemIDs.Add(itemID);
             SaveToSaveData();
-            SpawnObject(itemData);
+            SetSceneObjectActive(itemID, true);
 
             DebugBase.Log($"[{nameof(StoreManager)}] Purchased item: {itemData.ItemName}");
             OnItemPurchased?.Invoke(itemData);
@@ -150,14 +148,14 @@ namespace Birdie.Managers
             {
                 m_disabledItemIDs.Remove(itemID);
                 isEnabled = true;
-                SpawnObject(itemData);
             }
             else
             {
                 m_disabledItemIDs.Add(itemID);
                 isEnabled = false;
-                DespawnObject(itemID);
             }
+
+            SetSceneObjectActive(itemID, isEnabled);
 
             SaveToSaveData();
             OnItemToggled?.Invoke(itemData, isEnabled);
@@ -185,9 +183,12 @@ namespace Birdie.Managers
         private void BuildItemLookup()
         {
             m_itemLookup.Clear();
+            m_sceneObjects.Clear();
+            m_allStoreItems.Clear();
 
-            foreach (StoreItemData item in m_allStoreItems)
+            foreach (StoreItemSceneReference reference in m_storeItemReferences)
             {
+                StoreItemData item = reference.ItemData;
                 if (item == null)
                 {
                     continue;
@@ -206,6 +207,16 @@ namespace Birdie.Managers
                 }
 
                 m_itemLookup[item.ItemID] = item;
+                m_allStoreItems.Add(item);
+
+                if (reference.SceneObject != null)
+                {
+                    m_sceneObjects[item.ItemID] = reference.SceneObject;
+                }
+                else
+                {
+                    DebugBase.LogWarning($"[{nameof(StoreManager)}] No scene object assigned for item: {item.ItemName}");
+                }
             }
         }
 
@@ -258,62 +269,33 @@ namespace Birdie.Managers
             DebugBase.Log($"[{nameof(StoreManager)}] Saved {m_ownedItemIDs.Count} owned items, {m_disabledItemIDs.Count} disabled");
         }
 
-        private void SpawnOwnedObjects()
+        private void RefreshSceneObjects()
         {
-            foreach (string itemID in m_ownedItemIDs)
-            {
-                if (m_disabledItemIDs.Contains(itemID))
-                {
-                    continue;
-                }
+            int enabledCount = 0;
 
-                if (m_itemLookup.TryGetValue(itemID, out StoreItemData itemData))
+            foreach (KeyValuePair<string, GameObject> pair in m_sceneObjects)
+            {
+                bool shouldBeActive = IsItemEnabled(pair.Key);
+                pair.Value.SetActive(shouldBeActive);
+
+                if (shouldBeActive)
                 {
-                    SpawnObject(itemData);
+                    enabledCount++;
                 }
             }
 
-            DebugBase.Log($"[{nameof(StoreManager)}] Spawned {m_spawnedObjects.Count} owned objects");
+            DebugBase.Log($"[{nameof(StoreManager)}] Refreshed scene objects: {enabledCount} enabled");
         }
 
-        private void SpawnObject(StoreItemData itemData)
+        private void SetSceneObjectActive(string itemID, bool active)
         {
-            if (itemData.Prefab == null)
+            if (!m_sceneObjects.TryGetValue(itemID, out GameObject sceneObject))
             {
-                DebugBase.LogWarning($"[{nameof(StoreManager)}] Item has no prefab: {itemData.ItemName}");
+                DebugBase.LogWarning($"[{nameof(StoreManager)}] No scene object found for item: {itemID}");
                 return;
             }
 
-            if (m_spawnedObjects.ContainsKey(itemData.ItemID))
-            {
-                DebugBase.LogWarning($"[{nameof(StoreManager)}] Object already spawned: {itemData.ItemName}");
-                return;
-            }
-
-            Transform parent = m_sceneObjectsParent != null ? m_sceneObjectsParent : null;
-            GameObject spawnedObj = Instantiate(itemData.Prefab, itemData.SpawnPosition, itemData.SpawnRotation, parent);
-            spawnedObj.name = $"{itemData.ItemName}_{itemData.ItemID}";
-
-            m_spawnedObjects[itemData.ItemID] = spawnedObj;
-
-            DebugBase.Log($"[{nameof(StoreManager)}] Spawned object: {itemData.ItemName} at {itemData.SpawnPosition}");
-        }
-
-        private void DespawnObject(string itemID)
-        {
-            if (!m_spawnedObjects.TryGetValue(itemID, out GameObject spawnedObj))
-            {
-                return;
-            }
-
-            if (spawnedObj != null)
-            {
-                Destroy(spawnedObj);
-            }
-
-            m_spawnedObjects.Remove(itemID);
-
-            DebugBase.Log($"[{nameof(StoreManager)}] Despawned object: {itemID}");
+            sceneObject.SetActive(active);
         }
 
         /// <summary>
@@ -321,17 +303,10 @@ namespace Birdie.Managers
         /// </summary>
         public void ClearOwnedItems()
         {
-            foreach (GameObject obj in m_spawnedObjects.Values)
-            {
-                if (obj != null)
-                {
-                    Destroy(obj);
-                }
-            }
-
-            m_spawnedObjects.Clear();
             m_ownedItemIDs.Clear();
+            m_disabledItemIDs.Clear();
             SaveToSaveData();
+            RefreshSceneObjects();
 
             DebugBase.Log($"[{nameof(StoreManager)}] Cleared all owned items");
         }

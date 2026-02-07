@@ -15,7 +15,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5658982662132712779
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1427,7 +1427,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dda120484f5d75d418a1f292000ca4d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.BirdPageUI
-  m_isIntroPage: 1
   m_backParent: {fileID: 2019660375099646270}
   m_frontParent: {fileID: 6595980053443076144}
   m_frontCanvasGroup: {fileID: 4939163787754708746}
@@ -1437,6 +1436,7 @@ MonoBehaviour:
   m_scientificNameText: {fileID: 6918553068377093888}
   m_foodText: {fileID: 6101486466093367138}
   m_interactionCounterText: {fileID: 7194718416624945307}
+  m_isIntroPage: 1
   m_nameText: {fileID: 0}
   m_descriptionText: {fileID: 0}
   m_friendshipBar: {fileID: 0}
