@@ -1,3 +1,4 @@
+using System;
 using Birdie.Debug;
 using Birdie.UI;
 using Cysharp.Threading.Tasks;
@@ -8,18 +9,18 @@ namespace Birdie.Managers
     /// <summary>
     /// Manages the loading screen and coordinates with GameManager initialization.
     /// Ensures the loading screen is visible during initialization.
+    /// Does not extend BaseManager because it must operate before GameManager exists
+    /// (it shows the loading screen in Awake and watches GameManager's initialization pipeline).
     /// </summary>
     public class LoadingManager : MonoBehaviour
     {
         [Header("Loading Screen")]
-        [SerializeField]
         [Tooltip("Reference to the LoadingScreen UI component")]
-        private LoadingScreen m_loadingScreen;
+        [SerializeField] private LoadingScreen m_loadingScreen;
 
         [Header("Settings")]
-        [SerializeField]
         [Tooltip("Minimum time to show loading screen (prevents flash for fast loads)")]
-        private float m_minimumLoadingTime = 1.0f;
+        [SerializeField] private float m_minimumLoadingTime = 1.0f;
 
         private float m_loadingStartTime;
 
@@ -40,8 +41,15 @@ namespace Birdie.Managers
 
         private async void Start()
         {
-            await WaitForInitializationAsync();
-            await HideLoadingScreenAsync();
+            try
+            {
+                await WaitForInitializationAsync();
+                await HideLoadingScreenAsync();
+            }
+            catch (Exception e)
+            {
+                DebugBase.LogError($"[{nameof(LoadingManager)}] Loading sequence failed: {e.Message}");
+            }
         }
 
         /// <summary>
