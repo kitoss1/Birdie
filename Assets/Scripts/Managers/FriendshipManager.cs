@@ -12,7 +12,7 @@ namespace Birdie.Managers
     /// </summary>
     public class FriendshipManager : BaseManager
     {
-        private Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
         private SaveManager m_saveManager;
 
         public override void Initialize()
@@ -56,7 +56,7 @@ namespace Birdie.Managers
         /// </summary>
         public int GetFriendship(string birdID)
         {
-            return m_birdFriendshipPoints.ContainsKey(birdID) ? m_birdFriendshipPoints[birdID] : 0;
+            return m_birdFriendshipPoints.TryGetValue(birdID, out int points) ? points : 0;
         }
 
         /// <summary>
@@ -135,15 +135,6 @@ namespace Birdie.Managers
 
             friendshipData.birdIDs = new List<string>(m_birdFriendshipPoints.Keys);
             friendshipData.friendshipPoints = new List<int>(m_birdFriendshipPoints.Values);
-
-            // Also store calculated levels for each bird (for potential offline reference)
-            friendshipData.friendshipLevels = new List<int>();
-            foreach (int points in m_birdFriendshipPoints.Values)
-            {
-                // Store the raw points value as a placeholder since we don't have BirdData here
-                // The actual level calculation happens in GetFriendshipLevel with BirdData
-                friendshipData.friendshipLevels.Add(0);
-            }
 
             m_saveManager.SaveGame();
 
