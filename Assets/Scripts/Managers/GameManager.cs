@@ -59,6 +59,7 @@ namespace Birdie.Managers
         [SerializeField] private MenuManager m_menuManager;
         [SerializeField] private EnvironmentManager m_environmentManager;
         [SerializeField] private StoreManager m_storeManager;
+        [SerializeField] private DiaryUIManager m_diaryUIManager;
 
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
@@ -67,6 +68,7 @@ namespace Birdie.Managers
         public MenuManager MenuManager => m_menuManager;
         public EnvironmentManager EnvironmentManager => m_environmentManager;
         public StoreManager StoreManager => m_storeManager;
+        public DiaryUIManager DiaryUIManager => m_diaryUIManager;
 
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
@@ -190,9 +192,10 @@ namespace Birdie.Managers
             );
 
             // Initialize managers that depend on other managers (sequential)
-            await InitializeDiaryManagerAsync(); // Depends on BirdManager, SaveManager
-            await InitializeStoreManagerAsync(); // Depends on SaveManager, EconomyManager
-            await InitializeMenuManagerAsync();  // Depends on all other managers
+            await InitializeDiaryManagerAsync();   // Depends on BirdManager, SaveManager
+            await InitializeStoreManagerAsync();   // Depends on SaveManager, EconomyManager
+            await InitializeDiaryUIManagerAsync(); // Depends on DiaryManager, FriendshipManager
+            await InitializeMenuManagerAsync();    // Depends on all other managers
 
             DebugBase.Log($"[{nameof(GameManager)}] All managers initialized");
         }
@@ -249,6 +252,11 @@ namespace Birdie.Managers
             if (m_storeManager == null)
             {
                 DebugBase.LogError($"[{nameof(GameManager)}] StoreManager is not assigned!");
+            }
+
+            if (m_diaryUIManager == null)
+            {
+                DebugBase.LogError($"[{nameof(GameManager)}] DiaryUIManager is not assigned!");
             }
         }
 
@@ -324,6 +332,18 @@ namespace Birdie.Managers
             {
                 m_storeManager.Initialize();
                 m_storeManager.SetSaveManager(m_saveManager);
+                await UniTask.Yield();
+            }
+        }
+
+        /// <summary>
+        /// Initializes DiaryUIManager. Depends on DiaryManager and FriendshipManager.
+        /// </summary>
+        private async UniTask InitializeDiaryUIManagerAsync()
+        {
+            if (m_diaryUIManager != null)
+            {
+                m_diaryUIManager.Initialize();
                 await UniTask.Yield();
             }
         }
@@ -513,6 +533,7 @@ namespace Birdie.Managers
             status += $"MenuManager: {(m_menuManager != null ? "✓" : "✗")}\n";
             status += $"EnvironmentManager: {(m_environmentManager != null ? "✓" : "✗")}\n";
             status += $"StoreManager: {(m_storeManager != null ? "✓" : "✗")}\n";
+            status += $"DiaryUIManager: {(m_diaryUIManager != null ? "✓" : "✗")}\n";
             status += $"Game State: {CurrentState}\n";
             status += $"Current Menu: {m_currentOpenMenu}";
             return status;
@@ -531,7 +552,8 @@ namespace Birdie.Managers
                    m_diaryManager != null && m_diaryManager.IsInitialized &&
                    m_menuManager != null && m_menuManager.IsInitialized &&
                    m_environmentManager != null && m_environmentManager.IsInitialized &&
-                   m_storeManager != null && m_storeManager.IsInitialized;
+                   m_storeManager != null && m_storeManager.IsInitialized &&
+                   m_diaryUIManager != null && m_diaryUIManager.IsInitialized;
         }
 
         private void OnApplicationQuit()

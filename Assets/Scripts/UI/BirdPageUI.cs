@@ -13,66 +13,52 @@ namespace Birdie.UI
     public class BirdPageUI : MonoBehaviour
     {
         [Header("Page Structure")]
-
-        [SerializeField]
         [Tooltip("Parent GameObject for back side elements")]
-        public GameObject m_backParent;
+        [SerializeField] private GameObject m_backParent;
 
-        [SerializeField]
         [Tooltip("Parent GameObject for front side elements")]
-        public GameObject m_frontParent;
+        [SerializeField] private GameObject m_frontParent;
 
-        [SerializeField]
         [Tooltip("CanvasGroup for front content visibility control")]
-        private CanvasGroup m_frontCanvasGroup;
+        [SerializeField] private CanvasGroup m_frontCanvasGroup;
 
-        [SerializeField]
         [Tooltip("CanvasGroup for back content visibility control")]
-        private CanvasGroup m_backCanvasGroup;
+        [SerializeField] private CanvasGroup m_backCanvasGroup;
 
         [Header("Back Elements")]
-        [SerializeField]
         [Tooltip("The image component that displays the bird's photo")]
-        private Image m_birdPhoto;
+        [SerializeField] private Image m_birdPhoto;
 
-        [SerializeField]
         [Tooltip("Text displaying the bird's rarity level")]
-        private TextMeshProUGUI m_rarityText;
+        [SerializeField] private TextMeshProUGUI m_rarityText;
 
-        [SerializeField]
         [Tooltip("Text displaying the bird's scientific name")]
-        private TextMeshProUGUI m_scientificNameText;
+        [SerializeField] private TextMeshProUGUI m_scientificNameText;
 
-        [SerializeField]
         [Tooltip("Text displaying the bird's diet type")]
-        private TextMeshProUGUI m_foodText;
+        [SerializeField] private TextMeshProUGUI m_foodText;
 
-        [SerializeField]
         [Tooltip("Text displaying the numbers of times a player interacted with a bird")]
-        private TextMeshProUGUI m_interactionCounterText;
+        [SerializeField] private TextMeshProUGUI m_interactionCounterText;
 
         [Header("Front Elements")]
-        
-        [SerializeField]
         [Tooltip("Mark as true for intro page which has different front elements")]
-        private bool m_isIntroPage;
-        
-        [SerializeField]
+        [SerializeField] private bool m_isIntroPage;
+
         [Tooltip("Text displaying the bird's common name")]
-        private TextMeshProUGUI m_nameText;
+        [SerializeField] private TextMeshProUGUI m_nameText;
 
-        [SerializeField]
         [Tooltip("Text displaying the bird's description")]
-        private TextMeshProUGUI m_descriptionText;
+        [SerializeField] private TextMeshProUGUI m_descriptionText;
 
-        [SerializeField]
         [Tooltip("Friendship progress bar tracker")]
-        private ResourceBarTracker m_friendshipBar;
+        [SerializeField] private ResourceBarTracker m_friendshipBar;
 
-        [SerializeField]
         [Tooltip("Text displaying the current friendship level")]
-        private TextMeshProUGUI m_friendshipLevelText;
+        [SerializeField] private TextMeshProUGUI m_friendshipLevelText;
 
+        public GameObject BackParent => m_backParent;
+        public GameObject FrontParent => m_frontParent;
         public Image BirdPhoto => m_birdPhoto;
         public TextMeshProUGUI RarityText => m_rarityText;
         public TextMeshProUGUI ScientificNameText => m_scientificNameText;

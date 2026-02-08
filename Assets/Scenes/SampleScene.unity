@@ -1931,6 +1931,17 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1582785382}
   m_CullTransparentMesh: 1
+--- !u!114 &1591734273 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4062717470153100130, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+  m_PrefabInstance: {fileID: 1878388518364864232}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 790e65e780f22ad4aba70271d3048dbe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.DiaryUIManager
 --- !u!1 &1631849932
 GameObject:
   m_ObjectHideFlags: 0
@@ -3106,6 +3117,10 @@ PrefabInstance:
       propertyPath: m_spawnPoints
       value: 
       objectReference: {fileID: 1436862616}
+    - target: {fileID: 8671558228544210106, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_diaryUIManager
+      value: 
+      objectReference: {fileID: 1591734273}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

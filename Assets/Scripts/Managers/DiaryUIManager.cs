@@ -1,8 +1,9 @@
+using System;
+using System.Collections.Generic;
 using Birdie.Data;
 using Birdie.Debug;
 using Birdie.UI;
 using Cysharp.Threading.Tasks;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,77 +13,56 @@ namespace Birdie.Managers
     /// <summary>
     /// Manages the diary UI, handling page display and navigation.
     /// Gets all data from DiaryManager via GameManager.Instance.
+    /// Initialized by GameManager after DiaryManager and FriendshipManager are ready.
     /// </summary>
-    public class DiaryUIManager : MonoBehaviour
+    public class DiaryUIManager : BaseManager
     {
-
         [Header("General UI")]
-        [SerializeField]
         [Tooltip("Prefab for bird page layout (two-page spread)")]
-        private GameObject m_birdPagePrefab;
+        [SerializeField] private GameObject m_birdPagePrefab;
 
-        [SerializeField]
         [Tooltip("Container to hold all instantiated bird pages")]
-        private Transform m_pagesContainer;
+        [SerializeField] private Transform m_pagesContainer;
 
-        [SerializeField]
         [Tooltip("Previous page button")]
-        private Button m_previousButton;
+        [SerializeField] private Button m_previousButton;
 
-        [SerializeField]
         [Tooltip("Next page button")]
-        private Button m_nextButton;
+        [SerializeField] private Button m_nextButton;
 
         [SerializeField] private GameObject m_firstPage;
 
-        [Header("Parameters to costumize")]
-        [SerializeField]
+        [Header("Parameters to customize")]
         [Tooltip("Duration of page turn animation in seconds")]
-        private float m_pageTurnDuration = 0.5f;
-        
+        [SerializeField] private float m_pageTurnDuration = 0.5f;
+
         [Header("Locked Bird Settings")]
-        [SerializeField]
         [Tooltip("Text to display for undiscovered bird names")]
-        private string m_lockedNameText = "???";
+        [SerializeField] private string m_lockedNameText = "???";
 
-        [SerializeField]
         [Tooltip("Text to display for undiscovered bird descriptions")]
-        private string m_lockedDescriptionText = "This bird has not been discovered yet.";
+        [SerializeField] private string m_lockedDescriptionText = "This bird has not been discovered yet.";
 
-        [SerializeField]
         [Tooltip("Color to tint undiscovered bird photos")]
-        private Color m_lockedPhotoTint = new Color(0.2f, 0.2f, 0.2f, 1f);
+        [SerializeField] private Color m_lockedPhotoTint = new Color(0.2f, 0.2f, 0.2f, 1f);
 
-        private List<GameObject> m_instantiatedPages = new List<GameObject>();
-        private Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
+        private readonly List<GameObject> m_instantiatedPages = new List<GameObject>();
+        private readonly Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
         private int m_currentPageIndex = 0;
 
         private bool m_isAnimating = false;
         private int m_targetPageIndex = 0;
         private BirdPageUI m_currentlyAnimatingPageUI = null;
 
-        private async void Start()
+        public override void Initialize()
         {
-            await WaitForGameManagerAsync();
+            base.Initialize();
 
             SetupNavigation();
             CreateBirdPages();
             SubscribeToEvents();
 
             DebugBase.Log($"[{nameof(DiaryUIManager)}] Diary UI initialized");
-        }
-
-        /// <summary>
-        /// Waits for GameManager to be fully initialized before proceeding.
-        /// </summary>
-        private async UniTask WaitForGameManagerAsync()
-        {
-            while (GameManager.Instance == null || !GameManager.Instance.AreAllManagersReady())
-            {
-                await UniTask.Yield();
-            }
-
-            DebugBase.Log($"[{nameof(DiaryUIManager)}] GameManager ready, proceeding with initialization", DebugCategory.UI);
         }
 
         /// <summary>
@@ -185,7 +165,7 @@ namespace Birdie.Managers
             BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
             if (introPageUI != null)
             {
-                PopulateLeftPage(introPageUI.m_backParent, introPageUI.BirdPhoto, introPageUI.RarityText,
+                PopulateLeftPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.RarityText,
                     introPageUI.ScientificNameText, introPageUI.FoodText, introPageUI.InteractionCounterText, allBirds[0]);
 
                 // Initialize introduction page to show front (0 degrees rotation)
@@ -209,21 +189,21 @@ namespace Birdie.Managers
                 }
 
                 // Populate FRONT with bird[i]'s RIGHT page (name, description, friendship)
-                PopulateRightPage(pageUI.m_frontParent, pageUI.NameText, pageUI.DescriptionText,
+                PopulateRightPage(pageUI.FrontParent, pageUI.NameText, pageUI.DescriptionText,
                     pageUI.FriendshipBar, pageUI.FriendshipLevelText, allBirds[i]);
 
                 // Populate BACK with bird[i+1]'s LEFT page (if exists)
                 if (i + 1 < allBirds.Count)
                 {
-                    PopulateLeftPage(pageUI.m_backParent, pageUI.BirdPhoto, pageUI.RarityText,
+                    PopulateLeftPage(pageUI.BackParent, pageUI.BirdPhoto, pageUI.RarityText,
                         pageUI.ScientificNameText, pageUI.FoodText, pageUI.InteractionCounterText, allBirds[i + 1]);
                 }
                 else
                 {
                     // Last page - disable back content
-                    if (pageUI.m_backParent != null)
+                    if (pageUI.BackParent != null)
                     {
-                        pageUI.m_backParent.SetActive(false);
+                        pageUI.BackParent.SetActive(false);
                     }
                 }
 
@@ -486,10 +466,17 @@ namespace Birdie.Managers
         /// </summary>
         public async void ShowNextPage()
         {
-            int effectiveIndex = m_isAnimating ? m_targetPageIndex : m_currentPageIndex;
-            if (effectiveIndex < m_instantiatedPages.Count - 1)
+            try
             {
-                await ShowPageWithAnimationAsync(effectiveIndex + 1);
+                int effectiveIndex = m_isAnimating ? m_targetPageIndex : m_currentPageIndex;
+                if (effectiveIndex < m_instantiatedPages.Count - 1)
+                {
+                    await ShowPageWithAnimationAsync(effectiveIndex + 1);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] ShowNextPage failed: {e.Message}");
             }
         }
 
@@ -499,10 +486,17 @@ namespace Birdie.Managers
         /// </summary>
         public async void ShowPreviousPage()
         {
-            int effectiveIndex = m_isAnimating ? m_targetPageIndex : m_currentPageIndex;
-            if (effectiveIndex > -1)
+            try
             {
-                await ShowPageWithAnimationAsync(effectiveIndex - 1);
+                int effectiveIndex = m_isAnimating ? m_targetPageIndex : m_currentPageIndex;
+                if (effectiveIndex > -1)
+                {
+                    await ShowPageWithAnimationAsync(effectiveIndex - 1);
+                }
+            }
+            catch (Exception e)
+            {
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] ShowPreviousPage failed: {e.Message}");
             }
         }
 
@@ -757,7 +751,7 @@ namespace Birdie.Managers
                 BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
                 if (introPageUI != null)
                 {
-                    PopulateLeftPage(introPageUI.m_backParent, introPageUI.BirdPhoto, introPageUI.RarityText,
+                    PopulateLeftPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.RarityText,
                         introPageUI.ScientificNameText, introPageUI.FoodText, introPageUI.InteractionCounterText, birdData);
                 }
             }
@@ -768,7 +762,7 @@ namespace Birdie.Managers
                 BirdPageUI prevPageUI = prevPage.GetComponent<BirdPageUI>();
                 if (prevPageUI != null)
                 {
-                    PopulateLeftPage(prevPageUI.m_backParent, prevPageUI.BirdPhoto, prevPageUI.RarityText,
+                    PopulateLeftPage(prevPageUI.BackParent, prevPageUI.BirdPhoto, prevPageUI.RarityText,
                         prevPageUI.ScientificNameText, prevPageUI.FoodText, prevPageUI.InteractionCounterText, birdData);
                 }
             }
@@ -780,7 +774,7 @@ namespace Birdie.Managers
                 BirdPageUI currentPageUI = currentPage.GetComponent<BirdPageUI>();
                 if (currentPageUI != null)
                 {
-                    PopulateRightPage(currentPageUI.m_frontParent, currentPageUI.NameText,
+                    PopulateRightPage(currentPageUI.FrontParent, currentPageUI.NameText,
                         currentPageUI.DescriptionText, currentPageUI.FriendshipBar,
                         currentPageUI.FriendshipLevelText, birdData);
                 }
