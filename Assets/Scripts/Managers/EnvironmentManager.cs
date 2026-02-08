@@ -12,8 +12,8 @@ namespace Birdie.Managers
     /// </summary>
     public class EnvironmentManager : BaseManager
     {
-        // List of all objects in the scene
-        private List<Birds.BirdObject> m_allObjects = new List<Birds.BirdObject>();
+        private readonly List<Birds.BirdObject> m_allObjects = new List<Birds.BirdObject>();
+        private readonly HashSet<Birds.BirdObject> m_registeredObjects = new HashSet<Birds.BirdObject>();
 
         public override void Initialize()
         {
@@ -32,7 +32,7 @@ namespace Birdie.Managers
                 return;
             }
 
-            if (!m_allObjects.Contains(obj))
+            if (m_registeredObjects.Add(obj))
             {
                 m_allObjects.Add(obj);
                 DebugBase.Log($"[{nameof(EnvironmentManager)}] Registered {obj.ObjectType}: {obj.ObjectID} at {obj.transform.position}", DebugCategory.Managers);
@@ -50,8 +50,9 @@ namespace Birdie.Managers
                 return;
             }
 
-            if (m_allObjects.Remove(obj))
+            if (m_registeredObjects.Remove(obj))
             {
+                m_allObjects.Remove(obj);
                 DebugBase.Log($"[{nameof(EnvironmentManager)}] Unregistered {obj.ObjectType}: {obj.ObjectID}", DebugCategory.Managers);
             }
         }
@@ -77,9 +78,9 @@ namespace Birdie.Managers
         /// <summary>
         /// Gets all registered objects in the scene.
         /// </summary>
-        public List<Birds.BirdObject> GetAllObjects()
+        public IReadOnlyList<Birds.BirdObject> GetAllObjects()
         {
-            return new List<Birds.BirdObject>(m_allObjects);
+            return m_allObjects;
         }
 
         /// <summary>

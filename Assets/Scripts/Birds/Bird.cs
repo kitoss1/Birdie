@@ -130,7 +130,7 @@ namespace Birdie.Birds
             }
 
             // Get all objects from EnvironmentManager
-            List<BirdObject> allObjects = GameManager.Instance.EnvironmentManager.GetAllObjects();
+            IReadOnlyList<BirdObject> allObjects = GameManager.Instance.EnvironmentManager.GetAllObjects();
 
             foreach (BirdObject obj in allObjects)
             {
