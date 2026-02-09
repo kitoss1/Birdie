@@ -17,6 +17,9 @@ namespace Birdie.Birds
     /// </summary>
     public class Bird : MonoBehaviour
     {
+        public static event Action<Bird> BirdClicked;
+        public static event Action<Bird> BirdLeaving;
+
         [Header("Bird Configuration")]
         [SerializeField]
         private BirdData m_birdData;
@@ -269,6 +272,7 @@ namespace Birdie.Birds
         {
             m_currentState = BirdState.Leaving;
             m_isInteractable = false;
+            BirdLeaving?.Invoke(this);
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} is leaving", DebugCategory.Birds);
 
@@ -283,24 +287,28 @@ namespace Birdie.Birds
         /// </summary>
         public void OnBirdClicked()
         {
-            if (!m_isInteractable || m_hasBeenClickedThisVisit)
+            if (!m_isInteractable)
             {
                 return;
             }
-
-            if (GameManager.Instance == null || GameManager.Instance.DiaryManager == null)
-            {
-                DebugBase.LogWarning($"[{nameof(Bird)}] GameManager or DiaryManager is null, cannot record encounter", DebugCategory.Birds);
-                return;
-            }
-
-            m_hasBeenClickedThisVisit = true;
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} was clicked", DebugCategory.Birds);
 
-            GameManager.Instance.DiaryManager.RecordBirdEncounter(m_birdData);
+            if (!m_hasBeenClickedThisVisit)
+            {
+                m_hasBeenClickedThisVisit = true;
 
-            // TODO: Check friendship level and show interaction UI if unlocked
+                if (GameManager.Instance != null && GameManager.Instance.DiaryManager != null)
+                {
+                    GameManager.Instance.DiaryManager.RecordBirdEncounter(m_birdData);
+                }
+                else
+                {
+                    DebugBase.LogWarning($"[{nameof(Bird)}] GameManager or DiaryManager is null, cannot record encounter", DebugCategory.Birds);
+                }
+            }
+
+            BirdClicked?.Invoke(this);
         }
 
         /// <summary>
@@ -376,7 +384,26 @@ namespace Birdie.Birds
 
         private void OnDestroy()
         {
+            BirdLeaving?.Invoke(this);
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData?.BirdName ?? "Unknown"} destroyed", DebugCategory.Birds);
+        }
+
+        public void PlaySong()
+        {
+            if (m_birdData.BirdSong == null)
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] {m_birdData.BirdName} has no song assigned", DebugCategory.Birds);
+                return;
+            }
+
+            AudioSource audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+
+            audioSource.PlayOneShot(m_birdData.BirdSong);
+            DebugBase.Log($"[{nameof(Bird)}] Playing song for {m_birdData.BirdName}", DebugCategory.Birds);
         }
     }
 }
