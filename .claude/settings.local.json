@@ -10,7 +10,9 @@
       "mcp__UnityMCP__manage_scene",
       "mcp__UnityMCP__manage_asset",
       "mcp__UnityMCP__validate_script",
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "Bash(dir:*)",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []
