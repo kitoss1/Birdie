@@ -2584,10 +2584,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: MiniGamesCanvas
       objectReference: {fileID: 0}
-    - target: {fileID: 8197060935313226947, guid: 4db6c5e8659fda6488fef2d4af86871a, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

@@ -18,6 +18,19 @@ namespace Birdie.UI
         [Tooltip("Button to close the minigames menu")]
         private Button m_closeButton;
 
+        [Header("Close Warning")]
+        [SerializeField]
+        [Tooltip("Panel shown to confirm closing the minigame")]
+        private GameObject m_closeWarningPanel;
+
+        [SerializeField]
+        [Tooltip("Confirms closing the minigame")]
+        private Button m_closeWarningYesButton;
+
+        [SerializeField]
+        [Tooltip("Cancels closing and returns to the minigame")]
+        private Button m_closeWarningNoButton;
+
         [Header("Minigame Container")]
         [SerializeField]
         [Tooltip("Parent transform for instantiated minigame prefabs")]
@@ -32,6 +45,18 @@ namespace Birdie.UI
             {
                 m_closeButton.onClick.AddListener(OnCloseClicked);
             }
+
+            if (m_closeWarningYesButton != null)
+            {
+                m_closeWarningYesButton.onClick.AddListener(OnCloseWarningYesClicked);
+            }
+
+            if (m_closeWarningNoButton != null)
+            {
+                m_closeWarningNoButton.onClick.AddListener(OnCloseWarningNoClicked);
+            }
+
+            HideCloseWarning();
         }
 
         private void OnDestroy()
@@ -39,6 +64,16 @@ namespace Birdie.UI
             if (m_closeButton != null)
             {
                 m_closeButton.onClick.RemoveListener(OnCloseClicked);
+            }
+
+            if (m_closeWarningYesButton != null)
+            {
+                m_closeWarningYesButton.onClick.RemoveListener(OnCloseWarningYesClicked);
+            }
+
+            if (m_closeWarningNoButton != null)
+            {
+                m_closeWarningNoButton.onClick.RemoveListener(OnCloseWarningNoClicked);
             }
 
             CleanupCurrentMinigame();
@@ -50,6 +85,7 @@ namespace Birdie.UI
         public void Setup(BirdData birdData)
         {
             m_currentBirdData = birdData;
+            HideCloseWarning();
             CleanupCurrentMinigame();
 
             MinigameData selectedMinigame = SelectRandomMinigame(birdData.AvailableMinigames);
@@ -117,7 +153,14 @@ namespace Birdie.UI
 
         private void OnCloseClicked()
         {
-            DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Close clicked", DebugCategory.UI);
+            DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Close clicked, showing warning", DebugCategory.UI);
+            ShowCloseWarning();
+        }
+
+        private void OnCloseWarningYesClicked()
+        {
+            DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Close confirmed", DebugCategory.UI);
+            HideCloseWarning();
 
             CleanupCurrentMinigame();
             m_currentBirdData = null;
@@ -129,7 +172,31 @@ namespace Birdie.UI
 
             if (GameManager.Instance?.MenuManager != null)
             {
+                GameManager.Instance.MenuManager.SetMenuButtonsInteractable(true);
                 GameManager.Instance.MenuManager.CloseCurrentMenu();
+            }
+        }
+
+        private void OnCloseWarningNoClicked()
+        {
+            DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Close cancelled", DebugCategory.UI);
+            HideCloseWarning();
+        }
+
+        private void ShowCloseWarning()
+        {
+            if (m_closeWarningPanel != null)
+            {
+                m_closeWarningPanel.transform.SetAsLastSibling();
+                m_closeWarningPanel.SetActive(true);
+            }
+        }
+
+        private void HideCloseWarning()
+        {
+            if (m_closeWarningPanel != null)
+            {
+                m_closeWarningPanel.SetActive(false);
             }
         }
     }

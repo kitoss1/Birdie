@@ -211,6 +211,7 @@ namespace Birdie.Managers
             }
 
             minigamesUI.Setup(birdData);
+            SetMenuButtonsInteractable(false);
         }
 
         /// <summary>
@@ -413,6 +414,28 @@ namespace Birdie.Managers
         /// Checks if Settings overlay is currently open.
         /// </summary>
         public bool IsSettingsOpen => m_isSettingsOpen;
+
+        /// <summary>
+        /// Enables or disables all registered menu buttons.
+        /// Used to prevent menu switching during minigames.
+        /// </summary>
+        public void SetMenuButtonsInteractable(bool interactable)
+        {
+            if (m_registeredButtons == null)
+            {
+                return;
+            }
+
+            foreach (BaseMenuButton menuButton in m_registeredButtons)
+            {
+                if (menuButton != null && menuButton.Button != null)
+                {
+                    menuButton.Button.interactable = interactable;
+                }
+            }
+
+            DebugBase.Log($"[{nameof(MenuManager)}] Menu buttons interactable: {interactable}", DebugCategory.UI);
+        }
 
         private void OnDestroy()
         {
