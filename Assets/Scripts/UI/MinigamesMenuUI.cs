@@ -101,6 +101,7 @@ namespace Birdie.UI
             {
                 GameManager.Instance.StartMinigame();
                 GameManager.Instance.BirdManager?.PauseAllBirds();
+                GameManager.Instance.BirdManager?.PauseBirdSpawning();
             }
 
             DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Started minigame '{selectedMinigame.MinigameName}' for {birdData.BirdName}", DebugCategory.UI);
@@ -169,6 +170,7 @@ namespace Birdie.UI
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.BirdManager?.ResumeAllBirds();
+                GameManager.Instance.BirdManager?.ResumeBirdSpawning();
                 GameManager.Instance.EndMinigame();
             }
 
