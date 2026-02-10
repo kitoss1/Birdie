@@ -9,6 +9,7 @@ namespace Birdie.Core
         Diary,
         Shop,
         Settings,
-        Tutorial
+        Tutorial,
+        Minigames
     }
 }

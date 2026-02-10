@@ -156,6 +156,11 @@ namespace Birdie.Data
         [Tooltip("Special animation description")]
         private string m_specialAnimationDescription;
 
+        [Header("Minigames")]
+        [SerializeField]
+        [Tooltip("List of minigames this bird species can play")]
+        private List<MinigameData> m_availableMinigames = new List<MinigameData>();
+
         public string BirdName
         {
             get => m_birdName;
@@ -340,6 +345,12 @@ namespace Birdie.Data
         {
             get => m_possibleBehaviors;
             set => m_possibleBehaviors = value;
+        }
+
+        public List<MinigameData> AvailableMinigames
+        {
+            get => m_availableMinigames;
+            set => m_availableMinigames = value;
         }
 
         /// <summary>

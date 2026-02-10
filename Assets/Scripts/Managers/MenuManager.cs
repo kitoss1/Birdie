@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Birdie.Core;
+using Birdie.Data;
 using Birdie.Debug;
 using Birdie.UI;
 using UnityEngine;
@@ -13,10 +14,6 @@ namespace Birdie.Managers
     /// </summary>
     public class MenuManager : BaseManager
     {
-        [Header("Menu Panels")]
-        [Tooltip("Parent canvas/transform containing all menu panels")]
-        [SerializeField] private Transform m_menuContainer;
-
         [Tooltip("Diary menu panel")]
         [SerializeField] private GameObject m_diaryPanel;
 
@@ -28,6 +25,9 @@ namespace Birdie.Managers
 
         [Tooltip("Tutorial menu panel")]
         [SerializeField] private GameObject m_tutorialPanel;
+
+        [Tooltip("Minigames menu panel")]
+        [SerializeField] private GameObject m_minigamesPanel;
 
         private Dictionary<MenuType, GameObject> m_menuPanels;
         private MenuType m_currentOpenMenu = MenuType.None;
@@ -55,7 +55,8 @@ namespace Birdie.Managers
                 { MenuType.Diary, m_diaryPanel },
                 { MenuType.Shop, m_shopPanel },
                 { MenuType.Settings, m_settingsPanel },
-                { MenuType.Tutorial, m_tutorialPanel }
+                { MenuType.Tutorial, m_tutorialPanel },
+                { MenuType.Minigames, m_minigamesPanel }
             };
 
             HideAllMenus();
@@ -187,6 +188,29 @@ namespace Birdie.Managers
             GameManager.Instance.OpenMenu(menuType);
 
             DebugBase.Log($"[{nameof(MenuManager)}] Opened menu: {menuType}");
+        }
+
+        /// <summary>
+        /// Opens the minigames menu and passes the bird data to set up a random minigame.
+        /// </summary>
+        public void OpenMinigamesMenu(BirdData birdData)
+        {
+            OpenMenu(MenuType.Minigames);
+
+            if (m_minigamesPanel == null)
+            {
+                DebugBase.LogError($"[{nameof(MenuManager)}] Minigames panel is null");
+                return;
+            }
+
+            MinigamesMenuUI minigamesUI = m_minigamesPanel.GetComponent<MinigamesMenuUI>();
+            if (minigamesUI == null)
+            {
+                DebugBase.LogError($"[{nameof(MenuManager)}] {nameof(MinigamesMenuUI)} component not found on minigames panel");
+                return;
+            }
+
+            minigamesUI.Setup(birdData);
         }
 
         /// <summary>
@@ -430,6 +454,13 @@ namespace Birdie.Managers
         private void DebugOpenShop()
         {
             OpenMenu(MenuType.Shop);
+        }
+
+        [DebugCommand("OpenMinigames", "UI")]
+        [ContextMenu("Open Minigames")]
+        private void DebugOpenMinigames()
+        {
+            OpenMenu(MenuType.Minigames);
         }
 
         [DebugCommand("OpenSettings(Overlay)", "UI")]

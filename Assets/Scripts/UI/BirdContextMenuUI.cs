@@ -1,5 +1,8 @@
 using Birdie.Birds;
+using Birdie.Core;
+using Birdie.Data;
 using Birdie.Debug;
+using Birdie.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -22,6 +25,7 @@ namespace Birdie.UI
         [Header("Action Buttons")]
         [SerializeField] private Button m_feedButton;
         [SerializeField] private Button m_playSongButton;
+        [SerializeField] private Button m_playButton;
         [SerializeField] private Button m_scareAwayButton;
 
         [Header("Positioning")]
@@ -87,6 +91,11 @@ namespace Birdie.UI
                 m_playSongButton.onClick.AddListener(OnPlaySongClicked);
             }
 
+            if (m_playButton != null)
+            {
+                m_playButton.onClick.AddListener(OnPlayClicked);
+            }
+
             if (m_scareAwayButton != null)
             {
                 m_scareAwayButton.onClick.AddListener(OnScareAwayClicked);
@@ -108,6 +117,11 @@ namespace Birdie.UI
             if (m_playSongButton != null)
             {
                 m_playSongButton.onClick.RemoveAllListeners();
+            }
+
+            if (m_playButton != null)
+            {
+                m_playButton.onClick.RemoveAllListeners();
             }
 
             if (m_scareAwayButton != null)
@@ -236,6 +250,23 @@ namespace Birdie.UI
 
             DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Play Song clicked for {m_currentBird.BirdData.BirdName}", DebugCategory.UI);
             m_currentBird.PlaySong();
+        }
+
+        private void OnPlayClicked()
+        {
+            if (m_currentBird == null)
+            {
+                return;
+            }
+
+            BirdData birdData = m_currentBird.BirdData;
+            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Play clicked for {birdData.BirdName}", DebugCategory.UI);
+            Hide();
+
+            if (GameManager.Instance?.MenuManager != null)
+            {
+                GameManager.Instance.MenuManager.OpenMinigamesMenu(birdData);
+            }
         }
 
         private void OnScareAwayClicked()
