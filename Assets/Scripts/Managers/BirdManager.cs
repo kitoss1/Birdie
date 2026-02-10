@@ -224,6 +224,42 @@ namespace Birdie.Managers
         }
 
         /// <summary>
+        /// Pauses all active birds. Used when a minigame starts.
+        /// </summary>
+        public void PauseAllBirds()
+        {
+            CleanupInactiveBirds();
+
+            foreach (Bird bird in m_activeBirds)
+            {
+                if (bird != null)
+                {
+                    bird.Pause();
+                }
+            }
+
+            DebugBase.Log($"[{nameof(BirdManager)}] All birds paused", DebugCategory.Birds);
+        }
+
+        /// <summary>
+        /// Resumes all active birds. Used when a minigame ends.
+        /// </summary>
+        public void ResumeAllBirds()
+        {
+            CleanupInactiveBirds();
+
+            foreach (Bird bird in m_activeBirds)
+            {
+                if (bird != null)
+                {
+                    bird.Resume();
+                }
+            }
+
+            DebugBase.Log($"[{nameof(BirdManager)}] All birds resumed", DebugCategory.Birds);
+        }
+
+        /// <summary>
         /// Forces all active birds to leave immediately.
         /// </summary>
         public void ClearAllBirds()

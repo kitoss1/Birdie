@@ -23,6 +23,11 @@ namespace Birdie.Birds
         /// <summary>
         /// Bird is leaving/departing with outro animation.
         /// </summary>
-        Leaving
+        Leaving,
+
+        /// <summary>
+        /// Bird is paused during a minigame. Cannot be clicked, change behavior, or leave.
+        /// </summary>
+        Paused
     }
 }

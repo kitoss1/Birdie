@@ -32,6 +32,8 @@ namespace Birdie.Birds
         private float m_visitEndTime;
         private bool m_isInteractable = false;
         private bool m_hasBeenClickedThisVisit = false;
+        private BirdState m_stateBeforePause;
+        private float m_remainingVisitTime;
 
         // Cached environment data
         private List<BirdObject> m_nearbyObjects = new List<BirdObject>();
@@ -357,6 +359,43 @@ namespace Birdie.Birds
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} forced to leave", DebugCategory.Birds);
             m_visitEndTime = Time.time;
+        }
+
+        /// <summary>
+        /// Pauses the bird during a minigame.
+        /// Freezes visit timer, stops behavior execution, and disables interaction.
+        /// </summary>
+        public void Pause()
+        {
+            if (m_currentState == BirdState.Paused || m_currentState == BirdState.Leaving)
+            {
+                return;
+            }
+
+            m_stateBeforePause = m_currentState;
+            m_remainingVisitTime = m_visitEndTime - Time.time;
+            m_currentState = BirdState.Paused;
+            m_isInteractable = false;
+
+            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} paused", DebugCategory.Birds);
+        }
+
+        /// <summary>
+        /// Resumes the bird after a minigame ends.
+        /// Restores previous state and recalculates visit end time.
+        /// </summary>
+        public void Resume()
+        {
+            if (m_currentState != BirdState.Paused)
+            {
+                return;
+            }
+
+            m_currentState = m_stateBeforePause;
+            m_visitEndTime = Time.time + m_remainingVisitTime;
+            m_isInteractable = m_currentState != BirdState.Appearing && m_currentState != BirdState.Leaving;
+
+            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} resumed", DebugCategory.Birds);
         }
 
         /// <summary>
