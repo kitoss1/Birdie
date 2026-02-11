@@ -435,13 +435,13 @@ namespace Birdie.Birds
                 return;
             }
 
-            AudioSource audioSource = GetComponent<AudioSource>();
-            if (audioSource == null)
+            if (GameManager.Instance?.SoundManager == null)
             {
-                audioSource = gameObject.AddComponent<AudioSource>();
+                DebugBase.LogWarning($"[{nameof(Bird)}] SoundManager not available, cannot play song", DebugCategory.Birds);
+                return;
             }
 
-            audioSource.PlayOneShot(m_birdData.BirdSong);
+            GameManager.Instance.SoundManager.PlaySFX(m_birdData.BirdSong);
             DebugBase.Log($"[{nameof(Bird)}] Playing song for {m_birdData.BirdName}", DebugCategory.Birds);
         }
     }

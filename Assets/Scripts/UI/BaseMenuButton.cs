@@ -1,6 +1,7 @@
 using System;
 using Birdie.Core;
 using Birdie.Debug;
+using Birdie.Managers;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -91,10 +92,18 @@ namespace Birdie.UI
         /// </summary>
         protected virtual void PlayClickSound()
         {
-            if (m_clickSound != null)
+            if (m_clickSound == null)
             {
-                // TODO: Play sound through AudioManager when implemented
-                DebugBase.Log($"[{GetType().Name}] Playing click sound");
+                return;
+            }
+
+            if (GameManager.Instance?.SoundManager != null)
+            {
+                GameManager.Instance.SoundManager.PlaySFX(m_clickSound);
+            }
+            else
+            {
+                DebugBase.LogWarning($"[{GetType().Name}] SoundManager not available, cannot play click sound");
             }
         }
 

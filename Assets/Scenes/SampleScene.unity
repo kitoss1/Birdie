@@ -1344,7 +1344,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.BaseMenuButton
   m_menuType: 2
-  m_clickSound: {fileID: 0}
+  m_clickSound: {fileID: 8300000, guid: 1c9078fd09805334c95fad9d239bea9b, type: 3}
 --- !u!114 &1260290200
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1562,7 +1562,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.BaseMenuButton
   m_menuType: 1
-  m_clickSound: {fileID: 0}
+  m_clickSound: {fileID: 8300000, guid: 1c9078fd09805334c95fad9d239bea9b, type: 3}
 --- !u!1 &1345449585
 GameObject:
   m_ObjectHideFlags: 0

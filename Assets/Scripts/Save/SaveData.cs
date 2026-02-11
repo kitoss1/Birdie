@@ -18,6 +18,7 @@ namespace Birdie.Save
         public DiarySaveData diary = new DiarySaveData();
         public EconomySaveData economy = new EconomySaveData();
         public FriendshipSaveData friendship = new FriendshipSaveData();
+        public AudioSaveData audio = new AudioSaveData();
 
         /// <summary>
         /// Creates a new save data with default values.
@@ -46,7 +47,8 @@ namespace Birdie.Save
             return version > 0 &&
                    diary != null && diary.IsValid() &&
                    economy != null && economy.IsValid() &&
-                   friendship != null && friendship.IsValid();
+                   friendship != null && friendship.IsValid() &&
+                   audio != null && audio.IsValid();
         }
 
         /// <summary>

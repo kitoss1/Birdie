@@ -56,6 +56,11 @@ namespace Birdie.Debug
         Physics,
         
         /// <summary>
+        /// Audio and sound system logs.
+        /// </summary>
+        Audio,
+
+        /// <summary>
         /// Debug menu logs.
         /// </summary>
         Debug

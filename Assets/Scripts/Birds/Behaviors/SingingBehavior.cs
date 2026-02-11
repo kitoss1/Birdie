@@ -1,4 +1,5 @@
 using Birdie.Debug;
+using Birdie.Managers;
 using UnityEngine;
 
 namespace Birdie.Birds.Behaviors
@@ -6,6 +7,8 @@ namespace Birdie.Birds.Behaviors
     /// <summary>
     /// Singing behavior where the bird performs a song.
     /// Plays animation and audio clip of the bird's song.
+    /// Uses a per-bird AudioSource so songs can be stopped when the behavior exits.
+    /// Volume is routed through SoundManager for consistent audio control.
     /// </summary>
     [CreateAssetMenu(fileName = "SingingBehavior", menuName = "Birdie/Bird Behaviors/Singing Behavior")]
     public class SingingBehavior : BirdBehaviorState
@@ -25,7 +28,6 @@ namespace Birdie.Birds.Behaviors
             // TODO: Play singing animation on Spine skeleton
             // Example: bird.SpineSkeleton.AnimationState.SetAnimation(0, "singing", true);
 
-            // Play bird song audio if available
             if (bird.BirdData != null && bird.BirdData.BirdSong != null)
             {
                 m_audioSource = bird.GetComponent<AudioSource>();
@@ -35,7 +37,16 @@ namespace Birdie.Birds.Behaviors
                 }
 
                 m_audioSource.clip = bird.BirdData.BirdSong;
-                m_audioSource.volume = m_volumeMultiplier;
+
+                if (GameManager.Instance?.SoundManager != null)
+                {
+                    m_audioSource.volume = GameManager.Instance.SoundManager.GetEffectiveSfxVolume(m_volumeMultiplier);
+                }
+                else
+                {
+                    m_audioSource.volume = m_volumeMultiplier;
+                }
+
                 m_audioSource.Play();
             }
         }
@@ -50,7 +61,6 @@ namespace Birdie.Birds.Behaviors
         {
             DebugBase.Log($"[{nameof(SingingBehavior)}] {bird.BirdData?.BirdName} stopped singing", DebugCategory.Birds);
 
-            // Stop audio if still playing
             if (m_audioSource != null && m_audioSource.isPlaying)
             {
                 m_audioSource.Stop();

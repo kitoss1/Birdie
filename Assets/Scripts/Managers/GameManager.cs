@@ -60,6 +60,7 @@ namespace Birdie.Managers
         [SerializeField] private EnvironmentManager m_environmentManager;
         [SerializeField] private StoreManager m_storeManager;
         [SerializeField] private DiaryUIManager m_diaryUIManager;
+        [SerializeField] private SoundManager m_soundManager;
 
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
@@ -69,6 +70,7 @@ namespace Birdie.Managers
         public EnvironmentManager EnvironmentManager => m_environmentManager;
         public StoreManager StoreManager => m_storeManager;
         public DiaryUIManager DiaryUIManager => m_diaryUIManager;
+        public SoundManager SoundManager => m_soundManager;
 
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
@@ -188,7 +190,8 @@ namespace Birdie.Managers
                 InitializeEconomyManagerAsync(),
                 InitializeBirdManagerAsync(),
                 InitializeFriendshipManagerAsync(),
-                InitializeEnvironmentManagerAsync()
+                InitializeEnvironmentManagerAsync(),
+                InitializeSoundManagerAsync()
             );
 
             // Initialize managers that depend on other managers (sequential)
@@ -258,6 +261,11 @@ namespace Birdie.Managers
             {
                 DebugBase.LogError($"[{nameof(GameManager)}] DiaryUIManager is not assigned!");
             }
+
+            if (m_soundManager == null)
+            {
+                DebugBase.LogError($"[{nameof(GameManager)}] SoundManager is not assigned!");
+            }
         }
 
         /// <summary>
@@ -306,6 +314,19 @@ namespace Birdie.Managers
             if (m_environmentManager != null)
             {
                 m_environmentManager.Initialize();
+                await UniTask.Yield();
+            }
+        }
+
+        /// <summary>
+        /// Initializes SoundManager. Depends on SaveManager.
+        /// </summary>
+        private async UniTask InitializeSoundManagerAsync()
+        {
+            if (m_soundManager != null)
+            {
+                m_soundManager.Initialize();
+                m_soundManager.SetSaveManager(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -534,6 +555,7 @@ namespace Birdie.Managers
             status += $"EnvironmentManager: {(m_environmentManager != null ? "✓" : "✗")}\n";
             status += $"StoreManager: {(m_storeManager != null ? "✓" : "✗")}\n";
             status += $"DiaryUIManager: {(m_diaryUIManager != null ? "✓" : "✗")}\n";
+            status += $"SoundManager: {(m_soundManager != null ? "✓" : "✗")}\n";
             status += $"Game State: {CurrentState}\n";
             status += $"Current Menu: {m_currentOpenMenu}";
             return status;
@@ -553,7 +575,8 @@ namespace Birdie.Managers
                    m_menuManager != null && m_menuManager.IsInitialized &&
                    m_environmentManager != null && m_environmentManager.IsInitialized &&
                    m_storeManager != null && m_storeManager.IsInitialized &&
-                   m_diaryUIManager != null && m_diaryUIManager.IsInitialized;
+                   m_diaryUIManager != null && m_diaryUIManager.IsInitialized &&
+                   m_soundManager != null && m_soundManager.IsInitialized;
         }
 
         private void OnApplicationQuit()
