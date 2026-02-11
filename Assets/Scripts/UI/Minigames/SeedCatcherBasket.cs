@@ -124,7 +124,6 @@ namespace Birdie.UI.Minigames
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            UnityEngine.Debug.LogWarning("Collider enter basket");
             if (other.TryGetComponent<SeedCatcherSeed>(out SeedCatcherSeed seed))
             {
                 SeedCaught?.Invoke(seed);

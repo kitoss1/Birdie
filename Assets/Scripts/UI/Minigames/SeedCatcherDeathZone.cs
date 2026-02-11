@@ -18,7 +18,6 @@ namespace Birdie.UI.Minigames
         {
             if (other.TryGetComponent<SeedCatcherSeed>(out SeedCatcherSeed seed))
             {
-                UnityEngine.Debug.LogWarning("Seed destroyed by deathzone");
                 SeedDestroyed?.Invoke(seed);
                 Destroy(seed.gameObject);
             }
