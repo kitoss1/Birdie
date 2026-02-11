@@ -16,7 +16,7 @@ namespace Birdie.UI.Minigames
     /// Manages bag intro animation, seed spawning, collision detection, timer, scoring,
     /// and game over flow. Handles touch/drag input via pointer event interfaces.
     /// </summary>
-    public sealed class SeedCatcherUI : MonoBehaviour, IPointerDownHandler, IDragHandler
+    public sealed class SeedCatcherUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         [Header("UI References")]
         [SerializeField]
@@ -185,6 +185,14 @@ namespace Birdie.UI.Minigames
             HandlePointerInput(eventData);
         }
 
+        public void OnPointerUp(PointerEventData eventData)
+        {
+            if (m_basket != null)
+            {
+                m_basket.ClearTarget();
+            }
+        }
+
         private void HandlePointerInput(PointerEventData eventData)
         {
             if (m_currentState != SeedCatcherState.Playing || m_basket == null)
@@ -198,7 +206,7 @@ namespace Birdie.UI.Minigames
                 eventData.pressEventCamera,
                 out Vector2 localPoint);
 
-            m_basket.SetPositionX(localPoint.x);
+            m_basket.SetTargetX(localPoint.x);
         }
 
         private void StartGame()

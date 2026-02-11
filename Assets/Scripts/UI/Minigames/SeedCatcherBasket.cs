@@ -24,6 +24,8 @@ namespace Birdie.UI.Minigames
         private float m_minX;
         private float m_maxX;
         private bool m_isInputEnabled;
+        private float m_pointerTargetX;
+        private bool m_hasPointerTarget;
 
         /// <summary>
         /// Fired when a seed enters the basket's trigger collider.
@@ -63,24 +65,53 @@ namespace Birdie.UI.Minigames
                 }
             }
 
+            if (direction == 0f && m_hasPointerTarget)
+            {
+                float currentX = m_rectTransform.anchoredPosition.x;
+                float diff = m_pointerTargetX - currentX;
+
+                if (Mathf.Abs(diff) > 0.5f)
+                {
+                    direction = Mathf.Sign(diff);
+                }
+            }
+
             if (direction != 0f)
             {
                 Vector2 position = m_rectTransform.anchoredPosition;
-                position.x += direction * m_keyboardSpeed * Time.deltaTime;
+                float step = direction * m_keyboardSpeed * Time.deltaTime;
+
+                if (m_hasPointerTarget)
+                {
+                    float diff = m_pointerTargetX - position.x;
+                    if (Mathf.Abs(step) > Mathf.Abs(diff))
+                    {
+                        step = diff;
+                    }
+                }
+
+                position.x += step;
                 position.x = Mathf.Clamp(position.x, m_minX, m_maxX);
                 m_rectTransform.anchoredPosition = position;
             }
         }
 
         /// <summary>
-        /// Sets the basket's horizontal position directly, used by touch/drag input.
+        /// Sets a target X position for the basket to move toward at keyboard speed.
         /// </summary>
         /// <param name="x">Target X position in local space.</param>
-        public void SetPositionX(float x)
+        public void SetTargetX(float x)
         {
-            Vector2 position = m_rectTransform.anchoredPosition;
-            position.x = Mathf.Clamp(x, m_minX, m_maxX);
-            m_rectTransform.anchoredPosition = position;
+            m_pointerTargetX = Mathf.Clamp(x, m_minX, m_maxX);
+            m_hasPointerTarget = true;
+        }
+
+        /// <summary>
+        /// Clears the pointer target so the basket stops moving toward it.
+        /// </summary>
+        public void ClearTarget()
+        {
+            m_hasPointerTarget = false;
         }
 
         /// <summary>
