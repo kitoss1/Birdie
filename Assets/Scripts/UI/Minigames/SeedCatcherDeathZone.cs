@@ -14,12 +14,22 @@ namespace Birdie.UI.Minigames
         /// </summary>
         public event Action<SeedCatcherSeed> SeedDestroyed;
 
+        /// <summary>
+        /// Fired when a spike enters the death zone, just before it is destroyed.
+        /// </summary>
+        public event Action<SeedCatcherSpike> SpikeDestroyed;
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.TryGetComponent<SeedCatcherSeed>(out SeedCatcherSeed seed))
             {
                 SeedDestroyed?.Invoke(seed);
                 Destroy(seed.gameObject);
+            }
+            else if (other.TryGetComponent<SeedCatcherSpike>(out SeedCatcherSpike spike))
+            {
+                SpikeDestroyed?.Invoke(spike);
+                Destroy(spike.gameObject);
             }
         }
     }

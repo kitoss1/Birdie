@@ -32,6 +32,11 @@ namespace Birdie.UI.Minigames
         /// </summary>
         public event Action<SeedCatcherSeed> SeedCaught;
 
+        /// <summary>
+        /// Fired when a spike enters the basket's trigger collider.
+        /// </summary>
+        public event Action<SeedCatcherSpike> SpikeCaught;
+
         private void Awake()
         {
             m_rectTransform = GetComponent<RectTransform>();
@@ -127,6 +132,10 @@ namespace Birdie.UI.Minigames
             if (other.TryGetComponent<SeedCatcherSeed>(out SeedCatcherSeed seed))
             {
                 SeedCaught?.Invoke(seed);
+            }
+            else if (other.TryGetComponent<SeedCatcherSpike>(out SeedCatcherSpike spike))
+            {
+                SpikeCaught?.Invoke(spike);
             }
         }
 

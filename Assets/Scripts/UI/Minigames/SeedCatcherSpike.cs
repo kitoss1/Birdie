@@ -3,22 +3,22 @@ using UnityEngine;
 namespace Birdie.UI.Minigames
 {
     /// <summary>
-    /// Individual falling seed component for the Seed Catcher minigame.
-    /// Moves downward each frame at a configurable speed.
+    /// Individual falling spike component for the Seed Catcher minigame.
+    /// Moves downward each frame at a configurable speed. Catching a spike costs the player a life.
     /// </summary>
-    public sealed class SeedCatcherSeed : MonoBehaviour
+    public sealed class SeedCatcherSpike : MonoBehaviour
     {
         private float m_fallSpeed;
 
         private RectTransform m_rectTransform;
 
         /// <summary>
-        /// The seed's RectTransform, used for position-based collision detection.
+        /// The spike's RectTransform, used for position-based collision detection.
         /// </summary>
         public RectTransform RectTransform => m_rectTransform;
 
         /// <summary>
-        /// Sets the fall speed for this seed.
+        /// Sets the fall speed for this spike.
         /// </summary>
         /// <param name="speed">Fall speed in pixels per second.</param>
         public void SetFallSpeed(float speed)
