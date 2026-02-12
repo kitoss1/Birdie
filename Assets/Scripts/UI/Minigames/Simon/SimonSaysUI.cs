@@ -68,6 +68,7 @@ namespace Birdie.UI.Minigames
         private readonly List<int> m_sequence = new List<int>();
         private int m_currentInputIndex;
         private int m_score;
+        private int m_maxScore;
         private SimonState m_currentState;
         private CancellationToken m_destroyCancellation;
 
@@ -224,6 +225,18 @@ namespace Birdie.UI.Minigames
                 DebugCategory.UI);
 
             SetAllButtonsInteractable(false);
+
+            if (m_maxScore > 0 && m_score >= m_maxScore)
+            {
+                DebugBase.Log(
+                    $"[{nameof(SimonSaysUI)}] Max score reached! Final score: {m_score}",
+                    DebugCategory.UI);
+
+                m_currentState = SimonState.GameOver;
+                ShowGameOver();
+                return;
+            }
+
             StartNextRoundAfterDelayAsync().Forget();
         }
 
@@ -291,11 +304,32 @@ namespace Birdie.UI.Minigames
         public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
         {
             m_rewardTiers = rewardTiers;
+            m_maxScore = ComputeMaxScore(rewardTiers);
 
             if (m_rewardBar != null)
             {
                 m_rewardBar.Initialize(rewardTiers);
             }
+        }
+
+        private static int ComputeMaxScore(MinigameRewardTier[] tiers)
+        {
+            if (tiers == null || tiers.Length == 0)
+            {
+                return 0;
+            }
+
+            int max = 0;
+
+            foreach (MinigameRewardTier tier in tiers)
+            {
+                if (tier != null && tier.ScoreThreshold > max)
+                {
+                    max = tier.ScoreThreshold;
+                }
+            }
+
+            return max;
         }
 
         public void SetDifficulty(MinigameDifficultySettings settings)
