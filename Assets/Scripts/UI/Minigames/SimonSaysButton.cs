@@ -1,4 +1,5 @@
 using System;
+using Birdie.Managers;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
@@ -39,6 +40,9 @@ namespace Birdie.UI.Minigames
 
         [Tooltip("Duration of the fade back to normal color when clicked")]
         [SerializeField] private float m_highlightFadeOutWhenClicked = 0.6f;
+        
+        [Tooltip("Sound key")]
+        [SerializeField] private string m_keyOfButtonPress;
         /// <summary>
         /// Fired when the player clicks this button. Passes the color index.
         /// </summary>
@@ -85,7 +89,7 @@ namespace Birdie.UI.Minigames
 
             await m_buttonImage.DOColor(m_highlightColor, m_highlightFadeIn)
                 .AsyncWaitForCompletion();
-
+            GameManager.Instance.SoundManager.PlaySFX(m_keyOfButtonPress);
             await UniTask.Delay(TimeSpan.FromSeconds(m_highlightHold));
 
             await m_buttonImage.DOColor(m_normalColor, m_highlightFadeOut)
@@ -102,7 +106,7 @@ namespace Birdie.UI.Minigames
             {
                 return;
             }
-
+            GameManager.Instance.SoundManager.PlaySFX(m_keyOfButtonPress);
             m_buttonImage.DOKill();
             m_buttonImage.color = m_highlightColor;
             m_buttonImage.DOColor(m_normalColor, m_highlightFadeOutWhenClicked);

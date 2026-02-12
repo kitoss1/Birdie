@@ -712,6 +712,8 @@ MonoBehaviour:
   m_highlightFadeIn: 0.2
   m_highlightHold: 0.3
   m_highlightFadeOut: 0.2
+  m_highlightFadeOutWhenClicked: 0.6
+  m_keyOfButtonPress: Simon_004
 --- !u!1 &6428151837399046026
 GameObject:
   m_ObjectHideFlags: 0
@@ -974,6 +976,8 @@ MonoBehaviour:
   m_highlightFadeIn: 0.2
   m_highlightHold: 0.3
   m_highlightFadeOut: 0.2
+  m_highlightFadeOutWhenClicked: 0.6
+  m_keyOfButtonPress: Simon_002
 --- !u!1 &8040778965639313997
 GameObject:
   m_ObjectHideFlags: 0
@@ -1115,6 +1119,8 @@ MonoBehaviour:
   m_highlightFadeIn: 0.2
   m_highlightHold: 0.3
   m_highlightFadeOut: 0.2
+  m_highlightFadeOutWhenClicked: 0.6
+  m_keyOfButtonPress: Simon_003
 --- !u!1 &8286925178712302794
 GameObject:
   m_ObjectHideFlags: 0
@@ -1470,6 +1476,8 @@ MonoBehaviour:
   m_highlightFadeIn: 0.2
   m_highlightHold: 0.3
   m_highlightFadeOut: 0.2
+  m_highlightFadeOutWhenClicked: 0.6
+  m_keyOfButtonPress: Simon_001
 --- !u!1 &9008862282887505629
 GameObject:
   m_ObjectHideFlags: 0

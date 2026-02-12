@@ -13,5 +13,13 @@ MonoBehaviour:
   m_Name: SoundLibrary
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.SoundLibrary
   m_sounds:
-  - m_key: tick_001
+  - m_key: Tick_001
     m_clip: {fileID: 8300000, guid: 1c9078fd09805334c95fad9d239bea9b, type: 3}
+  - m_key: Simon_001
+    m_clip: {fileID: 8300000, guid: a4f0a10fd9924514e8f9680c7e6cdfac, type: 3}
+  - m_key: Simon_002
+    m_clip: {fileID: 8300000, guid: 034e271b6c5a3544aba5d74a851ebc9e, type: 3}
+  - m_key: Simon_003
+    m_clip: {fileID: 8300000, guid: 914d6b877109e824a98289ccfbdac94c, type: 3}
+  - m_key: Simon_004
+    m_clip: {fileID: 8300000, guid: 76a055cea37a0aa49807d6316eb05d2f, type: 3}
