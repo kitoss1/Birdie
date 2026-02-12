@@ -313,6 +313,20 @@ namespace Birdie.Managers
         }
 
         /// <summary>
+        /// Closes the main menu panel without changing GameManager state.
+        /// Use this when the GameManager state is managed separately (e.g. minigame flow).
+        /// </summary>
+        public void CloseMainMenuPanel()
+        {
+            if (!EnsureInitialized())
+            {
+                return;
+            }
+
+            CloseMainMenu();
+        }
+
+        /// <summary>
         /// Closes the currently open menu and updates GameManager state.
         /// If an overlay menu is open, closes that first. Otherwise closes the main menu.
         /// </summary>

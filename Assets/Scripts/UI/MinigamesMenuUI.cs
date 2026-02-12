@@ -240,7 +240,7 @@ namespace Birdie.UI
             if (GameManager.Instance?.MenuManager != null)
             {
                 GameManager.Instance.MenuManager.SetMenuButtonsInteractable(true);
-                GameManager.Instance.MenuManager.CloseCurrentMenu();
+                GameManager.Instance.MenuManager.CloseMainMenuPanel();
             }
         }
 
