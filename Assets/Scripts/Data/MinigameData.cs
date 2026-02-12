@@ -23,9 +23,15 @@ namespace Birdie.Data
         [Tooltip("Icon for UI display")]
         private Sprite m_icon;
 
+        [Header("Rewards")]
+        [SerializeField]
+        [Tooltip("Score thresholds and friendship rewards (three tiers, lowest to highest)")]
+        private MinigameRewardTier[] m_rewardTiers;
+
         public string MinigameName => m_minigameName;
         public GameObject MinigamePrefab => m_minigamePrefab;
         public Sprite Icon => m_icon;
+        public MinigameRewardTier[] RewardTiers => m_rewardTiers;
 
 #if UNITY_EDITOR
         private void OnValidate()

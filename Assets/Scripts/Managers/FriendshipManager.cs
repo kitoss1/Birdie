@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Birdie.Data;
 using Birdie.Debug;
@@ -14,6 +15,8 @@ namespace Birdie.Managers
     {
         private readonly Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
         private SaveManager m_saveManager;
+
+        public event Action<string> OnFriendshipChanged;
 
         public override void Initialize()
         {
@@ -49,6 +52,7 @@ namespace Birdie.Managers
             DebugBase.Log($"[{nameof(FriendshipManager)}] Added {points} friendship to {birdID}. Total: {m_birdFriendshipPoints[birdID]}");
 
             SaveToSaveData();
+            OnFriendshipChanged?.Invoke(birdID);
         }
 
         /// <summary>

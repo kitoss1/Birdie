@@ -83,6 +83,11 @@ namespace Birdie.Managers
                 GameManager.Instance.DiaryManager.OnBirdDiscovered += OnBirdDiscovered;
                 GameManager.Instance.DiaryManager.OnBirdEncountered += OnBirdEncountered;
             }
+
+            if (GameManager.Instance != null && GameManager.Instance.FriendshipManager != null)
+            {
+                GameManager.Instance.FriendshipManager.OnFriendshipChanged += OnFriendshipChanged;
+            }
         }
 
         /// <summary>
@@ -101,6 +106,25 @@ namespace Birdie.Managers
         {
             DebugBase.Log($"[{nameof(DiaryUIManager)}] Bird encountered: {birdData.BirdName}, refreshing page", DebugCategory.UI);
             RefreshSinglePage(birdData);
+        }
+
+        private void OnFriendshipChanged(string birdID)
+        {
+            if (!m_birdIDToPageIndex.ContainsKey(birdID))
+            {
+                return;
+            }
+
+            List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
+            foreach (BirdData bird in allBirds)
+            {
+                if (bird.BirdID == birdID)
+                {
+                    DebugBase.Log($"[{nameof(DiaryUIManager)}] Friendship changed for {bird.BirdName}, refreshing page", DebugCategory.UI);
+                    RefreshSinglePage(bird);
+                    return;
+                }
+            }
         }
 
         /// <summary>
@@ -817,6 +841,11 @@ namespace Birdie.Managers
             {
                 GameManager.Instance.DiaryManager.OnBirdDiscovered -= OnBirdDiscovered;
                 GameManager.Instance.DiaryManager.OnBirdEncountered -= OnBirdEncountered;
+            }
+
+            if (GameManager.Instance != null && GameManager.Instance.FriendshipManager != null)
+            {
+                GameManager.Instance.FriendshipManager.OnFriendshipChanged -= OnFriendshipChanged;
             }
         }
         

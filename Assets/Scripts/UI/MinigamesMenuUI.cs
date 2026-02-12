@@ -105,6 +105,7 @@ namespace Birdie.UI
 
             if (m_currentMinigame != null)
             {
+                m_currentMinigame.SetRewardTiers(selectedMinigame.RewardTiers);
                 m_currentMinigame.GameClosed += OnMinigameFinished;
             }
 
@@ -185,7 +186,27 @@ namespace Birdie.UI
         private void OnMinigameFinished()
         {
             DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Minigame finished, closing menu", DebugCategory.UI);
+            RewardFriendship();
             CloseMinigameMenu();
+        }
+
+        private void RewardFriendship()
+        {
+            if (m_currentBirdData == null || m_currentMinigame == null || GameManager.Instance?.FriendshipManager == null)
+            {
+                return;
+            }
+
+            int reward = m_currentMinigame.FriendshipReward;
+            if (reward <= 0)
+            {
+                return;
+            }
+
+            GameManager.Instance.FriendshipManager.AddFriendship(m_currentBirdData.BirdID, reward);
+            DebugBase.Log(
+                $"[{nameof(MinigamesMenuUI)}] Awarded {reward} friendship to {m_currentBirdData.BirdName}",
+                DebugCategory.UI);
         }
 
         private void CloseMinigameMenu()

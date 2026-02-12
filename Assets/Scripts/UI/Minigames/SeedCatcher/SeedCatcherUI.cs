@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Birdie.Data;
 using Birdie.Debug;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -128,6 +129,10 @@ namespace Birdie.UI.Minigames
         private readonly List<SeedCatcherSpike> m_activeSpikes = new List<SeedCatcherSpike>();
 
         public event Action GameClosed;
+
+        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score);
+
+        private MinigameRewardTier[] m_rewardTiers;
         private RectTransform m_rectTransform;
         private RectTransform m_seedContainerRect;
         private int m_score;
@@ -576,6 +581,11 @@ namespace Birdie.UI.Minigames
                 int seconds = Mathf.CeilToInt(Mathf.Max(m_remainingTime, 0f));
                 m_timerText.text = $"Time: {seconds}";
             }
+        }
+
+        public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
+        {
+            m_rewardTiers = rewardTiers;
         }
 
         private void OnCloseClicked()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using Birdie.Data;
 using Birdie.Debug;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
@@ -56,6 +57,9 @@ namespace Birdie.UI.Minigames
 
         public event Action GameClosed;
 
+        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score);
+
+        private MinigameRewardTier[] m_rewardTiers;
         private readonly List<int> m_sequence = new List<int>();
         private int m_currentInputIndex;
         private int m_score;
@@ -275,6 +279,11 @@ namespace Birdie.UI.Minigames
                     button.SetInteractable(interactable);
                 }
             }
+        }
+
+        public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
+        {
+            m_rewardTiers = rewardTiers;
         }
 
         private void OnCloseClicked()
