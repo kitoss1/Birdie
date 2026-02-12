@@ -45,6 +45,9 @@ namespace Birdie.Managers
 
         [Tooltip("Color to tint undiscovered bird photos")]
         [SerializeField] private Color m_lockedPhotoTint = new Color(0.2f, 0.2f, 0.2f, 1f);
+        
+        [Tooltip("Button to close the diary popup")]
+        [SerializeField] private Button m_closeButton;
 
         private readonly List<GameObject> m_instantiatedPages = new List<GameObject>();
         private readonly Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
@@ -53,6 +56,11 @@ namespace Birdie.Managers
         private bool m_isAnimating = false;
         private int m_targetPageIndex = 0;
         private BirdPageUI m_currentlyAnimatingPageUI = null;
+        
+        /// <summary>
+        /// Event fired when close button is clicked.
+        /// </summary>
+        public event Action OnCloseClicked;
 
         public override void Initialize()
         {
@@ -108,6 +116,11 @@ namespace Birdie.Managers
             if (m_nextButton != null)
             {
                 m_nextButton.onClick.AddListener(ShowNextPage);
+            }
+            
+            if (m_closeButton != null)
+            {
+                m_closeButton.onClick.AddListener(OnCloseButtonClicked);
             }
 
             UpdateNavigationButtons();
@@ -794,11 +807,26 @@ namespace Birdie.Managers
             {
                 m_nextButton.onClick.RemoveListener(ShowNextPage);
             }
+            
+            if (m_closeButton != null)
+            {
+                m_closeButton.onClick.RemoveListener(OnCloseButtonClicked);
+            }
 
             if (GameManager.Instance != null && GameManager.Instance.DiaryManager != null)
             {
                 GameManager.Instance.DiaryManager.OnBirdDiscovered -= OnBirdDiscovered;
                 GameManager.Instance.DiaryManager.OnBirdEncountered -= OnBirdEncountered;
+            }
+        }
+        
+        private void OnCloseButtonClicked()
+        {
+            OnCloseClicked?.Invoke();
+
+            if (GameManager.Instance?.MenuManager != null)
+            {
+                GameManager.Instance.MenuManager.CloseCurrentMenu();
             }
         }
 
