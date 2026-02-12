@@ -16,6 +16,23 @@ namespace Birdie.UI
         [Tooltip("Button to close the settings menu")]
         private Button m_closeButton;
 
+        [SerializeField]
+        [Tooltip("Button to quit the application")]
+        private Button m_quitButton;
+
+        [Header("Quit Warning")]
+        [SerializeField]
+        [Tooltip("Panel shown to confirm quitting the application")]
+        private GameObject m_quitWarningPanel;
+
+        [SerializeField]
+        [Tooltip("Confirms quitting the application")]
+        private Button m_quitWarningYesButton;
+
+        [SerializeField]
+        [Tooltip("Cancels quitting and returns to settings")]
+        private Button m_quitWarningNoButton;
+
         [Header("Master Audio")]
         [SerializeField]
         [Tooltip("Slider for master volume (0-1)")]
@@ -63,6 +80,7 @@ namespace Birdie.UI
         {
             SubscribeToEvents();
             RefreshUI();
+            HideQuitWarning();
         }
 
         private void OnDisable()
@@ -80,6 +98,21 @@ namespace Birdie.UI
             if (m_closeButton != null)
             {
                 m_closeButton.onClick.AddListener(OnCloseButtonClicked);
+            }
+
+            if (m_quitButton != null)
+            {
+                m_quitButton.onClick.AddListener(OnQuitButtonClicked);
+            }
+
+            if (m_quitWarningYesButton != null)
+            {
+                m_quitWarningYesButton.onClick.AddListener(OnQuitWarningYesClicked);
+            }
+
+            if (m_quitWarningNoButton != null)
+            {
+                m_quitWarningNoButton.onClick.AddListener(OnQuitWarningNoClicked);
             }
 
             if (m_masterVolumeSlider != null)
@@ -128,6 +161,21 @@ namespace Birdie.UI
             if (m_closeButton != null)
             {
                 m_closeButton.onClick.RemoveListener(OnCloseButtonClicked);
+            }
+
+            if (m_quitButton != null)
+            {
+                m_quitButton.onClick.RemoveListener(OnQuitButtonClicked);
+            }
+
+            if (m_quitWarningYesButton != null)
+            {
+                m_quitWarningYesButton.onClick.RemoveListener(OnQuitWarningYesClicked);
+            }
+
+            if (m_quitWarningNoButton != null)
+            {
+                m_quitWarningNoButton.onClick.RemoveListener(OnQuitWarningNoClicked);
             }
 
             if (m_masterVolumeSlider != null)
@@ -429,6 +477,49 @@ namespace Birdie.UI
             }
         }
 
+        // --- Quit ---
+
+        private void OnQuitButtonClicked()
+        {
+            DebugBase.Log($"[{nameof(SettingsMenuUI)}] Quit clicked, showing warning", DebugCategory.UI);
+            ShowQuitWarning();
+        }
+
+        private void OnQuitWarningYesClicked()
+        {
+            DebugBase.Log($"[{nameof(SettingsMenuUI)}] Quit confirmed", DebugCategory.UI);
+            GameManager.Instance?.SaveGame();
+
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+            Application.Quit();
+#endif
+        }
+
+        private void OnQuitWarningNoClicked()
+        {
+            DebugBase.Log($"[{nameof(SettingsMenuUI)}] Quit cancelled", DebugCategory.UI);
+            HideQuitWarning();
+        }
+
+        private void ShowQuitWarning()
+        {
+            if (m_quitWarningPanel != null)
+            {
+                m_quitWarningPanel.transform.SetAsLastSibling();
+                m_quitWarningPanel.SetActive(true);
+            }
+        }
+
+        private void HideQuitWarning()
+        {
+            if (m_quitWarningPanel != null)
+            {
+                m_quitWarningPanel.SetActive(false);
+            }
+        }
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -475,6 +566,26 @@ namespace Birdie.UI
             if (m_ambientMuteToggle == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Ambient Mute Toggle reference is missing!", this);
+            }
+
+            if (m_quitButton == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Quit Button reference is missing!", this);
+            }
+
+            if (m_quitWarningPanel == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Quit Warning Panel reference is missing!", this);
+            }
+
+            if (m_quitWarningYesButton == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Quit Warning Yes Button reference is missing!", this);
+            }
+
+            if (m_quitWarningNoButton == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Quit Warning No Button reference is missing!", this);
             }
         }
 #endif
