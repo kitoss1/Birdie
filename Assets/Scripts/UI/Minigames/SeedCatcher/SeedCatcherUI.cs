@@ -34,8 +34,8 @@ namespace Birdie.UI.Minigames
         private TextMeshProUGUI m_timerText;
 
         [SerializeField]
-        [Tooltip("HUD text displaying remaining lives")]
-        private TextMeshProUGUI m_livesText;
+        [Tooltip("Display component showing heart icons for remaining lives")]
+        private SeedCatcherLivesDisplay m_livesDisplay;
 
         [SerializeField]
         [Tooltip("Container transform where seeds are spawned")]
@@ -274,7 +274,7 @@ namespace Birdie.UI.Minigames
 
             UpdateScoreDisplay();
             UpdateTimerDisplay();
-            UpdateLivesDisplay();
+            m_livesDisplay?.Initialize(m_initialLives);
             m_rewardBar?.UpdateScore(0);
             HideGameOver();
             CleanupAllSeeds();
@@ -468,7 +468,7 @@ namespace Birdie.UI.Minigames
             Destroy(spike.gameObject);
 
             m_currentLives--;
-            UpdateLivesDisplay();
+            m_livesDisplay?.LoseLife();
 
             DebugBase.Log(
                 $"[{nameof(SeedCatcherUI)}] Spike caught! Lives remaining: {m_currentLives}",
@@ -570,14 +570,6 @@ namespace Birdie.UI.Minigames
             if (m_scoreText != null)
             {
                 m_scoreText.text = $"Score: {m_score}";
-            }
-        }
-
-        private void UpdateLivesDisplay()
-        {
-            if (m_livesText != null)
-            {
-                m_livesText.text = $"Lives: {m_currentLives}";
             }
         }
 
