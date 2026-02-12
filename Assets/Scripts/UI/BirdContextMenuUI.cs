@@ -157,7 +157,14 @@ namespace Birdie.UI
 
         private void Show(Bird bird)
         {
+            // Resume previous bird if switching between birds
+            if (m_currentBird != null)
+            {
+                m_currentBird.Resume();
+            }
+
             m_currentBird = bird;
+            bird.Pause();
             m_backdrop.SetActive(true);
             m_menuPanel.SetActive(true);
 
@@ -168,6 +175,11 @@ namespace Birdie.UI
 
         public void Hide()
         {
+            if (m_currentBird != null)
+            {
+                m_currentBird.Resume();
+            }
+
             m_menuPanel.SetActive(false);
             m_backdrop.SetActive(false);
             m_currentBird = null;
@@ -236,9 +248,10 @@ namespace Birdie.UI
                 return;
             }
 
-            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Feed clicked for {m_currentBird.BirdData.BirdName}", DebugCategory.UI);
-            m_currentBird.OnBirdFed(m_currentBird.BirdData.DietType);
+            Bird bird = m_currentBird;
+            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Feed clicked for {bird.BirdData.BirdName}", DebugCategory.UI);
             Hide();
+            bird.OnBirdFed(bird.BirdData.DietType);
         }
 
         private void OnPlaySongClicked()
@@ -276,8 +289,10 @@ namespace Birdie.UI
                 return;
             }
 
-            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Scare Away clicked for {m_currentBird.BirdData.BirdName}", DebugCategory.UI);
-            m_currentBird.ForceDeparture();
+            Bird bird = m_currentBird;
+            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Scare Away clicked for {bird.BirdData.BirdName}", DebugCategory.UI);
+            Hide();
+            bird.ForceDeparture();
         }
     }
 }
