@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Birdie.Data;
 using Birdie.Debug;
 using Birdie.Managers;
+using Birdie.UI.Minigames;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -37,6 +38,7 @@ namespace Birdie.UI
         private Transform m_minigameContainer;
 
         private GameObject m_currentMinigameInstance;
+        private IMinigame m_currentMinigame;
         private BirdData m_currentBirdData;
 
         private void Awake()
@@ -97,6 +99,15 @@ namespace Birdie.UI
 
             InstantiateMinigame(selectedMinigame);
 
+            m_currentMinigame = m_currentMinigameInstance != null
+                ? m_currentMinigameInstance.GetComponentInChildren<IMinigame>()
+                : null;
+
+            if (m_currentMinigame != null)
+            {
+                m_currentMinigame.GameClosed += OnMinigameFinished;
+            }
+
             if (GameManager.Instance != null)
             {
                 GameManager.Instance.StartMinigame();
@@ -146,6 +157,12 @@ namespace Birdie.UI
 
         private void CleanupCurrentMinigame()
         {
+            if (m_currentMinigame != null)
+            {
+                m_currentMinigame.GameClosed -= OnMinigameFinished;
+                m_currentMinigame = null;
+            }
+
             if (m_currentMinigameInstance != null)
             {
                 Destroy(m_currentMinigameInstance);
@@ -162,6 +179,17 @@ namespace Birdie.UI
         private void OnCloseWarningYesClicked()
         {
             DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Close confirmed", DebugCategory.UI);
+            CloseMinigameMenu();
+        }
+
+        private void OnMinigameFinished()
+        {
+            DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Minigame finished, closing menu", DebugCategory.UI);
+            CloseMinigameMenu();
+        }
+
+        private void CloseMinigameMenu()
+        {
             HideCloseWarning();
 
             CleanupCurrentMinigame();

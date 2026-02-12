@@ -376,7 +376,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play Again
+  m_text: Close
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -508,7 +508,7 @@ MonoBehaviour:
   m_deathZone: {fileID: 3154656256286965743}
   m_gameOverPanel: {fileID: 8542073560873444282}
   m_finalScoreText: {fileID: 1728611259444144319}
-  m_playAgainButton: {fileID: 3284907884723854165}
+  m_closeButton: {fileID: 3284907884723854165}
   m_gameDuration: 30
   m_initialSpawnInterval: 1
   m_finalSpawnInterval: 0.3
@@ -1140,7 +1140,7 @@ GameObject:
   - component: {fileID: 7434763619981748291}
   - component: {fileID: 3284907884723854165}
   m_Layer: 0
-  m_Name: PlayAgain
+  m_Name: Close
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

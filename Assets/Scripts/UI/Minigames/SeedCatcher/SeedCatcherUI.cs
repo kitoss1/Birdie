@@ -7,6 +7,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Birdie.UI.Minigames
@@ -16,7 +17,7 @@ namespace Birdie.UI.Minigames
     /// Manages bag intro animation, seed spawning, collision detection, timer, scoring,
     /// and game over flow. Handles touch/drag input via pointer event interfaces.
     /// </summary>
-    public sealed class SeedCatcherUI : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
+    public sealed class SeedCatcherUI : MonoBehaviour, IMinigame, IPointerDownHandler, IDragHandler, IPointerUpHandler
     {
         [Header("UI References")]
         [SerializeField]
@@ -65,8 +66,9 @@ namespace Birdie.UI.Minigames
         private TextMeshProUGUI m_finalScoreText;
 
         [SerializeField]
-        [Tooltip("Button to restart the game")]
-        private Button m_playAgainButton;
+        [FormerlySerializedAs("m_playAgainButton")]
+        [Tooltip("Button to close the minigame after game over")]
+        private Button m_closeButton;
 
         [Header("Game Settings")]
         [SerializeField]
@@ -124,6 +126,8 @@ namespace Birdie.UI.Minigames
 
         private readonly List<SeedCatcherSeed> m_activeSeeds = new List<SeedCatcherSeed>();
         private readonly List<SeedCatcherSpike> m_activeSpikes = new List<SeedCatcherSpike>();
+
+        public event Action GameClosed;
         private RectTransform m_rectTransform;
         private RectTransform m_seedContainerRect;
         private int m_score;
@@ -150,9 +154,9 @@ namespace Birdie.UI.Minigames
                 m_seedContainerRect = m_seedContainer.GetComponent<RectTransform>();
             }
 
-            if (m_playAgainButton != null)
+            if (m_closeButton != null)
             {
-                m_playAgainButton.onClick.AddListener(OnPlayAgainClicked);
+                m_closeButton.onClick.AddListener(OnCloseClicked);
             }
 
             if (m_basket != null)
@@ -191,9 +195,9 @@ namespace Birdie.UI.Minigames
 
         private void OnDestroy()
         {
-            if (m_playAgainButton != null)
+            if (m_closeButton != null)
             {
-                m_playAgainButton.onClick.RemoveListener(OnPlayAgainClicked);
+                m_closeButton.onClick.RemoveListener(OnCloseClicked);
             }
 
             if (m_basket != null)
@@ -574,10 +578,10 @@ namespace Birdie.UI.Minigames
             }
         }
 
-        private void OnPlayAgainClicked()
+        private void OnCloseClicked()
         {
-            DebugBase.Log($"[{nameof(SeedCatcherUI)}] Play again clicked", DebugCategory.UI);
-            StartGame();
+            DebugBase.Log($"[{nameof(SeedCatcherUI)}] Close clicked after game over", DebugCategory.UI);
+            GameClosed?.Invoke();
         }
     }
 }

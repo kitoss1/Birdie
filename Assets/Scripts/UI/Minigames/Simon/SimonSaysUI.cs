@@ -6,6 +6,7 @@ using Cysharp.Threading.Tasks;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Birdie.UI.Minigames
@@ -14,7 +15,7 @@ namespace Birdie.UI.Minigames
     /// Main controller for the Simon Says minigame.
     /// Manages game state, sequence generation, input validation, scoring, and game over flow.
     /// </summary>
-    public sealed class SimonSaysUI : MonoBehaviour
+    public sealed class SimonSaysUI : MonoBehaviour, IMinigame
     {
         [Header("Buttons")]
         [SerializeField]
@@ -36,8 +37,9 @@ namespace Birdie.UI.Minigames
         private TextMeshProUGUI m_finalScoreText;
 
         [SerializeField]
-        [Tooltip("Button to restart the game from the game over panel")]
-        private Button m_playAgainButton;
+        [FormerlySerializedAs("m_playAgainButton")]
+        [Tooltip("Button to close the minigame after game over")]
+        private Button m_closeButton;
 
         [Header("Timing")]
         [SerializeField]
@@ -51,6 +53,8 @@ namespace Birdie.UI.Minigames
         [SerializeField]
         [Tooltip("Delay before the next round starts after a correct sequence")]
         private float m_nextRoundDelay = 0.8f;
+
+        public event Action GameClosed;
 
         private readonly List<int> m_sequence = new List<int>();
         private int m_currentInputIndex;
@@ -70,9 +74,9 @@ namespace Birdie.UI.Minigames
         {
             m_destroyCancellation = this.GetCancellationTokenOnDestroy();
 
-            if (m_playAgainButton != null)
+            if (m_closeButton != null)
             {
-                m_playAgainButton.onClick.AddListener(OnPlayAgainClicked);
+                m_closeButton.onClick.AddListener(OnCloseClicked);
             }
 
             foreach (SimonSaysButton button in m_buttons)
@@ -91,9 +95,9 @@ namespace Birdie.UI.Minigames
 
         private void OnDestroy()
         {
-            if (m_playAgainButton != null)
+            if (m_closeButton != null)
             {
-                m_playAgainButton.onClick.RemoveListener(OnPlayAgainClicked);
+                m_closeButton.onClick.RemoveListener(OnCloseClicked);
             }
 
             foreach (SimonSaysButton button in m_buttons)
@@ -273,10 +277,10 @@ namespace Birdie.UI.Minigames
             }
         }
 
-        private void OnPlayAgainClicked()
+        private void OnCloseClicked()
         {
-            DebugBase.Log($"[{nameof(SimonSaysUI)}] Play again clicked", DebugCategory.UI);
-            StartGame();
+            DebugBase.Log($"[{nameof(SimonSaysUI)}] Close clicked after game over", DebugCategory.UI);
+            GameClosed?.Invoke();
         }
     }
 }
