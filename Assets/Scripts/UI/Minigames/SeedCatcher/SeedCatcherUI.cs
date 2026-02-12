@@ -57,6 +57,11 @@ namespace Birdie.UI.Minigames
         [Tooltip("Death zone that destroys seeds that fall past the basket")]
         private SeedCatcherDeathZone m_deathZone;
 
+        [Header("Reward Bar")]
+        [SerializeField]
+        [Tooltip("Progress bar showing score thresholds and friendship rewards")]
+        private MinigameRewardBar m_rewardBar;
+
         [Header("Game Over")]
         [SerializeField]
         [Tooltip("Panel shown when the timer runs out")]
@@ -270,6 +275,7 @@ namespace Birdie.UI.Minigames
             UpdateScoreDisplay();
             UpdateTimerDisplay();
             UpdateLivesDisplay();
+            m_rewardBar?.UpdateScore(0);
             HideGameOver();
             CleanupAllSeeds();
 
@@ -413,6 +419,7 @@ namespace Birdie.UI.Minigames
             m_activeSeeds.Remove(seed);
             m_score++;
             UpdateScoreDisplay();
+            m_rewardBar?.UpdateScore(m_score);
             Destroy(seed.gameObject);
         }
 
@@ -586,6 +593,32 @@ namespace Birdie.UI.Minigames
         public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
         {
             m_rewardTiers = rewardTiers;
+
+            if (m_rewardBar != null)
+            {
+                m_rewardBar.Initialize(rewardTiers);
+            }
+        }
+
+        public void SetDifficulty(MinigameDifficultySettings settings)
+        {
+            if (settings is SeedCatcherDifficultySettings seedCatcherSettings)
+            {
+                m_gameDuration = seedCatcherSettings.GameDuration;
+                m_initialSpawnInterval = seedCatcherSettings.InitialSpawnInterval;
+                m_finalSpawnInterval = seedCatcherSettings.FinalSpawnInterval;
+                m_initialFallSpeed = seedCatcherSettings.InitialFallSpeed;
+                m_finalFallSpeed = seedCatcherSettings.FinalFallSpeed;
+                m_initialSpikeChance = seedCatcherSettings.InitialSpikeChance;
+                m_finalSpikeChance = seedCatcherSettings.FinalSpikeChance;
+                m_initialLives = seedCatcherSettings.InitialLives;
+            }
+            else if (settings != null)
+            {
+                DebugBase.LogWarning(
+                    $"[{nameof(SeedCatcherUI)}] Received unexpected difficulty settings type: {settings.GetType().Name}",
+                    DebugCategory.UI);
+            }
         }
 
         private void OnCloseClicked()

@@ -28,6 +28,11 @@ namespace Birdie.UI.Minigames
         [Tooltip("Text displaying the current score during gameplay")]
         private TextMeshProUGUI m_scoreText;
 
+        [Header("Reward Bar")]
+        [SerializeField]
+        [Tooltip("Progress bar showing score thresholds and friendship rewards")]
+        private MinigameRewardBar m_rewardBar;
+
         [Header("Game Over")]
         [SerializeField]
         [Tooltip("Panel shown when the player makes a mistake")]
@@ -129,6 +134,7 @@ namespace Birdie.UI.Minigames
             m_currentState = SimonState.WaitingToStart;
 
             UpdateScoreDisplay();
+            m_rewardBar?.UpdateScore(0);
             HideGameOver();
             SetAllButtonsInteractable(false);
 
@@ -211,6 +217,7 @@ namespace Birdie.UI.Minigames
         {
             m_score++;
             UpdateScoreDisplay();
+            m_rewardBar?.UpdateScore(m_score);
 
             DebugBase.Log(
                 $"[{nameof(SimonSaysUI)}] Round complete! Score: {m_score}",
@@ -284,6 +291,27 @@ namespace Birdie.UI.Minigames
         public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
         {
             m_rewardTiers = rewardTiers;
+
+            if (m_rewardBar != null)
+            {
+                m_rewardBar.Initialize(rewardTiers);
+            }
+        }
+
+        public void SetDifficulty(MinigameDifficultySettings settings)
+        {
+            if (settings is SimonSaysDifficultySettings simonSettings)
+            {
+                m_sequenceStartDelay = simonSettings.SequenceStartDelay;
+                m_gapBetweenHighlights = simonSettings.GapBetweenHighlights;
+                m_nextRoundDelay = simonSettings.NextRoundDelay;
+            }
+            else if (settings != null)
+            {
+                DebugBase.LogWarning(
+                    $"[{nameof(SimonSaysUI)}] Received unexpected difficulty settings type: {settings.GetType().Name}",
+                    DebugCategory.UI);
+            }
         }
 
         private void OnCloseClicked()

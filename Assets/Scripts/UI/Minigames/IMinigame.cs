@@ -10,5 +10,7 @@ namespace Birdie.UI.Minigames
         int FriendshipReward { get; }
 
         void SetRewardTiers(MinigameRewardTier[] rewardTiers);
+
+        void SetDifficulty(MinigameDifficultySettings settings);
     }
 }

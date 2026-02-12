@@ -106,6 +106,20 @@ namespace Birdie.UI
             if (m_currentMinigame != null)
             {
                 m_currentMinigame.SetRewardTiers(selectedMinigame.RewardTiers);
+
+                int friendshipLevel = 0;
+                if (GameManager.Instance?.FriendshipManager != null)
+                {
+                    friendshipLevel = GameManager.Instance.FriendshipManager.GetFriendshipLevel(
+                        birdData.BirdID, birdData);
+                }
+
+                MinigameDifficultySettings difficulty = selectedMinigame.GetDifficultyForLevel(friendshipLevel);
+                if (difficulty != null)
+                {
+                    m_currentMinigame.SetDifficulty(difficulty);
+                }
+
                 m_currentMinigame.GameClosed += OnMinigameFinished;
             }
 

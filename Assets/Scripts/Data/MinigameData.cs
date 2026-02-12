@@ -28,10 +28,27 @@ namespace Birdie.Data
         [Tooltip("Score thresholds and friendship rewards (three tiers, lowest to highest)")]
         private MinigameRewardTier[] m_rewardTiers;
 
+        [Header("Difficulty")]
+        [SerializeReference]
+        [Tooltip("Difficulty settings per friendship level (index 0 = level 0, etc.). " +
+                 "If friendship level exceeds array length, the last entry is used.")]
+        private MinigameDifficultySettings[] m_difficultyPerLevel;
+
         public string MinigameName => m_minigameName;
         public GameObject MinigamePrefab => m_minigamePrefab;
         public Sprite Icon => m_icon;
         public MinigameRewardTier[] RewardTiers => m_rewardTiers;
+
+        public MinigameDifficultySettings GetDifficultyForLevel(int friendshipLevel)
+        {
+            if (m_difficultyPerLevel == null || m_difficultyPerLevel.Length == 0)
+            {
+                return null;
+            }
+
+            int clampedIndex = Mathf.Clamp(friendshipLevel, 0, m_difficultyPerLevel.Length - 1);
+            return m_difficultyPerLevel[clampedIndex];
+        }
 
 #if UNITY_EDITOR
         private void OnValidate()

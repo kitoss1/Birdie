@@ -22,3 +22,43 @@ MonoBehaviour:
     m_friendshipReward: 10
   - m_scoreThreshold: 15
     m_friendshipReward: 15
+  m_difficultyPerLevel:
+  - rid: 6068701941492613190
+  - rid: 6068701941492613191
+  - rid: 6068701941492613192
+  references:
+    version: 2
+    RefIds:
+    - rid: 6068701941492613190
+      type: {class: SeedCatcherDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_gameDuration: 40
+        m_initialSpawnInterval: 1
+        m_finalSpawnInterval: 0.3
+        m_initialFallSpeed: 200
+        m_finalFallSpeed: 500
+        m_initialSpikeChance: 0.1
+        m_finalSpikeChance: 0.4
+        m_initialLives: 3
+    - rid: 6068701941492613191
+      type: {class: SeedCatcherDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_gameDuration: 50
+        m_initialSpawnInterval: 1
+        m_finalSpawnInterval: 0.3
+        m_initialFallSpeed: 200
+        m_finalFallSpeed: 500
+        m_initialSpikeChance: 0.1
+        m_finalSpikeChance: 0.4
+        m_initialLives: 3
+    - rid: 6068701941492613192
+      type: {class: SeedCatcherDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_gameDuration: 60
+        m_initialSpawnInterval: 1
+        m_finalSpawnInterval: 0.3
+        m_initialFallSpeed: 200
+        m_finalFallSpeed: 500
+        m_initialSpikeChance: 0.1
+        m_finalSpikeChance: 0.4
+        m_initialLives: 3

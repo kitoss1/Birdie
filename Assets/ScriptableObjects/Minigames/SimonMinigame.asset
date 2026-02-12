@@ -22,3 +22,28 @@ MonoBehaviour:
     m_friendshipReward: 10
   - m_scoreThreshold: 15
     m_friendshipReward: 15
+  m_difficultyPerLevel:
+  - rid: 6068701941492613193
+  - rid: 6068701941492613194
+  - rid: 6068701941492613195
+  references:
+    version: 2
+    RefIds:
+    - rid: 6068701941492613193
+      type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_sequenceStartDelay: 1
+        m_gapBetweenHighlights: 0.2
+        m_nextRoundDelay: 0.8
+    - rid: 6068701941492613194
+      type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_sequenceStartDelay: 1
+        m_gapBetweenHighlights: 0.2
+        m_nextRoundDelay: 0.8
+    - rid: 6068701941492613195
+      type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_sequenceStartDelay: 1
+        m_gapBetweenHighlights: 0.2
+        m_nextRoundDelay: 0.8
