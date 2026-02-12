@@ -59,7 +59,7 @@ namespace Birdie.Birds
             return true;
         }
 
-        protected virtual void Start()
+        protected virtual void OnEnable()
         {
             // Register with EnvironmentManager
             if (GameManager.Instance?.EnvironmentManager != null)
@@ -68,7 +68,7 @@ namespace Birdie.Birds
             }
         }
 
-        protected virtual void OnDestroy()
+        protected virtual void OnDisable()
         {
             // Unregister from EnvironmentManager
             if (GameManager.Instance?.EnvironmentManager != null)

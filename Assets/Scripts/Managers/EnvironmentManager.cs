@@ -23,7 +23,7 @@ namespace Birdie.Managers
 
         /// <summary>
         /// Registers a bird object with the manager.
-        /// Called automatically by BirdObject on Enable.
+        /// Called automatically by BirdObject on OnEnable.
         /// </summary>
         public void RegisterObject(Birds.BirdObject obj)
         {
@@ -41,7 +41,7 @@ namespace Birdie.Managers
 
         /// <summary>
         /// Unregisters a bird object from the manager.
-        /// Called automatically by BirdObject on Disable.
+        /// Called automatically by BirdObject on OnDisable.
         /// </summary>
         public void UnregisterObject(Birds.BirdObject obj)
         {
