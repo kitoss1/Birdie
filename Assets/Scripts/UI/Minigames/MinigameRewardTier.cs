@@ -20,12 +20,17 @@ namespace Birdie.Data
 
         public static int ResolveReward(MinigameRewardTier[] tiers, int score)
         {
+            return ResolveReward(tiers, score, 0);
+        }
+
+        public static int ResolveReward(MinigameRewardTier[] tiers, int score, int completionReward)
+        {
+            int reward = Mathf.Max(0, completionReward);
+
             if (tiers == null)
             {
-                return 0;
+                return reward;
             }
-
-            int reward = 0;
 
             foreach (MinigameRewardTier tier in tiers)
             {

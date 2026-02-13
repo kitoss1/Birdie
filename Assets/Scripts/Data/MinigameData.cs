@@ -28,6 +28,11 @@ namespace Birdie.Data
         [Tooltip("Score thresholds and friendship rewards (three tiers, lowest to highest)")]
         private MinigameRewardTier[] m_rewardTiers;
 
+        [SerializeField]
+        [Tooltip("Friendship reward awarded just for completing the minigame regardless of score")]
+        [Min(0)]
+        private int m_completionReward;
+
         [Header("Difficulty")]
         [SerializeReference]
         [Tooltip("Difficulty settings per friendship level (index 0 = level 0, etc.). " +
@@ -38,6 +43,7 @@ namespace Birdie.Data
         public GameObject MinigamePrefab => m_minigamePrefab;
         public Sprite Icon => m_icon;
         public MinigameRewardTier[] RewardTiers => m_rewardTiers;
+        public int CompletionReward => m_completionReward;
 
         public MinigameDifficultySettings GetDifficultyForLevel(int friendshipLevel)
         {

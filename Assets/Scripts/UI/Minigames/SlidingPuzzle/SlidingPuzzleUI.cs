@@ -72,9 +72,10 @@ namespace Birdie.UI.Minigames
 
         public event Action GameClosed;
 
-        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score);
+        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score, m_completionReward);
 
         private MinigameRewardTier[] m_rewardTiers;
+        private int m_completionReward;
         private readonly List<SlidingPuzzleTile> m_tiles = new List<SlidingPuzzleTile>();
         private int[] m_grid;
         private int m_emptyIndex;
@@ -133,13 +134,14 @@ namespace Birdie.UI.Minigames
                 DebugCategory.UI);
         }
 
-        public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
+        public void SetRewardTiers(MinigameRewardTier[] rewardTiers, int completionReward)
         {
             m_rewardTiers = rewardTiers;
+            m_completionReward = completionReward;
 
             if (m_rewardBar != null)
             {
-                m_rewardBar.Initialize(rewardTiers);
+                m_rewardBar.Initialize(rewardTiers, completionReward);
             }
         }
 
@@ -356,7 +358,7 @@ namespace Birdie.UI.Minigames
 
         private void UpdateScore()
         {
-            m_score = Mathf.Max(1, m_maxScore - m_moveCount);
+            m_score = Mathf.Max(0, m_maxScore - m_moveCount);
             m_scoreDisplay?.UpdateScore(m_score);
             m_rewardBar?.UpdateScore(m_score);
         }

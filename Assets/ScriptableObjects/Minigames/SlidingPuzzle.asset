@@ -22,6 +22,7 @@ MonoBehaviour:
     m_friendshipReward: 10
   - m_scoreThreshold: 60
     m_friendshipReward: 15
+  m_completionReward: 3
   m_difficultyPerLevel:
   - rid: 6068701964018384896
   references:

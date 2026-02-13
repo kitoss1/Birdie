@@ -125,9 +125,10 @@ namespace Birdie.UI.Minigames
 
         public event Action GameClosed;
 
-        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score);
+        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score, m_completionReward);
 
         private MinigameRewardTier[] m_rewardTiers;
+        private int m_completionReward;
         private RectTransform m_rectTransform;
         private RectTransform m_seedContainerRect;
         private int m_score;
@@ -537,13 +538,14 @@ namespace Birdie.UI.Minigames
             }
         }
 
-        public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
+        public void SetRewardTiers(MinigameRewardTier[] rewardTiers, int completionReward)
         {
             m_rewardTiers = rewardTiers;
+            m_completionReward = completionReward;
 
             if (m_rewardBar != null)
             {
-                m_rewardBar.Initialize(rewardTiers);
+                m_rewardBar.Initialize(rewardTiers, completionReward);
             }
         }
 

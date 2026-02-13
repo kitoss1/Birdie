@@ -105,7 +105,7 @@ namespace Birdie.UI
 
             if (m_currentMinigame != null)
             {
-                m_currentMinigame.SetRewardTiers(selectedMinigame.RewardTiers);
+                m_currentMinigame.SetRewardTiers(selectedMinigame.RewardTiers, selectedMinigame.CompletionReward);
 
                 int friendshipLevel = 0;
                 if (GameManager.Instance?.FriendshipManager != null)

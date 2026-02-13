@@ -31,22 +31,26 @@ namespace Birdie.UI.Minigames
 
         private MinigameRewardTier[] m_rewardTiers;
         private int m_maxScore;
+        private int m_completionReward;
         private readonly List<RectTransform> m_spawnedMarkers = new List<RectTransform>();
 
         /// <summary>
         /// Stores the reward tiers, computes the max score, and spawns threshold markers.
         /// </summary>
-        public void Initialize(MinigameRewardTier[] tiers)
+        public void Initialize(MinigameRewardTier[] tiers, int completionReward = 0)
         {
             m_rewardTiers = tiers;
+            m_completionReward = completionReward;
             m_maxScore = MinigameRewardTier.ComputeMaxScore(tiers);
 
             ClearMarkers();
+            SpawnCompletionMarker();
             SpawnMarkers();
             UpdateScore(0);
 
             DebugBase.Log(
-                $"[{nameof(MinigameRewardBar)}] Initialized with {tiers?.Length ?? 0} tiers, max score {m_maxScore}",
+                $"[{nameof(MinigameRewardBar)}] Initialized with {tiers?.Length ?? 0} tiers, " +
+                $"completion reward {m_completionReward}, max score {m_maxScore}",
                 DebugCategory.UI);
         }
 
@@ -63,7 +67,7 @@ namespace Birdie.UI.Minigames
 
             if (m_friendshipRewardText != null)
             {
-                int reward = MinigameRewardTier.ResolveReward(m_rewardTiers, score);
+                int reward = MinigameRewardTier.ResolveReward(m_rewardTiers, score, m_completionReward);
                 m_friendshipRewardText.text = reward > 0 ? $"+{reward}" : "0";
             }
         }
@@ -71,6 +75,33 @@ namespace Birdie.UI.Minigames
         private void OnDestroy()
         {
             ClearMarkers();
+        }
+
+        private void SpawnCompletionMarker()
+        {
+            if (m_completionReward <= 0)
+            {
+                return;
+            }
+
+            if (m_thresholdMarkerTemplate == null || m_markerContainer == null)
+            {
+                return;
+            }
+
+            var marker = Instantiate(m_thresholdMarkerTemplate, m_markerContainer);
+            marker.gameObject.SetActive(true);
+            marker.anchorMin = new Vector2(0f, 0f);
+            marker.anchorMax = new Vector2(0f, 1f);
+            marker.anchoredPosition = Vector2.zero;
+
+            var label = marker.GetComponentInChildren<TextMeshProUGUI>();
+            if (label != null)
+            {
+                label.text = $"+{m_completionReward}";
+            }
+
+            m_spawnedMarkers.Add(marker);
         }
 
         private void SpawnMarkers()
