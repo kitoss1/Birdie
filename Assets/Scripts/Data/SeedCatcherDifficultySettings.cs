@@ -8,22 +8,27 @@ namespace Birdie.Data
     {
         [SerializeField]
         [Tooltip("Game duration in seconds")]
+        [Min(1f)]
         private float m_gameDuration = 30f;
 
         [SerializeField]
         [Tooltip("Spawn interval at the start of the game (easy)")]
+        [Min(0.05f)]
         private float m_initialSpawnInterval = 1.0f;
 
         [SerializeField]
         [Tooltip("Spawn interval at the end of the game (hard)")]
+        [Min(0.05f)]
         private float m_finalSpawnInterval = 0.3f;
 
         [SerializeField]
         [Tooltip("Seed fall speed at the start of the game (easy)")]
+        [Min(1f)]
         private float m_initialFallSpeed = 200f;
 
         [SerializeField]
         [Tooltip("Seed fall speed at the end of the game (hard)")]
+        [Min(1f)]
         private float m_finalFallSpeed = 500f;
 
         [SerializeField]
@@ -38,6 +43,7 @@ namespace Birdie.Data
 
         [SerializeField]
         [Tooltip("Number of lives the player starts with")]
+        [Min(1)]
         private int m_initialLives = 3;
 
         public float GameDuration => m_gameDuration;

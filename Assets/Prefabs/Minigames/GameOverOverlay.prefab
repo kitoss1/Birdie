@@ -419,6 +419,7 @@ GameObject:
   - component: {fileID: 7459301532961757560}
   - component: {fileID: 2514911647703879784}
   - component: {fileID: 6775663369336143547}
+  - component: {fileID: 3113228216181739542}
   m_Layer: 0
   m_Name: GameOverOverlay
   m_TagString: Untagged
@@ -487,6 +488,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &3113228216181739542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5961846967742883599}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ce03830c68568b46a31d6aadc0cecb2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.MinigameGameOverPanel
+  m_titleText: {fileID: 483442836922028333}
+  m_scoreText: {fileID: 3731923161017183242}
+  m_friendshipWonText: {fileID: 61850991225669818}
+  m_closeButton: {fileID: 693942258294824928}
 --- !u!1 &6284250001748058239
 GameObject:
   m_ObjectHideFlags: 0

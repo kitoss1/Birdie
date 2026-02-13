@@ -556,6 +556,7 @@ GameObject:
   - component: {fileID: 3550617112701767059}
   - component: {fileID: 9145682999824694835}
   - component: {fileID: 233967927440757494}
+  - component: {fileID: 2744953596499759518}
   m_Layer: 0
   m_Name: ScoreText
   m_TagString: Untagged
@@ -681,6 +682,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &2744953596499759518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2953757047829253102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d188de74145d5ef4daacf3e4bdf40b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.MinigameScoreDisplay
+  m_scoreText: {fileID: 233967927440757494}
 --- !u!1 &3957077476674523727
 GameObject:
   m_ObjectHideFlags: 0
@@ -732,7 +746,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.SeedCatcherUI
   m_bagImage: {fileID: 7300570109373264114}
-  m_scoreText: {fileID: 233967927440757494}
+  m_scoreDisplay: {fileID: 2744953596499759518}
   m_timerText: {fileID: 7303742891560928780}
   m_livesDisplay: {fileID: 4933066013347319933}
   m_seedContainer: {fileID: 7443299825012943178}
@@ -741,11 +755,7 @@ MonoBehaviour:
   m_spikeTemplate: {fileID: 3922484983103537367, guid: 0a424ba696a20f345b7b1fcfc788681f, type: 3}
   m_deathZone: {fileID: 3154656256286965743}
   m_rewardBar: {fileID: 4504903233008289595}
-  m_gameOverPanel: {fileID: 7170227846832512307}
-  m_gameOverTitleText: {fileID: 4001712927075527441}
-  m_finalScoreText: {fileID: 213653052608370230}
-  m_friendshipWonText: {fileID: 3595778095839064710}
-  m_closeButton: {fileID: 4079162613199971804}
+  m_gameOverPanel: {fileID: 1876048960748087850}
   m_gameDuration: 30
   m_initialSpawnInterval: 1
   m_finalSpawnInterval: 0.3
@@ -1588,10 +1598,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameOverOverlay_001
       objectReference: {fileID: 0}
-    - target: {fileID: 5961846967742883599, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 7459301532961757560, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
       propertyPath: m_Pivot.x
       value: 0.5
@@ -1677,57 +1683,19 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
---- !u!114 &213653052608370230 stripped
+--- !u!114 &1876048960748087850 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3731923161017183242, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3113228216181739542, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
   m_PrefabInstance: {fileID: 3548124050290981436}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ce03830c68568b46a31d6aadc0cecb2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &3595778095839064710 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 61850991225669818, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 3548124050290981436}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &4001712927075527441 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 483442836922028333, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 3548124050290981436}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &4079162613199971804 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 693942258294824928, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 3548124050290981436}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.MinigameGameOverPanel
 --- !u!224 &6249231838354301764 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7459301532961757560, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 3548124050290981436}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &7170227846832512307 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5961846967742883599, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
   m_PrefabInstance: {fileID: 3548124050290981436}
   m_PrefabAsset: {fileID: 0}

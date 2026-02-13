@@ -121,6 +121,7 @@ namespace Birdie.UI
                 }
 
                 m_currentMinigame.GameClosed += OnMinigameFinished;
+                m_currentMinigame.StartGame();
             }
 
             if (GameManager.Instance != null)

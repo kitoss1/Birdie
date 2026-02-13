@@ -39,7 +39,7 @@ namespace Birdie.UI.Minigames
         public void Initialize(MinigameRewardTier[] tiers)
         {
             m_rewardTiers = tiers;
-            m_maxScore = ComputeMaxScore(tiers);
+            m_maxScore = MinigameRewardTier.ComputeMaxScore(tiers);
 
             ClearMarkers();
             SpawnMarkers();
@@ -71,25 +71,6 @@ namespace Birdie.UI.Minigames
         private void OnDestroy()
         {
             ClearMarkers();
-        }
-
-        private static int ComputeMaxScore(MinigameRewardTier[] tiers)
-        {
-            if (tiers == null || tiers.Length == 0)
-            {
-                return 0;
-            }
-
-            int max = 0;
-            foreach (MinigameRewardTier tier in tiers)
-            {
-                if (tier != null && tier.ScoreThreshold > max)
-                {
-                    max = tier.ScoreThreshold;
-                }
-            }
-
-            return max;
         }
 
         private void SpawnMarkers()

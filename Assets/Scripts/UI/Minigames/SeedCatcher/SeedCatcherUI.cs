@@ -8,7 +8,6 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Birdie.UI.Minigames
@@ -26,8 +25,8 @@ namespace Birdie.UI.Minigames
         private Image m_bagImage;
 
         [SerializeField]
-        [Tooltip("HUD text displaying current score")]
-        private TextMeshProUGUI m_scoreText;
+        [Tooltip("Reusable score display component")]
+        private MinigameScoreDisplay m_scoreDisplay;
 
         [SerializeField]
         [Tooltip("HUD text displaying remaining time")]
@@ -64,25 +63,8 @@ namespace Birdie.UI.Minigames
 
         [Header("Game Over")]
         [SerializeField]
-        [Tooltip("Panel shown when the timer runs out")]
-        private GameObject m_gameOverPanel;
-
-        [SerializeField]
-        [Tooltip("Title text on the game over panel (e.g. Congratulations / Good luck)")]
-        private TextMeshProUGUI m_gameOverTitleText;
-
-        [SerializeField]
-        [Tooltip("Text showing the final score on the game over panel")]
-        private TextMeshProUGUI m_finalScoreText;
-
-        [SerializeField]
-        [Tooltip("Text displaying the friendship reward earned on the game over panel")]
-        private TextMeshProUGUI m_friendshipWonText;
-
-        [SerializeField]
-        [FormerlySerializedAs("m_playAgainButton")]
-        [Tooltip("Button to close the minigame after game over")]
-        private Button m_closeButton;
+        [Tooltip("Reusable game over panel component")]
+        private MinigameGameOverPanel m_gameOverPanel;
 
         [Header("Game Settings")]
         [SerializeField]
@@ -172,9 +154,9 @@ namespace Birdie.UI.Minigames
                 m_seedContainerRect = m_seedContainer.GetComponent<RectTransform>();
             }
 
-            if (m_closeButton != null)
+            if (m_gameOverPanel != null)
             {
-                m_closeButton.onClick.AddListener(OnCloseClicked);
+                m_gameOverPanel.CloseClicked += OnCloseClicked;
             }
 
             if (m_basket != null)
@@ -188,11 +170,6 @@ namespace Birdie.UI.Minigames
                 m_deathZone.SeedDestroyed += OnSeedMissed;
                 m_deathZone.SpikeDestroyed += OnSpikeMissed;
             }
-        }
-
-        private void Start()
-        {
-            StartGame();
         }
 
         private void Update()
@@ -213,9 +190,9 @@ namespace Birdie.UI.Minigames
 
         private void OnDestroy()
         {
-            if (m_closeButton != null)
+            if (m_gameOverPanel != null)
             {
-                m_closeButton.onClick.RemoveListener(OnCloseClicked);
+                m_gameOverPanel.CloseClicked -= OnCloseClicked;
             }
 
             if (m_basket != null)
@@ -273,18 +250,18 @@ namespace Birdie.UI.Minigames
             m_basket.SetTargetX(localPoint.x);
         }
 
-        private void StartGame()
+        public void StartGame()
         {
             m_score = 0;
             m_currentLives = m_initialLives;
             m_remainingTime = m_gameDuration;
             m_currentState = SeedCatcherState.WaitingToStart;
 
-            UpdateScoreDisplay();
+            m_scoreDisplay?.UpdateScore(m_score);
             UpdateTimerDisplay();
             m_livesDisplay?.Initialize(m_initialLives);
             m_rewardBar?.UpdateScore(0);
-            HideGameOver();
+            m_gameOverPanel?.Hide();
             CleanupAllSeeds();
 
             if (m_basket != null)
@@ -364,6 +341,20 @@ namespace Birdie.UI.Minigames
             return Mathf.Clamp01(elapsed / m_gameDuration);
         }
 
+        private float GetCurrentFallSpeed()
+        {
+            float progress = GetDifficultyProgress();
+            return Mathf.Lerp(m_initialFallSpeed, m_finalFallSpeed, progress);
+        }
+
+        private Vector2 GetRandomSpawnPosition()
+        {
+            float halfWidth = m_seedContainerRect.rect.width / 2f;
+            float topY = m_seedContainerRect.rect.height / 2f;
+            float randomX = UnityEngine.Random.Range(-halfWidth + 30f, halfWidth - 30f);
+            return new Vector2(randomX, topY);
+        }
+
         private async UniTaskVoid SpawnSeedsAsync()
         {
             while (m_currentState == SeedCatcherState.Playing)
@@ -405,15 +396,8 @@ namespace Birdie.UI.Minigames
                 return;
             }
 
-            float halfWidth = m_seedContainerRect.rect.width / 2f;
-            float topY = m_seedContainerRect.rect.height / 2f;
-            float randomX = UnityEngine.Random.Range(-halfWidth + 30f, halfWidth - 30f);
-
-            float progress = GetDifficultyProgress();
-            float fallSpeed = Mathf.Lerp(m_initialFallSpeed, m_finalFallSpeed, progress);
-            seed.SetFallSpeed(fallSpeed);
-
-            seed.RectTransform.anchoredPosition = new Vector2(randomX, topY);
+            seed.SetFallSpeed(GetCurrentFallSpeed());
+            seed.RectTransform.anchoredPosition = GetRandomSpawnPosition();
             m_activeSeeds.Add(seed);
         }
 
@@ -426,7 +410,7 @@ namespace Birdie.UI.Minigames
 
             m_activeSeeds.Remove(seed);
             m_score++;
-            UpdateScoreDisplay();
+            m_scoreDisplay?.UpdateScore(m_score);
             m_rewardBar?.UpdateScore(m_score);
             Destroy(seed.gameObject);
         }
@@ -453,15 +437,8 @@ namespace Birdie.UI.Minigames
                 return;
             }
 
-            float halfWidth = m_seedContainerRect.rect.width / 2f;
-            float topY = m_seedContainerRect.rect.height / 2f;
-            float randomX = UnityEngine.Random.Range(-halfWidth + 30f, halfWidth - 30f);
-
-            float progress = GetDifficultyProgress();
-            float fallSpeed = Mathf.Lerp(m_initialFallSpeed, m_finalFallSpeed, progress);
-            spike.SetFallSpeed(fallSpeed);
-
-            spike.RectTransform.anchoredPosition = new Vector2(randomX, topY);
+            spike.SetFallSpeed(GetCurrentFallSpeed());
+            spike.RectTransform.anchoredPosition = GetRandomSpawnPosition();
             m_activeSpikes.Add(spike);
         }
 
@@ -506,7 +483,7 @@ namespace Birdie.UI.Minigames
                 $"[{nameof(SeedCatcherUI)}] No lives left! Final score: {m_score}",
                 DebugCategory.UI);
 
-            ShowGameOver();
+            m_gameOverPanel?.Show(m_score, FriendshipReward);
         }
 
         private void CleanupAllSeeds()
@@ -548,49 +525,7 @@ namespace Birdie.UI.Minigames
                 $"[{nameof(SeedCatcherUI)}] Time's up! Final score: {m_score}",
                 DebugCategory.UI);
 
-            ShowGameOver();
-        }
-
-        private void ShowGameOver()
-        {
-            if (m_gameOverPanel != null)
-            {
-                m_gameOverPanel.transform.SetAsLastSibling();
-                m_gameOverPanel.SetActive(true);
-            }
-
-            int reward = FriendshipReward;
-
-            if (m_gameOverTitleText != null)
-            {
-                m_gameOverTitleText.text = reward > 0 ? "Congratulations!" : "Good luck next time!";
-            }
-
-            if (m_finalScoreText != null)
-            {
-                m_finalScoreText.text = $"Score: {m_score}";
-            }
-
-            if (m_friendshipWonText != null)
-            {
-                m_friendshipWonText.text = reward > 0 ? $"+{reward}" : "0";
-            }
-        }
-
-        private void HideGameOver()
-        {
-            if (m_gameOverPanel != null)
-            {
-                m_gameOverPanel.SetActive(false);
-            }
-        }
-
-        private void UpdateScoreDisplay()
-        {
-            if (m_scoreText != null)
-            {
-                m_scoreText.text = $"Score: {m_score}";
-            }
+            m_gameOverPanel?.Show(m_score, FriendshipReward);
         }
 
         private void UpdateTimerDisplay()

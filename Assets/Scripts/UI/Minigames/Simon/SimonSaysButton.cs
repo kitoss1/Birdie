@@ -89,7 +89,7 @@ namespace Birdie.UI.Minigames
 
             await m_buttonImage.DOColor(m_highlightColor, m_highlightFadeIn)
                 .AsyncWaitForCompletion();
-            GameManager.Instance.SoundManager.PlaySFX(m_keyOfButtonPress);
+            PlaySound();
             await UniTask.Delay(TimeSpan.FromSeconds(m_highlightHold));
 
             await m_buttonImage.DOColor(m_normalColor, m_highlightFadeOut)
@@ -106,7 +106,8 @@ namespace Birdie.UI.Minigames
             {
                 return;
             }
-            GameManager.Instance.SoundManager.PlaySFX(m_keyOfButtonPress);
+
+            PlaySound();
             m_buttonImage.DOKill();
             m_buttonImage.color = m_highlightColor;
             m_buttonImage.DOColor(m_normalColor, m_highlightFadeOutWhenClicked);
@@ -120,6 +121,14 @@ namespace Birdie.UI.Minigames
             if (m_button != null)
             {
                 m_button.interactable = interactable;
+            }
+        }
+
+        private void PlaySound()
+        {
+            if (!string.IsNullOrEmpty(m_keyOfButtonPress))
+            {
+                GameManager.Instance.SoundManager.PlaySFX(m_keyOfButtonPress);
             }
         }
 

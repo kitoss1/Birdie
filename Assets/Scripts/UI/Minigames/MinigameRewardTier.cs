@@ -37,5 +37,25 @@ namespace Birdie.Data
 
             return reward;
         }
+
+        public static int ComputeMaxScore(MinigameRewardTier[] tiers)
+        {
+            if (tiers == null || tiers.Length == 0)
+            {
+                return 0;
+            }
+
+            int max = 0;
+
+            foreach (MinigameRewardTier tier in tiers)
+            {
+                if (tier != null && tier.ScoreThreshold > max)
+                {
+                    max = tier.ScoreThreshold;
+                }
+            }
+
+            return max;
+        }
     }
 }

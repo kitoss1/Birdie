@@ -246,6 +246,7 @@ GameObject:
   - component: {fileID: 3550617112701767059}
   - component: {fileID: 9145682999824694835}
   - component: {fileID: 233967927440757494}
+  - component: {fileID: 449361372338028026}
   m_Layer: 0
   m_Name: ScoreText
   m_TagString: Untagged
@@ -371,6 +372,19 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &449361372338028026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2953757047829253102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d188de74145d5ef4daacf3e4bdf40b24, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.MinigameScoreDisplay
+  m_scoreText: {fileID: 233967927440757494}
 --- !u!1 &4400365219516685110
 GameObject:
   m_ObjectHideFlags: 0
@@ -428,13 +442,9 @@ MonoBehaviour:
   - {fileID: 3983112246227131002}
   - {fileID: 2099875428269751982}
   - {fileID: 2727009515242214455}
-  m_scoreText: {fileID: 233967927440757494}
+  m_scoreDisplay: {fileID: 449361372338028026}
   m_rewardBar: {fileID: 6317292694672213795}
-  m_gameOverPanel: {fileID: 8542073560873444282}
-  m_gameOverTitleText: {fileID: 2486759046613439896}
-  m_finalScoreText: {fileID: 1728611259444144319}
-  m_friendshipWonText: {fileID: 2660655109063625743}
-  m_closeButton: {fileID: 3284907884723854165}
+  m_gameOverPanel: {fileID: 1081811753591870627}
   m_sequenceStartDelay: 1
   m_gapBetweenHighlights: 0.2
   m_nextRoundDelay: 0.8
@@ -1539,57 +1549,19 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
---- !u!114 &1728611259444144319 stripped
+--- !u!114 &1081811753591870627 stripped
 MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3731923161017183242, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
+  m_CorrespondingSourceObject: {fileID: 3113228216181739542, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
   m_PrefabInstance: {fileID: 2609614567970686133}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Script: {fileID: 11500000, guid: 7ce03830c68568b46a31d6aadc0cecb2, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &2486759046613439896 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 483442836922028333, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 2609614567970686133}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &2660655109063625743 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 61850991225669818, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 2609614567970686133}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
---- !u!114 &3284907884723854165 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 693942258294824928, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 2609614567970686133}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.MinigameGameOverPanel
 --- !u!224 &4878512917573901773 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7459301532961757560, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
-  m_PrefabInstance: {fileID: 2609614567970686133}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &8542073560873444282 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5961846967742883599, guid: 15b616e85a1295f48910c6ce972601c4, type: 3}
   m_PrefabInstance: {fileID: 2609614567970686133}
   m_PrefabAsset: {fileID: 0}

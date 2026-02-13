@@ -5,9 +5,7 @@ using Birdie.Data;
 using Birdie.Debug;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Birdie.UI.Minigames
@@ -25,8 +23,8 @@ namespace Birdie.UI.Minigames
 
         [Header("Score")]
         [SerializeField]
-        [Tooltip("Text displaying the current score during gameplay")]
-        private TextMeshProUGUI m_scoreText;
+        [Tooltip("Reusable score display component")]
+        private MinigameScoreDisplay m_scoreDisplay;
 
         [Header("Reward Bar")]
         [SerializeField]
@@ -35,25 +33,8 @@ namespace Birdie.UI.Minigames
 
         [Header("Game Over")]
         [SerializeField]
-        [Tooltip("Panel shown when the player makes a mistake")]
-        private GameObject m_gameOverPanel;
-
-        [SerializeField]
-        [Tooltip("Title text on the game over panel (e.g. Congratulations / Good luck)")]
-        private TextMeshProUGUI m_gameOverTitleText;
-
-        [SerializeField]
-        [Tooltip("Text displaying the final score on the game over panel")]
-        private TextMeshProUGUI m_finalScoreText;
-
-        [SerializeField]
-        [Tooltip("Text displaying the friendship reward earned on the game over panel")]
-        private TextMeshProUGUI m_friendshipWonText;
-
-        [SerializeField]
-        [FormerlySerializedAs("m_playAgainButton")]
-        [Tooltip("Button to close the minigame after game over")]
-        private Button m_closeButton;
+        [Tooltip("Reusable game over panel component")]
+        private MinigameGameOverPanel m_gameOverPanel;
 
         [Header("Timing")]
         [SerializeField]
@@ -92,9 +73,9 @@ namespace Birdie.UI.Minigames
         {
             m_destroyCancellation = this.GetCancellationTokenOnDestroy();
 
-            if (m_closeButton != null)
+            if (m_gameOverPanel != null)
             {
-                m_closeButton.onClick.AddListener(OnCloseClicked);
+                m_gameOverPanel.CloseClicked += OnCloseClicked;
             }
 
             foreach (SimonSaysButton button in m_buttons)
@@ -106,16 +87,11 @@ namespace Birdie.UI.Minigames
             }
         }
 
-        private void Start()
-        {
-            StartGame();
-        }
-
         private void OnDestroy()
         {
-            if (m_closeButton != null)
+            if (m_gameOverPanel != null)
             {
-                m_closeButton.onClick.RemoveListener(OnCloseClicked);
+                m_gameOverPanel.CloseClicked -= OnCloseClicked;
             }
 
             foreach (SimonSaysButton button in m_buttons)
@@ -135,16 +111,16 @@ namespace Birdie.UI.Minigames
             }
         }
 
-        private void StartGame()
+        public void StartGame()
         {
             m_sequence.Clear();
             m_score = 0;
             m_currentInputIndex = 0;
             m_currentState = SimonState.WaitingToStart;
 
-            UpdateScoreDisplay();
+            m_scoreDisplay?.UpdateScore(m_score);
             m_rewardBar?.UpdateScore(0);
-            HideGameOver();
+            m_gameOverPanel?.Hide();
             SetAllButtonsInteractable(false);
 
             DebugBase.Log($"[{nameof(SimonSaysUI)}] Game started", DebugCategory.UI);
@@ -225,7 +201,7 @@ namespace Birdie.UI.Minigames
         private void OnRoundComplete()
         {
             m_score++;
-            UpdateScoreDisplay();
+            m_scoreDisplay?.UpdateScore(m_score);
             m_rewardBar?.UpdateScore(m_score);
 
             DebugBase.Log(
@@ -241,7 +217,7 @@ namespace Birdie.UI.Minigames
                     DebugCategory.UI);
 
                 m_currentState = SimonState.GameOver;
-                ShowGameOver();
+                m_gameOverPanel?.Show(m_score, FriendshipReward);
                 return;
             }
 
@@ -266,48 +242,7 @@ namespace Birdie.UI.Minigames
                 $"[{nameof(SimonSaysUI)}] Game over! Final score: {m_score}",
                 DebugCategory.UI);
 
-            ShowGameOver();
-        }
-
-        private void ShowGameOver()
-        {
-            if (m_gameOverPanel != null)
-            {
-                m_gameOverPanel.SetActive(true);
-            }
-
-            int reward = FriendshipReward;
-
-            if (m_gameOverTitleText != null)
-            {
-                m_gameOverTitleText.text = reward > 0 ? "Congratulations!" : "Good luck next time!";
-            }
-
-            if (m_finalScoreText != null)
-            {
-                m_finalScoreText.text = $"Score: {m_score}";
-            }
-
-            if (m_friendshipWonText != null)
-            {
-                m_friendshipWonText.text = reward > 0 ? $"+{reward}" : "0";
-            }
-        }
-
-        private void HideGameOver()
-        {
-            if (m_gameOverPanel != null)
-            {
-                m_gameOverPanel.SetActive(false);
-            }
-        }
-
-        private void UpdateScoreDisplay()
-        {
-            if (m_scoreText != null)
-            {
-                m_scoreText.text = $"Score: {m_score}";
-            }
+            m_gameOverPanel?.Show(m_score, FriendshipReward);
         }
 
         private void SetAllButtonsInteractable(bool interactable)
@@ -324,32 +259,12 @@ namespace Birdie.UI.Minigames
         public void SetRewardTiers(MinigameRewardTier[] rewardTiers)
         {
             m_rewardTiers = rewardTiers;
-            m_maxScore = ComputeMaxScore(rewardTiers);
+            m_maxScore = MinigameRewardTier.ComputeMaxScore(rewardTiers);
 
             if (m_rewardBar != null)
             {
                 m_rewardBar.Initialize(rewardTiers);
             }
-        }
-
-        private static int ComputeMaxScore(MinigameRewardTier[] tiers)
-        {
-            if (tiers == null || tiers.Length == 0)
-            {
-                return 0;
-            }
-
-            int max = 0;
-
-            foreach (MinigameRewardTier tier in tiers)
-            {
-                if (tier != null && tier.ScoreThreshold > max)
-                {
-                    max = tier.ScoreThreshold;
-                }
-            }
-
-            return max;
         }
 
         public void SetDifficulty(MinigameDifficultySettings settings)
