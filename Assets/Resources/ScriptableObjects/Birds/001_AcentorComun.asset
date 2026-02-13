@@ -54,4 +54,4 @@ MonoBehaviour:
   m_hasSpecialAnimation: 0
   m_specialAnimationDescription: 
   m_availableMinigames:
-  - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}
+  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}

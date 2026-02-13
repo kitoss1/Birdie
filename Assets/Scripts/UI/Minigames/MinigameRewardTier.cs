@@ -18,6 +18,16 @@ namespace Birdie.Data
 
         public int FriendshipReward => m_friendshipReward;
 
+        public MinigameRewardTier()
+        {
+        }
+
+        public MinigameRewardTier(int scoreThreshold, int friendshipReward)
+        {
+            m_scoreThreshold = scoreThreshold;
+            m_friendshipReward = friendshipReward;
+        }
+
         public static int ResolveReward(MinigameRewardTier[] tiers, int score)
         {
             return ResolveReward(tiers, score, 0);
