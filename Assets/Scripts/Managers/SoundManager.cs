@@ -96,8 +96,8 @@ namespace Birdie.Managers
                 return;
             }
 
-            float effectiveVolume = CalculateEffectiveVolume(m_sfxVolume, m_sfxMuted) * volumeScale;
-            m_sfxSource.PlayOneShot(clip, effectiveVolume);
+            m_sfxSource.volume = CalculateEffectiveVolume(m_sfxVolume, m_sfxMuted);
+            m_sfxSource.PlayOneShot(clip, volumeScale);
 
             DebugBase.Log($"[{nameof(SoundManager)}] Playing SFX: {clip.name}", DebugCategory.Audio);
         }
