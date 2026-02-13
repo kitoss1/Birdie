@@ -32,6 +32,7 @@ namespace Birdie.Birds
         private float m_visitEndTime;
         private bool m_isInteractable = false;
         private bool m_hasBeenClickedThisVisit = false;
+        private bool m_hasPlayedMinigameThisVisit = false;
         private BirdState m_stateBeforePause;
         private float m_remainingVisitTime;
 
@@ -47,6 +48,8 @@ namespace Birdie.Birds
         public BirdState CurrentState => m_currentState;
 
         public bool IsInteractable => m_isInteractable;
+
+        public bool CanPlayMinigame => !m_hasPlayedMinigameThisVisit;
 
         public IReadOnlyList<BirdObject> NearbyObjects => m_nearbyObjects;
 
@@ -443,6 +446,25 @@ namespace Birdie.Birds
 
             GameManager.Instance.SoundManager.PlaySFX(m_birdData.BirdSong);
             DebugBase.Log($"[{nameof(Bird)}] Playing song for {m_birdData.BirdName}", DebugCategory.Birds);
+        }
+
+        /// <summary>
+        /// Marks that this bird has played a minigame during this visit.
+        /// </summary>
+        public void MarkMinigamePlayed()
+        {
+            m_hasPlayedMinigameThisVisit = true;
+            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} marked as having played a minigame this visit", DebugCategory.Birds);
+        }
+
+        /// <summary>
+        /// Re-enables minigame play for this visit.
+        /// Used by future features that grant additional plays.
+        /// </summary>
+        public void AllowMinigameReplay()
+        {
+            m_hasPlayedMinigameThisVisit = false;
+            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} minigame replay allowed", DebugCategory.Birds);
         }
     }
 }

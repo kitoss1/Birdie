@@ -168,6 +168,11 @@ namespace Birdie.UI
             m_backdrop.SetActive(true);
             m_menuPanel.SetActive(true);
 
+            if (m_playButton != null)
+            {
+                m_playButton.interactable = bird.CanPlayMinigame;
+            }
+
             PositionMenuAboveBird(bird);
 
             DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Showing menu for {bird.BirdData.BirdName}", DebugCategory.UI);
@@ -272,7 +277,9 @@ namespace Birdie.UI
                 return;
             }
 
-            BirdData birdData = m_currentBird.BirdData;
+            Bird bird = m_currentBird;
+            BirdData birdData = bird.BirdData;
+            bird.MarkMinigamePlayed();
             DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Play clicked for {birdData.BirdName}", DebugCategory.UI);
             Hide();
 
