@@ -68,8 +68,16 @@ namespace Birdie.UI.Minigames
         private GameObject m_gameOverPanel;
 
         [SerializeField]
+        [Tooltip("Title text on the game over panel (e.g. Congratulations / Good luck)")]
+        private TextMeshProUGUI m_gameOverTitleText;
+
+        [SerializeField]
         [Tooltip("Text showing the final score on the game over panel")]
         private TextMeshProUGUI m_finalScoreText;
+
+        [SerializeField]
+        [Tooltip("Text displaying the friendship reward earned on the game over panel")]
+        private TextMeshProUGUI m_friendshipWonText;
 
         [SerializeField]
         [FormerlySerializedAs("m_playAgainButton")]
@@ -551,9 +559,21 @@ namespace Birdie.UI.Minigames
                 m_gameOverPanel.SetActive(true);
             }
 
+            int reward = FriendshipReward;
+
+            if (m_gameOverTitleText != null)
+            {
+                m_gameOverTitleText.text = reward > 0 ? "Congratulations!" : "Good luck next time!";
+            }
+
             if (m_finalScoreText != null)
             {
                 m_finalScoreText.text = $"Score: {m_score}";
+            }
+
+            if (m_friendshipWonText != null)
+            {
+                m_friendshipWonText.text = reward > 0 ? $"+{reward}" : "0";
             }
         }
 
