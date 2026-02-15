@@ -14,6 +14,10 @@ namespace Birdie.UI.Store
     public sealed class StoreItemMoveHandler : MonoBehaviour
     {
         [Header("UI Controls")]
+        [SerializeField]
+        [Tooltip("Fullscreen transparent image that blocks input from passing through during move mode")]
+        private GameObject m_backdrop;
+
         [SerializeField] private GameObject m_buttonsPanel;
         [SerializeField] private Button m_confirmButton;
         [SerializeField] private Button m_cancelButton;
@@ -27,22 +31,17 @@ namespace Birdie.UI.Store
         [Tooltip("Right boundary transform. The object cannot move past this X position")]
         private Transform m_rightBound;
 
-        private Camera m_mainCamera;
         private GameObject m_targetObject;
         private string m_targetItemID;
         private Vector3 m_originalPosition;
+        private Canvas m_targetCanvas;
+        private RectTransform m_canvasRect;
         private bool m_isMoving;
         private bool m_isPlaced;
         private bool m_skipFirstFrame;
 
         private void Awake()
         {
-            m_mainCamera = Camera.main;
-            if (m_mainCamera == null)
-            {
-                m_mainCamera = FindFirstObjectByType<Camera>();
-            }
-
             if (m_confirmButton != null)
             {
                 m_confirmButton.onClick.AddListener(ConfirmPlacement);
@@ -69,7 +68,7 @@ namespace Birdie.UI.Store
 
         private void Update()
         {
-            if (!m_isMoving || m_isPlaced || m_targetObject == null || m_mainCamera == null)
+            if (!m_isMoving || m_isPlaced || m_targetObject == null)
             {
                 return;
             }
@@ -104,11 +103,14 @@ namespace Birdie.UI.Store
             m_targetObject = targetObject;
             m_targetItemID = itemID;
             m_originalPosition = targetObject.transform.position;
+            m_targetCanvas = targetObject.GetComponentInParent<Canvas>();
+            m_canvasRect = m_targetCanvas != null ? m_targetCanvas.GetComponent<RectTransform>() : null;
             m_isMoving = true;
             m_isPlaced = false;
             m_skipFirstFrame = true;
 
             gameObject.SetActive(true);
+            SetBackdropVisible(true);
             SetButtonsPanelVisible(false);
 
             if (GameManager.Instance?.MenuManager != null)
@@ -121,18 +123,21 @@ namespace Birdie.UI.Store
 
         private void FollowMouse()
         {
-            Vector2 delta = Mouse.current.delta.ReadValue();
-            if (Mathf.Approximately(delta.x, 0f))
+            if (m_targetCanvas == null || m_canvasRect == null)
             {
                 return;
             }
 
-            Canvas canvas = m_targetObject.GetComponentInParent<Canvas>();
-            float scaleFactor = canvas != null ? canvas.scaleFactor : 1f;
-            float canvasDeltaX = delta.x / scaleFactor;
+            Vector2 screenPos = Mouse.current.position.ReadValue();
+            Camera eventCamera = m_targetCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : m_targetCanvas.worldCamera;
+
+            if (!RectTransformUtility.ScreenPointToWorldPointInRectangle(m_canvasRect, screenPos, eventCamera, out Vector3 worldPoint))
+            {
+                return;
+            }
 
             Vector3 position = m_targetObject.transform.position;
-            position.x = ClampX(position.x + canvasDeltaX);
+            position.x = ClampToVisibleArea(worldPoint.x);
             m_targetObject.transform.position = position;
         }
 
@@ -151,22 +156,37 @@ namespace Birdie.UI.Store
             }
         }
 
-        private float ClampX(float x)
+        private void SetBackdropVisible(bool visible)
         {
-            if (m_leftBound == null || m_rightBound == null)
+            if (m_backdrop != null)
             {
-                return x;
+                m_backdrop.SetActive(visible);
+            }
+        }
+
+        private float ClampToVisibleArea(float x)
+        {
+            if (m_leftBound != null && m_rightBound != null)
+            {
+                float min = Mathf.Min(m_leftBound.position.x, m_rightBound.position.x);
+                float max = Mathf.Max(m_leftBound.position.x, m_rightBound.position.x);
+
+                if (!Mathf.Approximately(min, max))
+                {
+                    return Mathf.Clamp(x, min, max);
+                }
             }
 
-            float min = Mathf.Min(m_leftBound.position.x, m_rightBound.position.x);
-            float max = Mathf.Max(m_leftBound.position.x, m_rightBound.position.x);
-
-            if (Mathf.Approximately(min, max))
+            if (m_canvasRect != null)
             {
-                return x;
+                Vector3[] corners = new Vector3[4];
+                m_canvasRect.GetWorldCorners(corners);
+                float canvasMin = corners[0].x;
+                float canvasMax = corners[2].x;
+                return Mathf.Clamp(x, canvasMin, canvasMax);
             }
 
-            return Mathf.Clamp(x, min, max);
+            return x;
         }
 
         private void ConfirmPlacement()
@@ -206,6 +226,7 @@ namespace Birdie.UI.Store
             m_targetItemID = null;
 
             SetButtonsPanelVisible(false);
+            SetBackdropVisible(false);
 
             if (GameManager.Instance?.MenuManager != null)
             {
