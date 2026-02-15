@@ -47,6 +47,11 @@ namespace Birdie.UI.Store
         [Tooltip("Text displaying the player's current golden seeds")]
         private TextMeshProUGUI m_currencyText;
 
+        [Header("Item Info")]
+        [SerializeField]
+        [Tooltip("Popup that displays item info when the info button is clicked")]
+        private StoreItemInfoPopupUI m_itemInfoPopup;
+
         [Header("Controls")]
         [SerializeField]
         [Tooltip("Button to close the store popup")]
@@ -77,6 +82,11 @@ namespace Birdie.UI.Store
 
         private void OnEnable()
         {
+            if (m_itemInfoPopup != null)
+            {
+                m_itemInfoPopup.Hide();
+            }
+
             RefreshCurrencyDisplay();
             SwitchToTab(m_currentTab);
         }
@@ -199,6 +209,7 @@ namespace Birdie.UI.Store
                 {
                     item.OnBuyClicked -= OnItemBuyClicked;
                     item.OnToggleClicked -= OnItemToggleClicked;
+                    item.OnInfoClicked -= OnItemInfoClicked;
                     Destroy(item.gameObject);
                 }
             }
@@ -221,6 +232,7 @@ namespace Birdie.UI.Store
                 itemUI.Setup(itemData, isOwned, isEnabled, canAfford);
                 itemUI.OnBuyClicked += OnItemBuyClicked;
                 itemUI.OnToggleClicked += OnItemToggleClicked;
+                itemUI.OnInfoClicked += OnItemInfoClicked;
                 m_instantiatedItems.Add(itemUI);
             }
         }
@@ -237,6 +249,14 @@ namespace Birdie.UI.Store
                 DebugBase.Log($"[{nameof(StorePopupUI)}] Purchased item: {itemData.ItemName}");
                 OnItemPurchased?.Invoke(itemData);
                 RefreshItemsDisplay();
+            }
+        }
+
+        private void OnItemInfoClicked(StoreItemData itemData)
+        {
+            if (m_itemInfoPopup != null)
+            {
+                m_itemInfoPopup.Show(itemData);
             }
         }
 
@@ -339,6 +359,11 @@ namespace Birdie.UI.Store
             if (m_currencyText == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Currency Text reference is missing!", this);
+            }
+
+            if (m_itemInfoPopup == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Item Info Popup reference is missing!", this);
             }
 
             if (m_closeButton == null)

@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: Bath001
   m_itemName: Bath001
-  m_description: First feeder to test
+  m_description: First bath to test
   m_icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   m_price: 10
   m_category: 1

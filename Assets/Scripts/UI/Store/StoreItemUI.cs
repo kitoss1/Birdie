@@ -33,6 +33,10 @@ namespace Birdie.UI.Store
         [Tooltip("Text on the buy button")]
         private TextMeshProUGUI m_buyButtonText;
 
+        [SerializeField]
+        [Tooltip("Button to show item info popup")]
+        private Button m_infoButton;
+
         [Header("Visual States")]
         [SerializeField]
         [Tooltip("GameObject shown when item is already owned")]
@@ -59,6 +63,11 @@ namespace Birdie.UI.Store
         /// Event fired when the toggle button is clicked (for owned items).
         /// </summary>
         public event Action<StoreItemData> OnToggleClicked;
+
+        /// <summary>
+        /// Event fired when the info button is clicked.
+        /// </summary>
+        public event Action<StoreItemData> OnInfoClicked;
 
         public StoreItemData ItemData => m_itemData;
 
@@ -135,6 +144,11 @@ namespace Birdie.UI.Store
             {
                 m_buyButton.onClick.AddListener(OnBuyButtonClicked);
             }
+
+            if (m_infoButton != null)
+            {
+                m_infoButton.onClick.AddListener(OnInfoButtonClicked);
+            }
         }
 
         private void OnDestroy()
@@ -142,6 +156,11 @@ namespace Birdie.UI.Store
             if (m_buyButton != null)
             {
                 m_buyButton.onClick.RemoveListener(OnBuyButtonClicked);
+            }
+
+            if (m_infoButton != null)
+            {
+                m_infoButton.onClick.RemoveListener(OnInfoButtonClicked);
             }
         }
 
@@ -160,6 +179,16 @@ namespace Birdie.UI.Store
             {
                 OnBuyClicked?.Invoke(m_itemData);
             }
+        }
+
+        private void OnInfoButtonClicked()
+        {
+            if (m_itemData == null)
+            {
+                return;
+            }
+
+            OnInfoClicked?.Invoke(m_itemData);
         }
 
 #if UNITY_EDITOR
