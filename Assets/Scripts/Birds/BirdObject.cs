@@ -29,18 +29,21 @@ namespace Birdie.Birds
         [Tooltip("Position where bird should move to interact with this object")]
         private Transform m_interactionPoint;
 
+        private int m_interactingBirdCount;
+
         // Properties
         public string ObjectID => m_objectID;
         public BirdObjectType ObjectType => m_objectType;
         public int Attractiveness => m_attractiveness;
         public Vector3 InteractionPosition => m_interactionPoint != null ? m_interactionPoint.position : transform.position;
+        public bool IsBeingUsed => m_interactingBirdCount > 0;
 
         /// <summary>
         /// Called when a bird starts interacting with this object.
         /// </summary>
         public virtual void OnBirdStartInteraction(Bird bird)
         {
-            // Override in derived classes
+            m_interactingBirdCount++;
         }
 
         /// <summary>
@@ -48,7 +51,12 @@ namespace Birdie.Birds
         /// </summary>
         public virtual void OnBirdEndInteraction(Bird bird)
         {
-            // Override in derived classes
+            m_interactingBirdCount--;
+
+            if (m_interactingBirdCount < 0)
+            {
+                m_interactingBirdCount = 0;
+            }
         }
 
         /// <summary>

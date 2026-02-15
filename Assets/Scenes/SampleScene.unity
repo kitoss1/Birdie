@@ -3542,10 +3542,6 @@ PrefabInstance:
       propertyPath: m_rightBound
       value: 
       objectReference: {fileID: 1545329206}
-    - target: {fileID: 5703660759918849837, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
-      propertyPath: m_buttonsPanel
-      value: 
-      objectReference: {fileID: 5827009144363122162}
     - target: {fileID: 6674501308867354883, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3635,11 +3631,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
---- !u!1 &5827009144363122162 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 6586007967988157272, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
-  m_PrefabInstance: {fileID: 5827009144363122161}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6158013958954800696
 PrefabInstance:
   m_ObjectHideFlags: 0

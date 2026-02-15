@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Birdie.Birds;
 using Birdie.Data;
@@ -57,6 +58,15 @@ namespace Birdie.UI.Store
         [Tooltip("Handler for moving store items in the scene")]
         private StoreItemMoveHandler m_moveHandler;
 
+        [Header("Feedback")]
+        [SerializeField]
+        [Tooltip("Text used to show temporary feedback messages to the player")]
+        private TextMeshProUGUI m_feedbackText;
+
+        [SerializeField]
+        [Tooltip("How long the feedback message stays visible")]
+        private float m_feedbackDuration = 2f;
+
         [Header("Controls")]
         [SerializeField]
         [Tooltip("Button to close the store popup")]
@@ -64,6 +74,7 @@ namespace Birdie.UI.Store
 
         private BirdObjectType m_currentTab = BirdObjectType.Feeder;
         private List<StoreItemUI> m_instantiatedItems = new List<StoreItemUI>();
+        private Coroutine m_feedbackCoroutine;
 
         /// <summary>
         /// Event fired when an item is purchased.
@@ -92,6 +103,7 @@ namespace Birdie.UI.Store
                 m_itemInfoPopup.Hide();
             }
 
+            HideFeedback();
             RefreshCurrencyDisplay();
             SwitchToTab(m_currentTab);
         }
@@ -281,6 +293,14 @@ namespace Birdie.UI.Store
                 return;
             }
 
+            BirdObject birdObject = sceneObject.GetComponent<BirdObject>();
+            if (birdObject != null && birdObject.IsBeingUsed)
+            {
+                ShowFeedback("A bird is currently using this item!");
+                DebugBase.Log($"[{nameof(StorePopupUI)}] Cannot move item {itemData.ItemName}: a bird is using it");
+                return;
+            }
+
             m_moveHandler.StartMoving(sceneObject, itemData.ItemID);
 
             if (GameManager.Instance?.MenuManager != null)
@@ -352,6 +372,40 @@ namespace Birdie.UI.Store
             return ownedItems;
         }
 
+        private void ShowFeedback(string message)
+        {
+            if (m_feedbackText == null)
+            {
+                return;
+            }
+
+            m_feedbackText.text = message;
+            m_feedbackText.gameObject.SetActive(true);
+
+            if (m_feedbackCoroutine != null)
+            {
+                StopCoroutine(m_feedbackCoroutine);
+            }
+
+            m_feedbackCoroutine = StartCoroutine(HideFeedbackAfterDelay());
+        }
+
+        private IEnumerator HideFeedbackAfterDelay()
+        {
+            yield return new WaitForSeconds(m_feedbackDuration);
+            HideFeedback();
+        }
+
+        private void HideFeedback()
+        {
+            if (m_feedbackText != null)
+            {
+                m_feedbackText.gameObject.SetActive(false);
+            }
+
+            m_feedbackCoroutine = null;
+        }
+
         private void OnCloseButtonClicked()
         {
             OnCloseClicked?.Invoke();
@@ -398,6 +452,11 @@ namespace Birdie.UI.Store
             if (m_moveHandler == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Move Handler reference is missing!", this);
+            }
+
+            if (m_feedbackText == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Feedback Text reference is missing!", this);
             }
 
             if (m_closeButton == null)
