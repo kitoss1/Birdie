@@ -52,6 +52,11 @@ namespace Birdie.UI.Store
         [Tooltip("Popup that displays item info when the info button is clicked")]
         private StoreItemInfoPopupUI m_itemInfoPopup;
 
+        [Header("Item Movement")]
+        [SerializeField]
+        [Tooltip("Handler for moving store items in the scene")]
+        private StoreItemMoveHandler m_moveHandler;
+
         [Header("Controls")]
         [SerializeField]
         [Tooltip("Button to close the store popup")]
@@ -210,6 +215,7 @@ namespace Birdie.UI.Store
                     item.OnBuyClicked -= OnItemBuyClicked;
                     item.OnToggleClicked -= OnItemToggleClicked;
                     item.OnInfoClicked -= OnItemInfoClicked;
+                    item.OnMoveClicked -= OnItemMoveClicked;
                     Destroy(item.gameObject);
                 }
             }
@@ -233,6 +239,7 @@ namespace Birdie.UI.Store
                 itemUI.OnBuyClicked += OnItemBuyClicked;
                 itemUI.OnToggleClicked += OnItemToggleClicked;
                 itemUI.OnInfoClicked += OnItemInfoClicked;
+                itemUI.OnMoveClicked += OnItemMoveClicked;
                 m_instantiatedItems.Add(itemUI);
             }
         }
@@ -257,6 +264,28 @@ namespace Birdie.UI.Store
             if (m_itemInfoPopup != null)
             {
                 m_itemInfoPopup.Show(itemData);
+            }
+        }
+
+        private void OnItemMoveClicked(StoreItemData itemData)
+        {
+            if (GameManager.Instance?.StoreManager == null || m_moveHandler == null)
+            {
+                return;
+            }
+
+            GameObject sceneObject = GameManager.Instance.StoreManager.GetSceneObject(itemData.ItemID);
+            if (sceneObject == null)
+            {
+                DebugBase.LogWarning($"[{nameof(StorePopupUI)}] No scene object found for item: {itemData.ItemName}");
+                return;
+            }
+
+            m_moveHandler.StartMoving(sceneObject, itemData.ItemID);
+
+            if (GameManager.Instance?.MenuManager != null)
+            {
+                GameManager.Instance.MenuManager.CloseCurrentMenu();
             }
         }
 
@@ -364,6 +393,11 @@ namespace Birdie.UI.Store
             if (m_itemInfoPopup == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Item Info Popup reference is missing!", this);
+            }
+
+            if (m_moveHandler == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Move Handler reference is missing!", this);
             }
 
             if (m_closeButton == null)

@@ -172,6 +172,30 @@ namespace Birdie.Managers
         }
 
         /// <summary>
+        /// Gets the scene GameObject associated with a store item.
+        /// </summary>
+        public GameObject GetSceneObject(string itemID)
+        {
+            m_sceneObjects.TryGetValue(itemID, out GameObject sceneObject);
+            return sceneObject;
+        }
+
+        /// <summary>
+        /// Saves the X position of a store item and persists to save data.
+        /// </summary>
+        public void SaveItemPosition(string itemID, float xPosition)
+        {
+            if (!IsItemOwned(itemID))
+            {
+                DebugBase.LogWarning($"[{nameof(StoreManager)}] Cannot save position for unowned item: {itemID}");
+                return;
+            }
+
+            SaveToSaveData();
+            DebugBase.Log($"[{nameof(StoreManager)}] Saved position for item {itemID}: x={xPosition}");
+        }
+
+        /// <summary>
         /// Gets a store item by ID.
         /// </summary>
         public StoreItemData GetItemData(string itemID)
@@ -248,8 +272,33 @@ namespace Birdie.Managers
                 }
             }
 
+            LoadItemPositions(economyData);
+
             DebugBase.Log($"[{nameof(StoreManager)}] Loaded {m_ownedItemIDs.Count} owned items, {m_disabledItemIDs.Count} disabled");
             OnOwnedItemsLoaded?.Invoke();
+        }
+
+        private void LoadItemPositions(EconomySaveData economyData)
+        {
+            if (economyData.itemPositions == null)
+            {
+                return;
+            }
+
+            foreach (ItemPositionEntry entry in economyData.itemPositions)
+            {
+                if (entry == null || string.IsNullOrEmpty(entry.itemID))
+                {
+                    continue;
+                }
+
+                if (m_sceneObjects.TryGetValue(entry.itemID, out GameObject sceneObject) && sceneObject != null)
+                {
+                    Vector3 position = sceneObject.transform.position;
+                    position.x = entry.xPosition;
+                    sceneObject.transform.position = position;
+                }
+            }
         }
 
         private void SaveToSaveData()
@@ -263,10 +312,31 @@ namespace Birdie.Managers
             EconomySaveData economyData = m_saveManager.CurrentSaveData.economy;
             economyData.ownedItemIDs = new List<string>(m_ownedItemIDs);
             economyData.disabledItemIDs = new List<string>(m_disabledItemIDs);
+            SaveItemPositionsToData(economyData);
 
             m_saveManager.SaveGame();
 
             DebugBase.Log($"[{nameof(StoreManager)}] Saved {m_ownedItemIDs.Count} owned items, {m_disabledItemIDs.Count} disabled");
+        }
+
+        private void SaveItemPositionsToData(EconomySaveData economyData)
+        {
+            economyData.itemPositions = new List<ItemPositionEntry>();
+
+            foreach (KeyValuePair<string, GameObject> pair in m_sceneObjects)
+            {
+                if (pair.Value == null || !m_ownedItemIDs.Contains(pair.Key))
+                {
+                    continue;
+                }
+
+                var entry = new ItemPositionEntry
+                {
+                    itemID = pair.Key,
+                    xPosition = pair.Value.transform.position.x
+                };
+                economyData.itemPositions.Add(entry);
+            }
         }
 
         private void RefreshSceneObjects()

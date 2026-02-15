@@ -37,6 +37,10 @@ namespace Birdie.UI.Store
         [Tooltip("Button to show item info popup")]
         private Button m_infoButton;
 
+        [SerializeField]
+        [Tooltip("Button to move the item in the scene")]
+        private Button m_moveButton;
+
         [Header("Visual States")]
         [SerializeField]
         [Tooltip("GameObject shown when item is already owned")]
@@ -68,6 +72,11 @@ namespace Birdie.UI.Store
         /// Event fired when the info button is clicked.
         /// </summary>
         public event Action<StoreItemData> OnInfoClicked;
+
+        /// <summary>
+        /// Event fired when the move button is clicked.
+        /// </summary>
+        public event Action<StoreItemData> OnMoveClicked;
 
         public StoreItemData ItemData => m_itemData;
 
@@ -136,6 +145,11 @@ namespace Birdie.UI.Store
                     m_priceText.color = canAfford ? m_affordableColor : m_unaffordableColor;
                 }
             }
+
+            if (m_moveButton != null)
+            {
+                m_moveButton.gameObject.SetActive(isOwned && isEnabled);
+            }
         }
 
         private void Awake()
@@ -149,6 +163,11 @@ namespace Birdie.UI.Store
             {
                 m_infoButton.onClick.AddListener(OnInfoButtonClicked);
             }
+
+            if (m_moveButton != null)
+            {
+                m_moveButton.onClick.AddListener(OnMoveButtonClicked);
+            }
         }
 
         private void OnDestroy()
@@ -161,6 +180,11 @@ namespace Birdie.UI.Store
             if (m_infoButton != null)
             {
                 m_infoButton.onClick.RemoveListener(OnInfoButtonClicked);
+            }
+
+            if (m_moveButton != null)
+            {
+                m_moveButton.onClick.RemoveListener(OnMoveButtonClicked);
             }
         }
 
@@ -189,6 +213,16 @@ namespace Birdie.UI.Store
             }
 
             OnInfoClicked?.Invoke(m_itemData);
+        }
+
+        private void OnMoveButtonClicked()
+        {
+            if (m_itemData == null)
+            {
+                return;
+            }
+
+            OnMoveClicked?.Invoke(m_itemData);
         }
 
 #if UNITY_EDITOR
