@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70219269baca5b648af64fe42e11e0ed, type: 3}
-  m_Name: 001_AcentorComun
+  m_Name: 001_Herrerillo
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.BirdData
-  m_birdName: "Acentor Com\xFAn"
+  m_birdName: Herrerillo
   m_scientificName: Prunella modularis
   m_birdID: 001
   m_basicDescription: "Ave frecuente en zonas de monta\xF1a con abundancia de matorral
