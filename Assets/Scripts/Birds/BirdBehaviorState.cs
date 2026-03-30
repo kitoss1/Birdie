@@ -138,6 +138,9 @@ namespace Birdie.Birds
 
             if (birdRect != null && targetRect != null)
             {
+                float directionX = targetRect.anchoredPosition.x - birdRect.anchoredPosition.x;
+                bird.SetFacingDirection(directionX);
+
                 birdRect.anchoredPosition = Vector2.MoveTowards(
                     birdRect.anchoredPosition,
                     targetRect.anchoredPosition,
@@ -147,6 +150,9 @@ namespace Birdie.Birds
             }
 
             Vector3 targetPosition = target.InteractionPosition;
+            float worldDirectionX = targetPosition.x - bird.transform.position.x;
+            bird.SetFacingDirection(worldDirectionX);
+
             bird.transform.position = Vector3.MoveTowards(
                 bird.transform.position,
                 targetPosition,

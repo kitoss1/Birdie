@@ -4165,7 +4165,11 @@ PrefabInstance:
       objectReference: {fileID: 4854109371603747765}
     - target: {fileID: 532269451729600106, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_categoryToggles.Array.data[1].m_isEnabled
-      value: 1
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 532269451729600106, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_categoryToggles.Array.data[2].m_isEnabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 532269451729600106, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_categoryToggles.Array.data[3].m_isEnabled

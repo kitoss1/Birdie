@@ -23,6 +23,9 @@ namespace Birdie.Birds
         [Header("Bird Configuration")]
         [SerializeField] private BirdData m_birdData;
         [SerializeField] private Animator m_animator;
+        [SerializeField]
+        [Tooltip("The child transform that holds the sprite/rig. Its localScale.x is flipped to change facing direction.")]
+        private Transform m_visualRoot;
 
 
         private float m_maxVisitDuration;
@@ -435,6 +438,24 @@ namespace Birdie.Birds
         }
 
         /// <summary>
+        /// Flips the bird to face left (negative X) or right (positive X).
+        /// Uses localScale.x so the entire bone rig mirrors correctly.
+        /// </summary>
+        public void SetFacingDirection(float directionX)
+        {
+            if (directionX == 0f)
+            {
+                return;
+            }
+
+            Transform target = m_visualRoot != null ? m_visualRoot : transform;
+            Vector3 scale = target.localScale;
+            float absX = Mathf.Abs(scale.x);
+            scale.x = directionX > 0f ? -absX : absX;
+            target.localScale = scale;
+        }
+
+        /// <summary>
         /// Crossfades to the given Animator state.
         /// </summary>
         public void PlayAnimation(string stateName, float crossFadeDuration = 0.1f)
@@ -447,6 +468,13 @@ namespace Birdie.Birds
 
             if (string.IsNullOrEmpty(stateName))
             {
+                return;
+            }
+
+            int stateHash = Animator.StringToHash(stateName);
+            if (!m_animator.HasState(0, stateHash))
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] Animation state '{stateName}' not found in Animator on {m_birdData?.BirdName}", DebugCategory.Birds);
                 return;
             }
 

@@ -61,6 +61,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Bird
   m_birdData: {fileID: 0}
   m_animator: {fileID: 4323115996264551225}
+  m_visualRoot: {fileID: 9211527837010866475}
 --- !u!61 &2529221558783128401
 BoxCollider2D:
   m_ObjectHideFlags: 0
