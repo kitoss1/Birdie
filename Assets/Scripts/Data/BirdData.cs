@@ -143,6 +143,27 @@ namespace Birdie.Data
         [Tooltip("Movement speed when moving between objects (units per second)")]
         private float m_movementSpeed = 2f;
 
+        [Header("Walk Hop Settings")]
+        [SerializeField]
+        [Tooltip("Peak height of each hop while walking, in local units (pixels for canvas, world units otherwise). Set to 0 to disable hopping.")]
+        [Range(0f, 100f)]
+        private float m_walkHopHeight = 20f;
+
+        [SerializeField]
+        [Tooltip("Duration of a single hop arc in seconds.")]
+        [Range(0.05f, 0.5f)]
+        private float m_walkHopDuration = 0.2f;
+
+        [SerializeField]
+        [Tooltip("Minimum time between hops while walking, in seconds.")]
+        [Range(0.1f, 5f)]
+        private float m_walkHopIntervalMin = 0.4f;
+
+        [SerializeField]
+        [Tooltip("Maximum time between hops while walking, in seconds.")]
+        [Range(0.1f, 8f)]
+        private float m_walkHopIntervalMax = 1.5f;
+
         [SerializeField]
         [Tooltip("List of possible behaviors this bird species can perform")]
         private List<BirdBehaviorState> m_possibleBehaviors = new List<BirdBehaviorState>();
@@ -334,6 +355,14 @@ namespace Birdie.Data
             get => m_movementSpeed;
             set => m_movementSpeed = value;
         }
+
+        public float WalkHopHeight => m_walkHopHeight;
+
+        public float WalkHopDuration => m_walkHopDuration;
+
+        public float WalkHopIntervalMin => m_walkHopIntervalMin;
+
+        public float WalkHopIntervalMax => m_walkHopIntervalMax;
 
         public float ObjectBonusSeconds
         {

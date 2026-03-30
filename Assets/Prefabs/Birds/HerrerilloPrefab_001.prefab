@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 4807969094230748236}
   - component: {fileID: 2529221558783128401}
   - component: {fileID: 1080430445323333809}
+  - component: {fileID: 8827302859002818150}
   m_Layer: 5
   m_Name: HerrerilloPrefab_001
   m_TagString: Untagged
@@ -63,6 +64,7 @@ MonoBehaviour:
   m_birdData: {fileID: 0}
   m_animator: {fileID: 4323115996264551225}
   m_visualRoot: {fileID: 9211527837010866475}
+  m_walkJumper: {fileID: 8827302859002818150}
 --- !u!61 &2529221558783128401
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -125,6 +127,23 @@ MonoBehaviour:
   m_blinkDuration: 0.15
   m_blinkIntervalMin: 1
   m_blinkIntervalMax: 6
+--- !u!114 &8827302859002818150
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7991333266149840317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f42b5ca76d982f429ecc6eaada33f94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.BirdWalkJumper
+  m_visualRoot: {fileID: 9211527837010866475}
+  m_hopHeight: 20
+  m_hopDuration: 0.2
+  m_hopIntervalMin: 0.4
+  m_hopIntervalMax: 1.5
 --- !u!1001 &8718327043623243146
 PrefabInstance:
   m_ObjectHideFlags: 0

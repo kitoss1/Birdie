@@ -94,6 +94,7 @@ namespace Birdie.Birds
         /// <param name="bird">The bird controller executing this behavior</param>
         public virtual void OnExit(Bird bird)
         {
+            bird.ResetWalkHop();
         }
 
         /// <summary>
@@ -135,6 +136,8 @@ namespace Birdie.Birds
         {
             RectTransform birdRect = bird.transform as RectTransform;
 
+            bool reached;
+
             if (birdRect != null && birdRect.parent != null)
             {
                 // Convert target world position into bird's parent local space so the
@@ -146,19 +149,32 @@ namespace Birdie.Birds
                 bird.SetFacingDirection(directionX);
 
                 birdRect.localPosition = Vector2.MoveTowards(birdLocal, targetLocal, speed * Time.deltaTime);
-                return Vector2.Distance(birdRect.localPosition, targetLocal) < 1f;
+                reached = Vector2.Distance(birdRect.localPosition, targetLocal) < 1f;
+            }
+            else
+            {
+                Vector3 targetPosition = target.InteractionPosition;
+                float worldDirectionX = targetPosition.x - bird.transform.position.x;
+                bird.SetFacingDirection(worldDirectionX);
+
+                bird.transform.position = Vector3.MoveTowards(
+                    bird.transform.position,
+                    targetPosition,
+                    speed * Time.deltaTime
+                );
+                reached = Vector3.Distance(bird.transform.position, targetPosition) < 0.1f;
             }
 
-            Vector3 targetPosition = target.InteractionPosition;
-            float worldDirectionX = targetPosition.x - bird.transform.position.x;
-            bird.SetFacingDirection(worldDirectionX);
+            if (reached)
+            {
+                bird.ResetWalkHop();
+            }
+            else
+            {
+                bird.SampleAndApplyWalkHop(Time.deltaTime);
+            }
 
-            bird.transform.position = Vector3.MoveTowards(
-                bird.transform.position,
-                targetPosition,
-                speed * Time.deltaTime
-            );
-            return Vector3.Distance(bird.transform.position, targetPosition) < 0.1f;
+            return reached;
         }
 
         /// <summary>

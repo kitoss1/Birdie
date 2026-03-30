@@ -26,6 +26,7 @@ namespace Birdie.Birds
         [SerializeField]
         [Tooltip("The child transform that holds the sprite/rig. Its localScale.x is flipped to change facing direction.")]
         private Transform m_visualRoot;
+        [SerializeField] private BirdWalkJumper m_walkJumper;
 
 
         private float m_maxVisitDuration;
@@ -435,6 +436,24 @@ namespace Birdie.Birds
         {
             BirdLeaving?.Invoke(this);
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData?.BirdName ?? "Unknown"} destroyed", DebugCategory.Birds);
+        }
+
+        /// <summary>
+        /// Advances the walk hop state and applies the resulting Y offset to the visual root.
+        /// Call every frame while the bird is moving.
+        /// </summary>
+        public void SampleAndApplyWalkHop(float deltaTime)
+        {
+            m_walkJumper?.SampleAndApply(deltaTime, m_birdData);
+        }
+
+        /// <summary>
+        /// Resets the walk hop state and restores the visual root to its ground Y.
+        /// Call when the bird stops moving.
+        /// </summary>
+        public void ResetWalkHop()
+        {
+            m_walkJumper?.Reset(m_birdData);
         }
 
         /// <summary>
