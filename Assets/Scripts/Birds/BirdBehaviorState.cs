@@ -134,19 +134,19 @@ namespace Birdie.Birds
         protected bool MoveTowardsTarget(Bird bird, BirdObject target, float speed)
         {
             RectTransform birdRect = bird.transform as RectTransform;
-            RectTransform targetRect = target.InteractionRectTransform;
 
-            if (birdRect != null && targetRect != null)
+            if (birdRect != null && birdRect.parent != null)
             {
-                float directionX = targetRect.anchoredPosition.x - birdRect.anchoredPosition.x;
+                // Convert target world position into bird's parent local space so the
+                // comparison is valid regardless of where each object sits in the hierarchy.
+                Vector2 targetLocal = birdRect.parent.InverseTransformPoint(target.InteractionPosition);
+                Vector2 birdLocal = birdRect.localPosition;
+
+                float directionX = targetLocal.x - birdLocal.x;
                 bird.SetFacingDirection(directionX);
 
-                birdRect.anchoredPosition = Vector2.MoveTowards(
-                    birdRect.anchoredPosition,
-                    targetRect.anchoredPosition,
-                    speed * Time.deltaTime
-                );
-                return Vector2.Distance(birdRect.anchoredPosition, targetRect.anchoredPosition) < 1f;
+                birdRect.localPosition = Vector2.MoveTowards(birdLocal, targetLocal, speed * Time.deltaTime);
+                return Vector2.Distance(birdRect.localPosition, targetLocal) < 1f;
             }
 
             Vector3 targetPosition = target.InteractionPosition;
