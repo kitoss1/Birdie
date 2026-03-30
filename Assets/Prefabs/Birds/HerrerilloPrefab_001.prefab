@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 775407281533522504}
   - component: {fileID: 4807969094230748236}
   - component: {fileID: 2529221558783128401}
+  - component: {fileID: 1080430445323333809}
   m_Layer: 5
   m_Name: HerrerilloPrefab_001
   m_TagString: Untagged
@@ -108,6 +109,22 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 113.392395, y: 75.33258}
   m_EdgeRadius: 0
+--- !u!114 &1080430445323333809
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7991333266149840317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c66ad5a24de374344a8620d174e632eb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.BirdBlinker
+  m_eyeSprite: {fileID: 2603747951066124458}
+  m_blinkDuration: 0.15
+  m_blinkIntervalMin: 1
+  m_blinkIntervalMax: 6
 --- !u!1001 &8718327043623243146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -236,6 +253,10 @@ PrefabInstance:
       propertyPath: m_SortingLayer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -2531050794100531936, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -2348462820489124929, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
       value: 0
@@ -300,6 +321,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 4323115996264551225}
   m_SourcePrefab: {fileID: 4843985084834002234, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
+--- !u!1 &2603747951066124458 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -2531050794100531936, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
+  m_PrefabInstance: {fileID: 8718327043623243146}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &8057623948378879060 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -7552582706839291426, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
