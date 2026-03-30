@@ -3641,6 +3641,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 421267712003488790, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 896574850532500468, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
       propertyPath: m_IsActive
       value: 0
@@ -4138,6 +4142,14 @@ PrefabInstance:
       propertyPath: m_minigamesPanel
       value: 
       objectReference: {fileID: 4854109371603747765}
+    - target: {fileID: 532269451729600106, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_categoryToggles.Array.data[1].m_isEnabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 532269451729600106, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_categoryToggles.Array.data[3].m_isEnabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1945811201683040692, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.86793

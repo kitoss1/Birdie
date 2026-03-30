@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using Birdie.Birds;
 using Birdie.Debug;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -130,6 +131,32 @@ public class TransparentGame : MonoBehaviour
         {
             UpdateClickThrough();
         }
+
+        HandleSpriteClick();
+    }
+
+    private void HandleSpriteClick()
+    {
+        if (!Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            return;
+        }
+
+        Vector2 mousePosition = GetMousePosition();
+        SpriteRenderer hit = GetSpriteRendererAtPosition(mousePosition);
+        if (hit == null)
+        {
+            return;
+        }
+
+        IClickable clickable = hit.GetComponentInParent<IClickable>();
+        if (clickable == null)
+        {
+            return;
+        }
+
+        DebugBase.Log($"[{nameof(TransparentGame)}] Click sent to {hit.gameObject.name}", DebugCategory.Mouse);
+        clickable.OnClicked();
     }
 
     private Vector2 GetMousePosition()
@@ -236,8 +263,68 @@ public class TransparentGame : MonoBehaviour
             return true;
         }
 
+        // Check if mouse is over a visible (non-transparent) pixel of any SpriteRenderer
+        if (IsMouseOverSprite(mousePosition))
+        {
+            return true;
+        }
+
         DebugBase.Log($"[{nameof(TransparentGame)}] No object detected - click should pass through", DebugCategory.Mouse);
         return false;
+    }
+
+    private bool IsMouseOverSprite(Vector2 mousePosition)
+    {
+        return GetSpriteRendererAtPosition(mousePosition) != null;
+    }
+
+    private SpriteRenderer GetSpriteRendererAtPosition(Vector2 mousePosition)
+    {
+        Vector2 worldPoint = m_mainCamera.ScreenToWorldPoint(mousePosition);
+        SpriteRenderer[] renderers = FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None);
+
+        foreach (SpriteRenderer sr in renderers)
+        {
+            if (!sr.enabled || sr.sprite == null)
+            {
+                continue;
+            }
+
+            Sprite sprite = sr.sprite;
+            Vector2 localPoint = sr.transform.InverseTransformPoint(worldPoint);
+            float pixelsPerUnit = sprite.pixelsPerUnit;
+
+            float x = localPoint.x * pixelsPerUnit + sprite.pivot.x;
+            float y = localPoint.y * pixelsPerUnit + sprite.pivot.y;
+
+            if (sr.flipX)
+            {
+                x = sprite.rect.width - 1 - x;
+            }
+
+            if (sr.flipY)
+            {
+                y = sprite.rect.height - 1 - y;
+            }
+
+            if (x < 0 || x >= sprite.rect.width || y < 0 || y >= sprite.rect.height)
+            {
+                continue;
+            }
+
+            Color pixel = sprite.texture.GetPixel(
+                (int)(sprite.rect.x + x),
+                (int)(sprite.rect.y + y)
+            );
+
+            if (pixel.a > 0f)
+            {
+                DebugBase.Log($"[{nameof(TransparentGame)}] Sprite pixel detected on: {sr.gameObject.name}", DebugCategory.Mouse);
+                return sr;
+            }
+        }
+
+        return null;
     }
     
     private void EnableClickThrough()
