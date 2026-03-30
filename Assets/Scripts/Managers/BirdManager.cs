@@ -167,10 +167,21 @@ namespace Birdie.Managers
                 return;
             }
 
-            Vector3 spawnPosition = m_spawnPoints.GetRandomSpawnPosition();
             Transform spawnParent = m_spawnPoints.BirdsContainer;
+            Transform spawnTransform = m_spawnPoints.GetRandomSpawnTransform();
 
-            GameObject birdInstance = Instantiate(birdData.BirdPrefab, spawnPosition, Quaternion.identity, spawnParent);
+            GameObject birdInstance = Instantiate(birdData.BirdPrefab, spawnParent);
+
+            RectTransform birdRect = birdInstance.GetComponent<RectTransform>();
+            RectTransform spawnRect = spawnTransform as RectTransform;
+            if (birdRect != null && spawnRect != null)
+            {
+                birdRect.anchoredPosition = spawnRect.anchoredPosition;
+            }
+            else
+            {
+                birdInstance.transform.position = spawnTransform != null ? spawnTransform.position : spawnParent.position;
+            }
             birdInstance.name = $"{birdData.BirdName}_{System.DateTime.Now:HHmmss}";
 
             Bird birdComponent = birdInstance.GetComponent<Bird>();
@@ -178,7 +189,7 @@ namespace Birdie.Managers
             {
                 birdComponent.Initialize(birdData);
                 m_activeBirds.Add(birdComponent);
-                DebugBase.Log($"[{nameof(BirdManager)}] Spawned {birdData.BirdName} at {spawnPosition}", DebugCategory.Birds);
+                DebugBase.Log($"[{nameof(BirdManager)}] Spawned {birdData.BirdName} at {birdInstance.transform.position}", DebugCategory.Birds);
             }
             else
             {

@@ -23,10 +23,8 @@ namespace Birdie.Birds.Behaviors
 
         public override void OnEnter(Bird bird)
         {
+            base.OnEnter(bird);
             DebugBase.Log($"[{nameof(SingingBehavior)}] {bird.BirdData?.BirdName} started singing", DebugCategory.Birds);
-
-            // TODO: Play singing animation on Spine skeleton
-            // Example: bird.SpineSkeleton.AnimationState.SetAnimation(0, "singing", true);
 
             if (bird.BirdData != null && bird.BirdData.BirdSong != null)
             {

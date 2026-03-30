@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c67cd798373e543ba353a0b65cf15c, type: 3}
   m_Name: SingingBehavior
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.SingingBehavior
+  m_animationStateName: Singing
+  m_movementAnimationStateName: 
   m_minDuration: 3
   m_maxDuration: 7
   m_requiredFriendshipLevel: 0

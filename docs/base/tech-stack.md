@@ -14,7 +14,6 @@
 ## Tools, Frameworks & Third Party Dependencies
 
 ### Animation & UI
-- **Spine** - 2D skeletal animation system for character animations
 - **DOTween** - Animation framework for tweening and UI animations
 
 ### Async & Performance

@@ -44,10 +44,20 @@ namespace Birdie.Birds
         /// </summary>
         public Vector3 GetRandomSpawnPosition()
         {
+            Transform spawnPoint = GetRandomSpawnTransform();
+            return spawnPoint != null ? spawnPoint.position : BirdsContainer.position;
+        }
+
+        /// <summary>
+        /// Gets a random spawn point Transform, or null if none are defined.
+        /// Use this when you need anchoredPosition for canvas-based spawning.
+        /// </summary>
+        public Transform GetRandomSpawnTransform()
+        {
             if (m_spawnPoints.Count == 0)
             {
                 DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] No spawn points defined, using container position", DebugCategory.Birds);
-                return BirdsContainer.position;
+                return null;
             }
 
             int randomIndex = Random.Range(0, m_spawnPoints.Count);
@@ -56,10 +66,10 @@ namespace Birdie.Birds
             if (spawnPoint == null)
             {
                 DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] Spawn point at index {randomIndex} is null", DebugCategory.Birds);
-                return BirdsContainer.position;
+                return null;
             }
 
-            return spawnPoint.position;
+            return spawnPoint;
         }
 
         /// <summary>

@@ -150,6 +150,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Bird
   m_birdData: {fileID: 0}
+  m_animator: {fileID: 4323115996264551225}
 --- !u!1001 &8718327043623243146
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -216,23 +217,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -6041116834487414794, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -5380513782451149225, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4921256427609598347, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4791864124624547434, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4576599150358342051, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -4552306369427251337, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -264,39 +265,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4253446118562361596, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3868658828625724336, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -3807545296260828748, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2615901317131984725, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -2348462820489124929, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1915166086858046067, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1247212057672586017, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 83447198426273775, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4588161483997357412, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5504919145916314525, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -328,11 +329,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6957810842374710305, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8111444098240316345, guid: f11716bf0b6279a4dbaf2728a7d4b88c, type: 3}
       propertyPath: m_SortingLayer
-      value: 32709
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

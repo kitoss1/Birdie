@@ -27,9 +27,16 @@ namespace Birdie.Birds.Behaviors
             {
                 DebugBase.Log($"[{nameof(BathingBehavior)}] Found bird bath at {m_targetBath.InteractionPosition}", DebugCategory.Birds);
                 m_targetBath.OnBirdStartInteraction(bird);
+
+                // Play movement animation while walking to bath
+                if (!string.IsNullOrEmpty(MovementAnimationStateName))
+                {
+                    bird.PlayAnimation(MovementAnimationStateName);
+                }
             }
             else
             {
+                base.OnEnter(bird);
                 DebugBase.LogWarning($"[{nameof(BathingBehavior)}] No bird bath found! Bird cannot bathe.", DebugCategory.Birds);
             }
         }
@@ -44,22 +51,18 @@ namespace Birdie.Birds.Behaviors
             // Move toward bird bath if not reached yet
             if (!m_hasReachedBath)
             {
-                Vector3 targetPosition = m_targetBath.InteractionPosition;
                 float moveSpeed = bird.BirdData?.MovementSpeed ?? 60f;
-                bird.transform.position = Vector3.MoveTowards(
-                    bird.transform.position,
-                    targetPosition,
-                    moveSpeed * Time.deltaTime
-                );
+                bool reached = MoveTowardsTarget(bird, m_targetBath, moveSpeed);
 
-                // Check if reached
-                if (Vector3.Distance(bird.transform.position, targetPosition) < 0.1f)
+                if (reached)
                 {
                     m_hasReachedBath = true;
                     DebugBase.Log($"[{nameof(BathingBehavior)}] Reached bird bath, starting to bathe", DebugCategory.Birds);
-                    
-                    // TODO: Play bathing animation
-                    // Example: bird.SpineSkeleton.AnimationState.SetAnimation(0, "splash", true);
+
+                    if (!string.IsNullOrEmpty(AnimationStateName))
+                    {
+                        bird.PlayAnimation(AnimationStateName);
+                    }
                 }
             }
             else

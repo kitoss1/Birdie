@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69bcb65f51131324ba44676e8750d93b, type: 3}
   m_Name: BathingBehavior
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.BathingBehavior
+  m_animationStateName: Bathing
+  m_movementAnimationStateName: Walking
   m_minDuration: 6
   m_maxDuration: 12
   m_requiredFriendshipLevel: 0
@@ -19,4 +21,3 @@ MonoBehaviour:
   m_canBeInterrupted: 1
   m_baseWeight: 20
   m_friendshipReward: 4
-  m_moveSpeed: 2

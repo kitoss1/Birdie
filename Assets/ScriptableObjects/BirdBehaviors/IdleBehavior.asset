@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8eb30fb084b4e5d4fbfeeb6a7ca5f97d, type: 3}
   m_Name: IdleBehavior
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.IdleBehavior
+  m_animationStateName: Idle
+  m_movementAnimationStateName: 
   m_minDuration: 2
   m_maxDuration: 5
   m_requiredFriendshipLevel: 0

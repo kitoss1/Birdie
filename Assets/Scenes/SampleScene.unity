@@ -3061,6 +3061,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: SettingsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 8188067941678157221, guid: 49e740440f7d25747bdc532de37de34d, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 8188067941678157221, guid: 49e740440f7d25747bdc532de37de34d, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 9193526676071028061, guid: 49e740440f7d25747bdc532de37de34d, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3154,6 +3162,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5568893613135559694, guid: 4db6c5e8659fda6488fef2d4af86871a, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 5568893613135559694, guid: 4db6c5e8659fda6488fef2d4af86871a, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7459707326334330802, guid: 4db6c5e8659fda6488fef2d4af86871a, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3359,6 +3375,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7693512700322394347, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 7693512700322394347, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3418,8 +3442,8 @@ Canvas:
   m_GameObject: {fileID: 2170307423830766318}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -3459,6 +3483,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 961193595590305927, guid: e82b951356be45f4e89f8b1650003b71, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 961193595590305927, guid: e82b951356be45f4e89f8b1650003b71, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4554638568449647173, guid: e82b951356be45f4e89f8b1650003b71, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -3539,6 +3571,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5942216992118059270, guid: e82b951356be45f4e89f8b1650003b71, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8579801570807310937, guid: e82b951356be45f4e89f8b1650003b71, type: 3}
+      propertyPath: m_gizmosSize
+      value: 0.1
+      objectReference: {fileID: 0}
     - target: {fileID: 8975160742400557359, guid: e82b951356be45f4e89f8b1650003b71, type: 3}
       propertyPath: m_Name
       value: BirdsCanvas
@@ -3601,6 +3641,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 896574850532500468, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3325959974844006774, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 73
@@ -3689,6 +3733,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5317032448778480422, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 5317032448778480422, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5345445815788256340, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
       propertyPath: m_Name
       value: StaticCanvas
@@ -3716,6 +3768,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 6729877273095081166, guid: ffbc16ea49baefd49a77f7439d250ae0, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 6729877273095081166, guid: ffbc16ea49baefd49a77f7439d250ae0, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7984697169752911453, guid: ffbc16ea49baefd49a77f7439d250ae0, type: 3}
       propertyPath: m_Name
       value: BirdMenuCanvas
@@ -3816,6 +3876,14 @@ PrefabInstance:
     - target: {fileID: 126328013776596139, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2401885939376299697, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 519420031}
+    - target: {fileID: 2401885939376299697, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
+      propertyPath: m_RenderMode
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3019327421407703305, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
       propertyPath: m_IsActive
@@ -4189,8 +4257,8 @@ Canvas:
   m_GameObject: {fileID: 6762091551849721378}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -4300,8 +4368,8 @@ Canvas:
   m_GameObject: {fileID: 9003102292340867418}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
+  m_RenderMode: 1
+  m_Camera: {fileID: 519420031}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1

@@ -21,8 +21,14 @@ namespace Birdie.Birds
         public static event Action<Bird> BirdLeaving;
 
         [Header("Bird Configuration")]
+        [SerializeField] private BirdData m_birdData;
+        [SerializeField] private Animator m_animator;
+
+        [Header("Click Settings")]
         [SerializeField]
-        private BirdData m_birdData;
+        [Tooltip("Minimum alpha (0-1) required to register a click. Ignores clicks on transparent pixels.")]
+        [Range(0f, 1f)]
+        private float m_alphaHitThreshold = 0.1f;
 
         private float m_maxVisitDuration;
         private BirdState m_currentState = BirdState.Appearing;
@@ -321,7 +327,65 @@ namespace Birdie.Birds
         /// </summary>
         private void OnMouseDown()
         {
+            if (IsClickOnTransparentPixel())
+            {
+                return;
+            }
+
             OnBirdClicked();
+        }
+
+        private bool IsClickOnTransparentPixel()
+        {
+            SpriteRenderer[] spriteRenderers = GetComponentsInChildren<SpriteRenderer>();
+            Vector2 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            foreach (SpriteRenderer sr in spriteRenderers)
+            {
+                if (sr.sprite == null)
+                {
+                    continue;
+                }
+
+                Sprite sprite = sr.sprite;
+                Rect bounds = sprite.rect;
+                float pixelsPerUnit = sprite.pixelsPerUnit;
+
+                Vector2 localPoint = sr.transform.InverseTransformPoint(mouseWorldPos);
+
+                // Use the sprite's actual pivot (in pixels relative to sprite rect)
+                float x = localPoint.x * pixelsPerUnit + sprite.pivot.x;
+                float y = localPoint.y * pixelsPerUnit + sprite.pivot.y;
+
+                // Account for SpriteRenderer flip
+                if (sr.flipX)
+                {
+                    x = bounds.width - 1 - x;
+                }
+
+                if (sr.flipY)
+                {
+                    y = bounds.height - 1 - y;
+                }
+
+                // Skip if outside this sprite's rect
+                if (x < 0 || x >= bounds.width || y < 0 || y >= bounds.height)
+                {
+                    continue;
+                }
+
+                Color pixel = sprite.texture.GetPixel(
+                    (int)(bounds.x + x),
+                    (int)(bounds.y + y)
+                );
+
+                if (pixel.a >= m_alphaHitThreshold)
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -428,6 +492,25 @@ namespace Birdie.Birds
         {
             BirdLeaving?.Invoke(this);
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData?.BirdName ?? "Unknown"} destroyed", DebugCategory.Birds);
+        }
+
+        /// <summary>
+        /// Crossfades to the given Animator state.
+        /// </summary>
+        public void PlayAnimation(string stateName, float crossFadeDuration = 0.1f)
+        {
+            if (m_animator == null)
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] Animator not assigned on {m_birdData?.BirdName}", DebugCategory.Birds);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(stateName))
+            {
+                return;
+            }
+
+            m_animator.CrossFade(stateName, crossFadeDuration);
         }
 
         public void PlaySong()

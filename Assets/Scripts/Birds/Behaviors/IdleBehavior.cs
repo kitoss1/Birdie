@@ -12,10 +12,8 @@ namespace Birdie.Birds.Behaviors
     {
         public override void OnEnter(Bird bird)
         {
+            base.OnEnter(bird);
             DebugBase.Log($"[{nameof(IdleBehavior)}] {bird.BirdData?.BirdName} entered idle state", DebugCategory.Birds);
-            
-            // TODO: Play idle animation on Spine skeleton
-            // Example: bird.SpineSkeleton.AnimationState.SetAnimation(0, "idle", true);
         }
 
         public override void Execute(Bird bird)

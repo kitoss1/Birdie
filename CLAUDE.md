@@ -28,7 +28,6 @@ This file provides technical guidance for working with the Birdie codebase. For 
 ### Third-Party Dependencies
 - **DOTween**: Animation framework
 - **UniTask**: Async/await support for Unity
-- **Spine**: 2D animation system
 
 ### Other 
 

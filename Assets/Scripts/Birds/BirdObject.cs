@@ -36,6 +36,9 @@ namespace Birdie.Birds
         public BirdObjectType ObjectType => m_objectType;
         public int Attractiveness => m_attractiveness;
         public Vector3 InteractionPosition => m_interactionPoint != null ? m_interactionPoint.position : transform.position;
+        public RectTransform InteractionRectTransform => m_interactionPoint != null
+            ? m_interactionPoint as RectTransform
+            : transform as RectTransform;
         public bool IsBeingUsed => m_interactingBirdCount > 0;
 
         /// <summary>
