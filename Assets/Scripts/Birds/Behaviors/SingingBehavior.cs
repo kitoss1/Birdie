@@ -1,67 +1,40 @@
 using Birdie.Debug;
-using Birdie.Managers;
 using UnityEngine;
 
 namespace Birdie.Birds.Behaviors
 {
     /// <summary>
     /// Singing behavior where the bird performs a song.
-    /// Plays animation and audio clip of the bird's song.
-    /// Uses a per-bird AudioSource so songs can be stopped when the behavior exits.
-    /// Volume is routed through SoundManager for consistent audio control.
+    /// Stops any in-progress audio when the behavior exits.
     /// </summary>
     [CreateAssetMenu(fileName = "SingingBehavior", menuName = "Birdie/Bird Behaviors/Singing Behavior")]
     public class SingingBehavior : BirdBehaviorState
     {
-        [Header("Singing Settings")]
-        [SerializeField]
-        [Tooltip("Volume multiplier for the bird song")]
-        [Range(0f, 1f)]
-        private float m_volumeMultiplier = 1f;
-
-        private AudioSource m_audioSource;
-
         public override void OnEnter(Bird bird)
         {
             base.OnEnter(bird);
             DebugBase.Log($"[{nameof(SingingBehavior)}] {bird.BirdData?.BirdName} started singing", DebugCategory.Birds);
 
-            if (bird.BirdData != null && bird.BirdData.BirdSong != null)
+            // Ensure an AudioSource is present so Animation Events can play song parts immediately.
+            if (bird.GetComponent<AudioSource>() == null)
             {
-                m_audioSource = bird.GetComponent<AudioSource>();
-                if (m_audioSource == null)
-                {
-                    m_audioSource = bird.gameObject.AddComponent<AudioSource>();
-                }
-
-                m_audioSource.clip = bird.BirdData.BirdSong;
-
-                if (GameManager.Instance?.SoundManager != null)
-                {
-                    m_audioSource.volume = GameManager.Instance.SoundManager.GetEffectiveSfxVolume(m_volumeMultiplier);
-                }
-                else
-                {
-                    m_audioSource.volume = m_volumeMultiplier;
-                }
-
-                m_audioSource.Play();
+                bird.gameObject.AddComponent<AudioSource>();
             }
         }
 
         public override void Execute(Bird bird)
         {
-            // Singing behavior is mostly passive - animation and audio handle it
-            // Could add visual effects like music notes here
+            // Audio is driven by Animation Events calling Bird.PlaySongPart(index).
         }
 
         public override void OnExit(Bird bird)
         {
             DebugBase.Log($"[{nameof(SingingBehavior)}] {bird.BirdData?.BirdName} stopped singing", DebugCategory.Birds);
 
-            if (m_audioSource != null && m_audioSource.isPlaying)
+            AudioSource audioSource = bird.GetComponent<AudioSource>();
+            if (audioSource != null && audioSource.isPlaying)
             {
-                m_audioSource.Stop();
+                audioSource.Stop();
             }
         }
 

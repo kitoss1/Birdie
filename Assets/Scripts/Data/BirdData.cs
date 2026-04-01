@@ -108,8 +108,8 @@ namespace Birdie.Data
 
         [Header("Audio")]
         [SerializeField]
-        [Tooltip("Bird song/call audio clip")]
-        private AudioClip m_birdSong;
+        [Tooltip("Audio clips for this bird's song. A random one is picked each time the singing animation triggers playback.")]
+        private List<AudioClip> m_songParts = new List<AudioClip>();
 
         [Header("Gifts and Rewards")]
         [SerializeField]
@@ -302,11 +302,20 @@ namespace Birdie.Data
             set => m_conservationStatus = value;
         }
 
-        public AudioClip BirdSong
+        /// <summary>
+        /// Audio clips available for this bird's song.
+        /// </summary>
+        public List<AudioClip> SongParts
         {
-            get => m_birdSong;
-            set => m_birdSong = value;
+            get => m_songParts;
+            set => m_songParts = value;
         }
+
+        /// <summary>
+        /// Returns the first song clip, or null if none are assigned.
+        /// Kept for compatibility with systems that only need a single clip.
+        /// </summary>
+        public AudioClip BirdSong => m_songParts != null && m_songParts.Count > 0 ? m_songParts[0] : null;
 
         public List<GiftItem> PossibleGifts
         {

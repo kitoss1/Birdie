@@ -519,6 +519,42 @@ namespace Birdie.Birds
         }
 
         /// <summary>
+        /// Picks a random song part and plays it through this bird's AudioSource.
+        /// Called by Animation Events on the singing animation.
+        /// The AudioSource is guaranteed to exist while SingingBehavior is active.
+        /// </summary>
+        public void PlayRandomSongPart()
+        {
+            if (m_birdData?.SongParts == null || m_birdData.SongParts.Count == 0)
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] {m_birdData?.BirdName} has no song parts assigned", DebugCategory.Birds);
+                return;
+            }
+
+            AudioSource audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] No AudioSource found on {m_birdData?.BirdName} — ensure SingingBehavior is active", DebugCategory.Birds);
+                return;
+            }
+
+            AudioClip clip = m_birdData.SongParts[UnityEngine.Random.Range(0, m_birdData.SongParts.Count)];
+            if (clip == null)
+            {
+                DebugBase.LogWarning($"[{nameof(Bird)}] {m_birdData.BirdName} has a song entry with no clip assigned", DebugCategory.Birds);
+                return;
+            }
+
+            audioSource.clip = clip;
+            audioSource.volume = GameManager.Instance?.SoundManager != null
+                ? GameManager.Instance.SoundManager.GetEffectiveSfxVolume(1f)
+                : 1f;
+            audioSource.Play();
+
+            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} playing random song clip '{clip.name}'", DebugCategory.Birds);
+        }
+
+        /// <summary>
         /// Marks that this bird has played a minigame during this visit.
         /// </summary>
         public void MarkMinigamePlayed()

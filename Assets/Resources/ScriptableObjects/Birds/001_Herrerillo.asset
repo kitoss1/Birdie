@@ -38,7 +38,12 @@ MonoBehaviour:
   m_identificationInfo: 
   m_isThreatened: 0
   m_conservationStatus: 
-  m_birdSong: {fileID: 8300000, guid: 84b4653c52345d149ad125a0136543ac, type: 3}
+  m_songParts:
+  - {fileID: 8300000, guid: 0e52f8663e420794fa0921ca98f3867e, type: 3}
+  - {fileID: 8300000, guid: c1fb843385a0f024a8ca56c9aba51176, type: 3}
+  - {fileID: 8300000, guid: e200eb99765ba24418dbe03ac9bce19f, type: 3}
+  - {fileID: 8300000, guid: db11a74597f0dbd478c2f37493b8afbb, type: 3}
+  - {fileID: 8300000, guid: 7f51292912e2abd4b8054bddbdd82f99, type: 3}
   m_possibleGifts: []
   m_requiredUpgradeIDs: []
   m_minimumHabitatLevel: 0
