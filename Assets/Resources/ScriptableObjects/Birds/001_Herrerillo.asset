@@ -38,7 +38,7 @@ MonoBehaviour:
   m_identificationInfo: 
   m_isThreatened: 0
   m_conservationStatus: 
-  m_birdSong: {fileID: 0}
+  m_birdSong: {fileID: 8300000, guid: 84b4653c52345d149ad125a0136543ac, type: 3}
   m_possibleGifts: []
   m_requiredUpgradeIDs: []
   m_minimumHabitatLevel: 0
@@ -46,6 +46,10 @@ MonoBehaviour:
   m_visitDurationMax: 180
   m_objectBonusSeconds: 5
   m_movementSpeed: 60
+  m_walkHopHeight: 30
+  m_walkHopDuration: 0.4
+  m_walkHopIntervalMin: 1.5
+  m_walkHopIntervalMax: 8
   m_possibleBehaviors:
   - {fileID: 11400000, guid: 39fea8c70a09ae140817bfddf184aceb, type: 2}
   - {fileID: 11400000, guid: fbfaf83a4f53eb1499c4f3e0d7727c06, type: 2}
