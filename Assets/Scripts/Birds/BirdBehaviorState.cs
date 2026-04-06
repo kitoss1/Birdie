@@ -43,9 +43,8 @@ namespace Birdie.Birds
         private bool m_canBeInterrupted = true;
 
         [SerializeField]
-        [Tooltip("Base weight for behavior selection (higher = more likely to be chosen)")]
-        [Range(1, 100)]
-        private int m_baseWeight = 50;
+        [Tooltip("Seconds before this behavior can be selected again after it finishes (0 = no cooldown)")]
+        private float m_cooldownDuration = 0f;
 
         [SerializeField]
         [Tooltip("Friendship points gained when completing this behavior")]
@@ -59,7 +58,7 @@ namespace Birdie.Birds
         public int RequiredFriendshipLevel => m_requiredFriendshipLevel;
         public bool RequiresSceneObject => m_requiresSceneObject;
         public bool CanBeInterrupted => m_canBeInterrupted;
-        public int BaseWeight => m_baseWeight;
+        public float CooldownDuration => m_cooldownDuration;
         public int FriendshipReward => m_friendshipReward;
 
         /// <summary>
@@ -115,55 +114,115 @@ namespace Birdie.Birds
             return true;
         }
 
+        [SerializeField]
+        [Tooltip("If set, this behavior is always followed by the specified behavior instead of a random pick. Leave empty for normal weighted selection.")]
+        private BirdBehaviorState m_forcedNextBehavior;
+
+        public BirdBehaviorState ForcedNextBehavior => m_forcedNextBehavior;
+
+        /// <summary>
+        /// Returns true when the behavior timer should be ticking.
+        /// Override to return false while the bird is still travelling to its target,
+        /// so the activity duration only counts from the moment the bird arrives.
+        /// The default implementation always returns true.
+        /// </summary>
+        /// <param name="bird">The bird controller executing this behavior</param>
+        public virtual bool IsTimerActive(Bird bird)
+        {
+            return true;
+        }
+
+        /// <summary>
+        /// Returns true when the behavior is ready to hand control back to the bird.
+        /// The default implementation completes when the behavior timer expires.
+        /// Override to complete early (e.g. on arrival) or to delay completion until an outro finishes.
+        /// </summary>
+        /// <param name="bird">The bird controller executing this behavior</param>
+        public virtual bool IsBehaviorComplete(Bird bird)
+        {
+            return bird.BehaviorTimer >= bird.BehaviorDuration;
+        }
+
         /// <summary>
         /// Calculates the final weight for this behavior based on environmental conditions.
-        /// Override this to add modifiers (e.g., increase weight if food is nearby).
+        /// The base weight comes from BirdData so each species can weight the same behavior differently.
+        /// Override to add environmental modifiers on top of the base weight (e.g. feeder attractiveness).
         /// </summary>
         /// <param name="bird">The bird controller</param>
+        /// <param name="baseWeight">Per-species base weight from BirdData</param>
         /// <returns>The calculated weight</returns>
-        public virtual int CalculateWeight(Bird bird)
+        public virtual int CalculateWeight(Bird bird, int baseWeight)
         {
-            return m_baseWeight;
+            return baseWeight;
         }
 
         /// <summary>
         /// Moves the bird toward a BirdObject's interaction point at the given speed.
-        /// Uses anchoredPosition when both the bird and target are RectTransforms (canvas UI),
-        /// otherwise falls back to world-space movement.
         /// Returns true when the bird has reached the target.
         /// </summary>
         protected bool MoveTowardsTarget(Bird bird, BirdObject target, float speed)
         {
             RectTransform birdRect = bird.transform as RectTransform;
 
-            bool reached;
+            if (birdRect != null && birdRect.parent != null)
+            {
+                Vector2 targetLocal = birdRect.parent.InverseTransformPoint(target.InteractionPosition);
+                return MoveTowardsLocalPosition(bird, birdRect, targetLocal, speed);
+            }
+
+            return MoveTowardsWorldPosition(bird, target.InteractionPosition, speed);
+        }
+
+        /// <summary>
+        /// Moves the bird toward a position in its parent's local space at the given speed.
+        /// Returns true when the bird has reached the target.
+        /// </summary>
+        protected bool MoveTowardsLocalPosition(Bird bird, Vector2 localTargetPosition, float speed)
+        {
+            RectTransform birdRect = bird.transform as RectTransform;
 
             if (birdRect != null && birdRect.parent != null)
             {
-                // Convert target world position into bird's parent local space so the
-                // comparison is valid regardless of where each object sits in the hierarchy.
-                Vector2 targetLocal = birdRect.parent.InverseTransformPoint(target.InteractionPosition);
-                Vector2 birdLocal = birdRect.localPosition;
+                return MoveTowardsLocalPosition(bird, birdRect, localTargetPosition, speed);
+            }
 
-                float directionX = targetLocal.x - birdLocal.x;
-                bird.SetFacingDirection(directionX);
+            // Fallback: treat local position as world position
+            return MoveTowardsWorldPosition(bird, localTargetPosition, speed);
+        }
 
-                birdRect.localPosition = Vector2.MoveTowards(birdLocal, targetLocal, speed * Time.deltaTime);
-                reached = Vector2.Distance(birdRect.localPosition, targetLocal) < 1f;
+        private bool MoveTowardsLocalPosition(Bird bird, RectTransform birdRect, Vector2 localTargetPosition, float speed)
+        {
+            Vector2 birdLocal = birdRect.localPosition;
+
+            float directionX = localTargetPosition.x - birdLocal.x;
+            bird.SetFacingDirection(directionX);
+
+            birdRect.localPosition = Vector2.MoveTowards(birdLocal, localTargetPosition, speed * Time.deltaTime);
+            bool reached = Vector2.Distance(birdRect.localPosition, localTargetPosition) < 1f;
+
+            if (reached)
+            {
+                bird.ResetWalkHop();
             }
             else
             {
-                Vector3 targetPosition = target.InteractionPosition;
-                float worldDirectionX = targetPosition.x - bird.transform.position.x;
-                bird.SetFacingDirection(worldDirectionX);
-
-                bird.transform.position = Vector3.MoveTowards(
-                    bird.transform.position,
-                    targetPosition,
-                    speed * Time.deltaTime
-                );
-                reached = Vector3.Distance(bird.transform.position, targetPosition) < 0.1f;
+                bird.SampleAndApplyWalkHop(Time.deltaTime);
             }
+
+            return reached;
+        }
+
+        private bool MoveTowardsWorldPosition(Bird bird, Vector3 worldTargetPosition, float speed)
+        {
+            float directionX = worldTargetPosition.x - bird.transform.position.x;
+            bird.SetFacingDirection(directionX);
+
+            bird.transform.position = Vector3.MoveTowards(
+                bird.transform.position,
+                worldTargetPosition,
+                speed * Time.deltaTime
+            );
+            bool reached = Vector3.Distance(bird.transform.position, worldTargetPosition) < 0.1f;
 
             if (reached)
             {

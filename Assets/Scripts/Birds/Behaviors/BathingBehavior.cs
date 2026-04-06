@@ -84,6 +84,13 @@ namespace Birdie.Birds.Behaviors
 
             m_targetBath = null;
             m_hasReachedBath = false;
+
+            base.OnExit(bird);
+        }
+
+        public override bool IsTimerActive(Bird bird)
+        {
+            return m_hasReachedBath;
         }
 
         public override bool CanExecute(Bird bird)
@@ -99,9 +106,9 @@ namespace Birdie.Birds.Behaviors
             return bath != null;
         }
 
-        public override int CalculateWeight(Bird bird)
+        public override int CalculateWeight(Bird bird, int baseWeight)
         {
-            int weight = base.CalculateWeight(bird);
+            int weight = base.CalculateWeight(bird, baseWeight);
 
             // Find bird bath and boost weight based on attractiveness
             BirdObject bath = FindNearestBirdBath(bird);

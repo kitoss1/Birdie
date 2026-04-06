@@ -4231,6 +4231,14 @@ PrefabInstance:
       propertyPath: m_storeItemReferences.Array.data[1].m_sceneObject
       value: 
       objectReference: {fileID: 5133509383242270238}
+    - target: {fileID: 8063905682138039234, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_leftBound
+      value: 
+      objectReference: {fileID: 1224601494}
+    - target: {fileID: 8063905682138039234, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_rightBound
+      value: 
+      objectReference: {fileID: 1545329206}
     - target: {fileID: 8501847587352634142, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_spawnPoints
       value: 

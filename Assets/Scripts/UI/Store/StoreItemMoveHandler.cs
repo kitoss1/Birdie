@@ -22,15 +22,6 @@ namespace Birdie.UI.Store
         [SerializeField] private Button m_confirmButton;
         [SerializeField] private Button m_cancelButton;
 
-        [Header("Movement Bounds")]
-        [SerializeField]
-        [Tooltip("Left boundary transform. The object cannot move past this X position")]
-        private Transform m_leftBound;
-
-        [SerializeField]
-        [Tooltip("Right boundary transform. The object cannot move past this X position")]
-        private Transform m_rightBound;
-
         private GameObject m_targetObject;
         private string m_targetItemID;
         private Vector3 m_originalPosition;
@@ -166,24 +157,17 @@ namespace Birdie.UI.Store
 
         private float ClampToVisibleArea(float x)
         {
-            if (m_leftBound != null && m_rightBound != null)
+            if (GameManager.Instance?.EnvironmentManager != null &&
+                GameManager.Instance.EnvironmentManager.TryGetMovementBoundsWorldX(out float min, out float max))
             {
-                float min = Mathf.Min(m_leftBound.position.x, m_rightBound.position.x);
-                float max = Mathf.Max(m_leftBound.position.x, m_rightBound.position.x);
-
-                if (!Mathf.Approximately(min, max))
-                {
-                    return Mathf.Clamp(x, min, max);
-                }
+                return Mathf.Clamp(x, min, max);
             }
 
             if (m_canvasRect != null)
             {
                 Vector3[] corners = new Vector3[4];
                 m_canvasRect.GetWorldCorners(corners);
-                float canvasMin = corners[0].x;
-                float canvasMax = corners[2].x;
-                return Mathf.Clamp(x, canvasMin, canvasMax);
+                return Mathf.Clamp(x, corners[0].x, corners[2].x);
             }
 
             return x;

@@ -8,27 +8,52 @@ namespace Birdie.Birds.Behaviors
     /// Eating behavior where the bird moves to a feeder and eats.
     /// Requires a BirdObject of type Feeder to be in the scene.
     /// Uses EnvironmentManager to find feeders.
+    ///
+    /// Animation phases:
+    ///   Walking     — bird walks to the feeder (MovementAnimationStateName)
+    ///   EatingStart — one-shot intro clip played once on arrival (m_eatingStartStateName)
+    ///   EatingLoop  — looping eat clip; waits for MinDuration then exits at the next loop boundary (AnimationStateName)
+    ///   EatingLeave — one-shot outro clip played at the next loop boundary (m_eatingLeaveStateName)
     /// </summary>
     [CreateAssetMenu(fileName = "EatingBehavior", menuName = "Birdie/Bird Behaviors/Eating Behavior")]
     public class EatingBehavior : BirdBehaviorState
     {
+        private enum EatingPhase
+        {
+            Walking,
+            EatingStart,
+            EatingLoop,
+            EatingLeave,
+        }
+
+        [Header("Eating Animation Phases")]
+        [SerializeField]
+        [Tooltip("Animator state for the one-shot eating-start clip (leave empty to skip straight to the loop)")]
+        private string m_eatingStartStateName;
+
+        [SerializeField]
+        [Tooltip("Animator state for the one-shot eating-leave clip (leave empty to skip the outro)")]
+        private string m_eatingLeaveStateName;
+
         private BirdObject m_targetFeeder;
-        private bool m_hasReachedFeeder = false;
+        private EatingPhase m_phase;
+        private float m_lastLoopNormalizedTime;
+        private bool m_wantsToLeave;
 
         public override void OnEnter(Bird bird)
         {
             DebugBase.Log($"[{nameof(EatingBehavior)}] {bird.BirdData?.BirdName} looking for food", DebugCategory.Birds);
 
-            // Find nearest feeder
             m_targetFeeder = FindNearestFeeder(bird);
-            m_hasReachedFeeder = false;
+            m_phase = EatingPhase.Walking;
+            m_lastLoopNormalizedTime = 0f;
+            m_wantsToLeave = false;
 
             if (m_targetFeeder != null)
             {
                 DebugBase.Log($"[{nameof(EatingBehavior)}] Found feeder at {m_targetFeeder.InteractionPosition}", DebugCategory.Birds);
                 m_targetFeeder.OnBirdStartInteraction(bird);
 
-                // Play movement animation while walking to feeder
                 if (!string.IsNullOrEmpty(MovementAnimationStateName))
                 {
                     bird.PlayAnimation(MovementAnimationStateName);
@@ -36,7 +61,6 @@ namespace Birdie.Birds.Behaviors
             }
             else
             {
-                base.OnEnter(bird);
                 DebugBase.LogWarning($"[{nameof(EatingBehavior)}] No feeder found! Bird cannot eat.", DebugCategory.Birds);
             }
         }
@@ -48,27 +72,23 @@ namespace Birdie.Birds.Behaviors
                 return;
             }
 
-            // Move toward feeder if not reached yet
-            if (!m_hasReachedFeeder)
+            switch (m_phase)
             {
-                float moveSpeed = bird.BirdData?.MovementSpeed ?? 60f;
-                bool reached = MoveTowardsTarget(bird, m_targetFeeder, moveSpeed);
+                case EatingPhase.Walking:
+                    ExecuteWalking(bird);
+                    break;
 
-                if (reached)
-                {
-                    m_hasReachedFeeder = true;
-                    DebugBase.Log($"[{nameof(EatingBehavior)}] Reached feeder, starting to eat", DebugCategory.Birds);
+                case EatingPhase.EatingStart:
+                    ExecuteEatingStart(bird);
+                    break;
 
-                    if (!string.IsNullOrEmpty(AnimationStateName))
-                    {
-                        bird.PlayAnimation(AnimationStateName);
-                    }
-                }
-            }
-            else
-            {
-                // Bird is eating
-                // TODO: Spawn particle effects (seeds, crumbs, etc.)
+                case EatingPhase.EatingLoop:
+                    ExecuteEatingLoop(bird);
+                    break;
+
+                case EatingPhase.EatingLeave:
+                    // Nothing to drive — Bird.cs timer will call OnExit when the behavior duration expires.
+                    break;
             }
         }
 
@@ -82,27 +102,42 @@ namespace Birdie.Birds.Behaviors
             }
 
             m_targetFeeder = null;
-            m_hasReachedFeeder = false;
+            m_phase = EatingPhase.Walking;
+            m_lastLoopNormalizedTime = 0f;
+            m_wantsToLeave = false;
+
+            base.OnExit(bird);
+        }
+
+        public override bool IsTimerActive(Bird bird)
+        {
+            return m_phase == EatingPhase.EatingLoop || m_phase == EatingPhase.EatingLeave;
+        }
+
+        public override bool IsBehaviorComplete(Bird bird)
+        {
+            if (m_phase != EatingPhase.EatingLeave)
+            {
+                return false;
+            }
+
+            return bird.GetCurrentAnimationNormalizedTime() >= 1f;
         }
 
         public override bool CanExecute(Bird bird)
         {
-            // Check base conditions (friendship level, etc.)
             if (!base.CanExecute(bird))
             {
                 return false;
             }
 
-            // Must have a feeder in the scene
-            BirdObject feeder = FindNearestFeeder(bird);
-            return feeder != null;
+            return FindNearestFeeder(bird) != null;
         }
 
-        public override int CalculateWeight(Bird bird)
+        public override int CalculateWeight(Bird bird, int baseWeight)
         {
-            int weight = base.CalculateWeight(bird);
+            int weight = base.CalculateWeight(bird, baseWeight);
 
-            // Find feeder and boost weight based on attractiveness
             BirdObject feeder = FindNearestFeeder(bird);
             if (feeder != null)
             {
@@ -110,6 +145,79 @@ namespace Birdie.Birds.Behaviors
             }
 
             return weight;
+        }
+
+        private void ExecuteWalking(Bird bird)
+        {
+            float moveSpeed = bird.BirdData?.MovementSpeed ?? 60f;
+            bool reached = MoveTowardsTarget(bird, m_targetFeeder, moveSpeed);
+
+            if (!reached)
+            {
+                return;
+            }
+
+            DebugBase.Log($"[{nameof(EatingBehavior)}] Reached feeder", DebugCategory.Birds);
+
+            if (!string.IsNullOrEmpty(m_eatingStartStateName))
+            {
+                m_phase = EatingPhase.EatingStart;
+                bird.PlayAnimation(m_eatingStartStateName);
+            }
+            else
+            {
+                EnterEatingLoop(bird);
+            }
+        }
+
+        private void ExecuteEatingStart(Bird bird)
+        {
+            // Wait for the one-shot clip to finish (normalizedTime reaches 1).
+            if (bird.GetCurrentAnimationNormalizedTime() >= 1f)
+            {
+                EnterEatingLoop(bird);
+            }
+        }
+
+        private void EnterEatingLoop(Bird bird)
+        {
+            DebugBase.Log($"[{nameof(EatingBehavior)}] Entering eating loop", DebugCategory.Birds);
+            m_phase = EatingPhase.EatingLoop;
+            m_lastLoopNormalizedTime = 0f;
+
+            if (!string.IsNullOrEmpty(AnimationStateName))
+            {
+                bird.PlayAnimation(AnimationStateName);
+            }
+        }
+
+        private void ExecuteEatingLoop(Bird bird)
+        {
+            if (bird.BehaviorTimer >= bird.BehaviorDuration)
+            {
+                m_wantsToLeave = true;
+            }
+
+            // Detect loop boundary: normalizedTime % 1f wraps back toward 0.
+            float normalizedTime = bird.GetCurrentAnimationNormalizedTime() % 1f;
+            bool loopBoundaryReached = normalizedTime < m_lastLoopNormalizedTime;
+            m_lastLoopNormalizedTime = normalizedTime;
+
+            if (m_wantsToLeave && loopBoundaryReached)
+            {
+                EnterEatingLeave(bird);
+            }
+        }
+
+        private void EnterEatingLeave(Bird bird)
+        {
+            DebugBase.Log($"[{nameof(EatingBehavior)}] Playing eating leave animation", DebugCategory.Birds);
+            m_phase = EatingPhase.EatingLeave;
+
+            if (!string.IsNullOrEmpty(m_eatingLeaveStateName))
+            {
+                bird.PlayAnimation(m_eatingLeaveStateName);
+            }
         }
 
         /// <summary>
@@ -123,7 +231,6 @@ namespace Birdie.Birds.Behaviors
                 return null;
             }
 
-            // Use EnvironmentManager to find nearest usable feeder
             return GameManager.Instance.EnvironmentManager.GetNearestUsableObject(BirdObjectType.Feeder, bird);
         }
     }

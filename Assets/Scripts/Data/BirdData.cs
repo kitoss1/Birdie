@@ -165,8 +165,8 @@ namespace Birdie.Data
         private float m_walkHopIntervalMax = 1.5f;
 
         [SerializeField]
-        [Tooltip("List of possible behaviors this bird species can perform")]
-        private List<BirdBehaviorState> m_possibleBehaviors = new List<BirdBehaviorState>();
+        [Tooltip("Behaviors this bird species can perform, each with a per-species weight")]
+        private List<BirdBehaviorEntry> m_possibleBehaviors = new List<BirdBehaviorEntry>();
 
         [Header("Special Behaviors")]
         [SerializeField]
@@ -379,7 +379,7 @@ namespace Birdie.Data
             set => m_objectBonusSeconds = value;
         }
 
-        public List<BirdBehaviorState> PossibleBehaviors
+        public List<BirdBehaviorEntry> PossibleBehaviors
         {
             get => m_possibleBehaviors;
             set => m_possibleBehaviors = value;

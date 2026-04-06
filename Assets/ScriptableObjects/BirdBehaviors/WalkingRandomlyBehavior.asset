@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b326d403d2f8d5e4b9d48eceea41b614, type: 3}
+  m_Name: WalkingRandomlyBehavior
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.WalkingRandomlyBehavior
+  m_animationStateName: Idle
+  m_movementAnimationStateName: Walking
+  m_minDuration: 5
+  m_maxDuration: 20
+  m_requiredFriendshipLevel: 0
+  m_requiresSceneObject: 0
+  m_canBeInterrupted: 1
+  m_cooldownDuration: 0
+  m_baseWeight: 10
+  m_friendshipReward: 0
+  m_forcedNextBehavior: {fileID: 11400000, guid: 39fea8c70a09ae140817bfddf184aceb, type: 2}
+  m_walkRangeX: 150
+  m_minWalkDistanceX: 5

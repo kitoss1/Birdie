@@ -19,5 +19,6 @@ MonoBehaviour:
   m_requiredFriendshipLevel: 0
   m_requiresSceneObject: 1
   m_canBeInterrupted: 1
+  m_cooldownDuration: 60
   m_baseWeight: 20
   m_friendshipReward: 4

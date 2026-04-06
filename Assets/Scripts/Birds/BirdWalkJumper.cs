@@ -18,6 +18,8 @@ namespace Birdie.Birds
         private float m_groundY;
         private float m_hopPhaseTimer = -1f;
         private float m_hopIntervalTimer = 0.5f;
+        private bool m_isLanding = false;
+        private BirdData m_cachedBirdData;
 
         private void Awake()
         {
@@ -31,9 +33,31 @@ namespace Birdie.Birds
             }
         }
 
+        private void Update()
+        {
+            if (!m_isLanding || m_visualRoot == null)
+            {
+                return;
+            }
+
+            float landingSpeed = m_cachedBirdData != null
+                ? m_cachedBirdData.WalkHopHeight / (m_cachedBirdData.WalkHopDuration * 0.5f)
+                : 100f;
+
+            Vector3 pos = m_visualRoot.localPosition;
+            pos.y = Mathf.MoveTowards(pos.y, m_groundY, landingSpeed * Time.deltaTime);
+            m_visualRoot.localPosition = pos;
+
+            if (Mathf.Approximately(pos.y, m_groundY))
+            {
+                m_isLanding = false;
+            }
+        }
+
         private void OnDisable()
         {
             m_hopPhaseTimer = -1f;
+            m_isLanding = false;
             RestoreGroundY();
         }
 
@@ -53,16 +77,26 @@ namespace Birdie.Birds
         }
 
         /// <summary>
-        /// Resets hop state and restores the visual root to its ground position.
+        /// Resets hop state and returns the visual root to its ground position.
+        /// If interrupted mid-hop, the bird descends smoothly rather than snapping.
         /// Call this when the bird stops walking.
         /// </summary>
         public void Reset(BirdData birdData)
         {
+            m_cachedBirdData = birdData;
             m_hopPhaseTimer = -1f;
             m_hopIntervalTimer = birdData != null
                 ? Random.Range(birdData.WalkHopIntervalMin, birdData.WalkHopIntervalMax)
                 : 1f;
-            RestoreGroundY();
+
+            if (m_visualRoot != null && !Mathf.Approximately(m_visualRoot.localPosition.y, m_groundY))
+            {
+                m_isLanding = true;
+            }
+            else
+            {
+                RestoreGroundY();
+            }
         }
 
         private float AdvanceAndComputeOffset(float deltaTime, BirdData birdData)

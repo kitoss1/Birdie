@@ -12,6 +12,15 @@ namespace Birdie.Managers
     /// </summary>
     public class EnvironmentManager : BaseManager
     {
+        [Header("Movement Bounds")]
+        [SerializeField]
+        [Tooltip("Left boundary transform used to constrain bird and object movement")]
+        private Transform m_leftBound;
+
+        [SerializeField]
+        [Tooltip("Right boundary transform used to constrain bird and object movement")]
+        private Transform m_rightBound;
+
         private readonly List<Birds.BirdObject> m_allObjects = new List<Birds.BirdObject>();
         private readonly HashSet<Birds.BirdObject> m_registeredObjects = new HashSet<Birds.BirdObject>();
 
@@ -142,6 +151,24 @@ namespace Birdie.Managers
             }
 
             return nearest;
+        }
+
+        /// <summary>
+        /// Returns the world-space X movement bounds defined by the left and right boundary transforms.
+        /// Returns false if either boundary is not assigned.
+        /// </summary>
+        public bool TryGetMovementBoundsWorldX(out float minX, out float maxX)
+        {
+            if (m_leftBound != null && m_rightBound != null)
+            {
+                minX = Mathf.Min(m_leftBound.position.x, m_rightBound.position.x);
+                maxX = Mathf.Max(m_leftBound.position.x, m_rightBound.position.x);
+                return true;
+            }
+
+            minX = 0f;
+            maxX = 0f;
+            return false;
         }
 
         /// <summary>

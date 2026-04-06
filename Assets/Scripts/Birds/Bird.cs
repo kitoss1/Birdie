@@ -44,6 +44,9 @@ namespace Birdie.Birds
         // Cached environment data
         private List<BirdObject> m_nearbyObjects = new List<BirdObject>();
 
+        // Cooldown tracking: maps each behavior to the Time.time when it becomes available again
+        private Dictionary<BirdBehaviorState, float> m_behaviorCooldowns = new Dictionary<BirdBehaviorState, float>();
+
         public BirdData BirdData
         {
             get => m_birdData;
@@ -55,6 +58,10 @@ namespace Birdie.Birds
         public bool IsInteractable => m_isInteractable;
 
         public bool CanPlayMinigame => !m_hasPlayedMinigameThisVisit;
+
+        public float BehaviorTimer => m_behaviorTimer;
+
+        public float BehaviorDuration => m_behaviorDuration;
 
         public IReadOnlyList<BirdObject> NearbyObjects => m_nearbyObjects;
 
@@ -69,7 +76,7 @@ namespace Birdie.Birds
 
             if (m_birdData.PossibleBehaviors == null || m_birdData.PossibleBehaviors.Count == 0)
             {
-                DebugBase.LogError($"[{nameof(Bird)}] No behaviors assigned! Bird will not function properly.", DebugCategory.Birds);
+                DebugBase.LogError($"[{nameof(Bird)}] No behavior entries assigned! Bird will not function properly.", DebugCategory.Birds);
             }
 
             StartVisitAsync().Forget();
@@ -82,11 +89,14 @@ namespace Birdie.Birds
             {
                 m_currentBehavior.Execute(this);
 
-                // Update behavior timer
-                m_behaviorTimer += Time.deltaTime;
-                if (m_behaviorTimer >= m_behaviorDuration)
+                // Only tick the timer once the behavior signals it is ready (e.g. after arriving at a target).
+                if (m_currentBehavior.IsTimerActive(this))
                 {
-                    // Behavior finished, pick next one
+                    m_behaviorTimer += Time.deltaTime;
+                }
+
+                if (m_currentBehavior.IsBehaviorComplete(this))
+                {
                     TransitionToNextBehavior();
                 }
             }
@@ -207,13 +217,22 @@ namespace Birdie.Birds
         private void TransitionToNextBehavior()
         {
             // Exit current behavior
+            BirdBehaviorState forcedNext = null;
             if (m_currentBehavior != null)
             {
+                forcedNext = m_currentBehavior.ForcedNextBehavior;
+
                 m_currentBehavior.OnExit(this);
+
+                if (m_currentBehavior.CooldownDuration > 0f)
+                {
+                    m_behaviorCooldowns[m_currentBehavior] = Time.time + m_currentBehavior.CooldownDuration;
+                    DebugBase.Log($"[{nameof(Bird)}] {m_currentBehavior.name} on cooldown for {m_currentBehavior.CooldownDuration}s", DebugCategory.Birds);
+                }
             }
 
-            // Pick next behavior
-            BirdBehaviorState nextBehavior = PickNextBehavior();
+            // Use forced next behavior if specified, otherwise pick randomly
+            BirdBehaviorState nextBehavior = forcedNext ?? PickNextBehavior();
 
             if (nextBehavior != null)
             {
@@ -232,28 +251,37 @@ namespace Birdie.Birds
         }
 
         /// <summary>
+        /// Returns true if the given behavior is currently waiting out its cooldown.
+        /// </summary>
+        private bool IsBehaviorOnCooldown(BirdBehaviorState behavior)
+        {
+            return m_behaviorCooldowns.TryGetValue(behavior, out float availableAt) && Time.time < availableAt;
+        }
+
+        /// <summary>
         /// Picks the next behavior using weighted random selection.
+        /// Weights are defined per species in BirdData, with environmental modifiers applied by the behavior.
         /// </summary>
         private BirdBehaviorState PickNextBehavior()
         {
-            // Filter behaviors that can be executed
-            List<BirdBehaviorState> availableBehaviors = m_birdData.PossibleBehaviors
-                .Where(b => b != null && b.CanExecute(this))
+            // Filter entries whose behavior can execute and is not on cooldown
+            List<Data.BirdBehaviorEntry> availableEntries = m_birdData.PossibleBehaviors
+                .Where(e => e?.Behavior != null && e.Behavior.CanExecute(this) && !IsBehaviorOnCooldown(e.Behavior))
                 .ToList();
 
-            if (availableBehaviors.Count == 0)
+            if (availableEntries.Count == 0)
             {
                 DebugBase.LogWarning($"[{nameof(Bird)}] No available behaviors!", DebugCategory.Birds);
                 return null;
             }
 
-            // Calculate weights for each behavior
+            // Calculate final weights (base from BirdData + environmental modifiers from behavior)
             List<int> weights = new List<int>();
             int totalWeight = 0;
 
-            foreach (BirdBehaviorState behavior in availableBehaviors)
+            foreach (Data.BirdBehaviorEntry entry in availableEntries)
             {
-                int weight = behavior.CalculateWeight(this);
+                int weight = entry.Behavior.CalculateWeight(this, entry.Weight);
                 weights.Add(weight);
                 totalWeight += weight;
             }
@@ -262,17 +290,17 @@ namespace Birdie.Birds
             int randomValue = UnityEngine.Random.Range(0, totalWeight);
             int cumulativeWeight = 0;
 
-            for (int i = 0; i < availableBehaviors.Count; i++)
+            for (int i = 0; i < availableEntries.Count; i++)
             {
                 cumulativeWeight += weights[i];
                 if (randomValue < cumulativeWeight)
                 {
-                    return availableBehaviors[i];
+                    return availableEntries[i].Behavior;
                 }
             }
 
-            // Fallback to first behavior
-            return availableBehaviors[0];
+            // Fallback to first available behavior
+            return availableEntries[0].Behavior;
         }
 
         /// <summary>
@@ -472,6 +500,20 @@ namespace Birdie.Birds
             float absX = Mathf.Abs(scale.x);
             scale.x = directionX > 0f ? -absX : absX;
             target.localScale = scale;
+        }
+
+        /// <summary>
+        /// Returns the normalizedTime of the currently playing Animator state on layer 0.
+        /// For looping clips this keeps incrementing past 1.0 — use % 1f to get the in-cycle fraction.
+        /// </summary>
+        public float GetCurrentAnimationNormalizedTime()
+        {
+            if (m_animator == null)
+            {
+                return 0f;
+            }
+
+            return m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
         }
 
         /// <summary>
