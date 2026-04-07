@@ -49,6 +49,15 @@ public class TransparentGame : MonoBehaviour
         public int y;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    struct RECT
+    {
+        public int left;
+        public int top;
+        public int right;
+        public int bottom;
+    }
+
     [DllImport("user32.dll")]
     static extern IntPtr GetActiveWindow();
 
@@ -71,6 +80,11 @@ public class TransparentGame : MonoBehaviour
 
     [DllImport("user32.dll")]
     static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int X, int Y, int cx, int cy, uint uFlags);
+
+    [DllImport("user32.dll")]
+    static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref RECT pvParam, uint fWinIni);
+
+    const uint SPI_GETWORKAREA = 0x0030;
 
     private IntPtr hwnd;
 #endif
@@ -119,11 +133,35 @@ public class TransparentGame : MonoBehaviour
         // Make window always on top
         SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE | SWP_SHOWWINDOW);
         DebugBase.Log($"[{nameof(TransparentGame)}] Window set to always on top");
+
+        // Resize window to work area (screen minus taskbar)
+        FitWindowToWorkArea();
 #else
         DebugBase.LogWarning($"[{nameof(TransparentGame)}] Transparent Game only works in Windows builds", DebugCategory.Transparency);
 
 #endif
     }
+
+#if UNITY_STANDALONE_WIN && !UNITY_EDITOR
+    private void FitWindowToWorkArea()
+    {
+        var workArea = new RECT();
+        if (!SystemParametersInfo(SPI_GETWORKAREA, 0, ref workArea, 0))
+        {
+            DebugBase.LogError($"[{nameof(TransparentGame)}] SystemParametersInfo failed, cannot fit window to work area");
+            return;
+        }
+
+        int width  = workArea.right  - workArea.left;
+        int height = workArea.bottom - workArea.top;
+
+        const uint SWP_NOZORDER = 0x0004;
+        SetWindowPos(hwnd, IntPtr.Zero, workArea.left, workArea.top, width, height, SWP_NOZORDER | SWP_SHOWWINDOW);
+        Screen.SetResolution(width, height, false);
+
+        DebugBase.Log($"[{nameof(TransparentGame)}] Window fitted to work area: {width}x{height} at ({workArea.left},{workArea.top})");
+    }
+#endif
 
     private void Update()
     {
