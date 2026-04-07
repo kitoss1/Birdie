@@ -30,6 +30,8 @@ namespace Birdie.Birds
 
 
         private float m_maxVisitDuration;
+        private Vector3 m_landingWorldPosition;
+        private Vector3 m_spawnWorldPosition;
         private BirdState m_currentState = BirdState.Appearing;
         private BirdBehaviorState m_currentBehavior;
         private float m_behaviorTimer = 0f;
@@ -59,6 +61,12 @@ namespace Birdie.Birds
 
         public bool CanPlayMinigame => !m_hasPlayedMinigameThisVisit;
 
+        public bool AllowClickWhileActive => m_currentBehavior == null || m_currentBehavior.CanBeInterrupted;
+
+        public Vector3 LandingWorldPosition => m_landingWorldPosition;
+
+        public Vector3 SpawnWorldPosition => m_spawnWorldPosition;
+
         public float BehaviorTimer => m_behaviorTimer;
 
         public float BehaviorDuration => m_behaviorDuration;
@@ -85,19 +93,24 @@ namespace Birdie.Birds
         private void Update()
         {
             // Execute current behavior
-            if (m_currentBehavior != null && m_currentState == BirdState.Idle)
+            if (m_currentBehavior != null && (m_currentState == BirdState.Visiting || m_currentState == BirdState.Leaving))
             {
                 m_currentBehavior.Execute(this);
 
-                // Only tick the timer once the behavior signals it is ready (e.g. after arriving at a target).
-                if (m_currentBehavior.IsTimerActive(this))
+                // Timer and transition are only managed during Idle.
+                // During Leaving, LeaveAsync owns the lifecycle — Execute runs but nothing transitions.
+                if (m_currentState == BirdState.Visiting)
                 {
-                    m_behaviorTimer += Time.deltaTime;
-                }
+                    // Only tick the timer once the behavior signals it is ready (e.g. after arriving at a target).
+                    if (m_currentBehavior.IsTimerActive(this))
+                    {
+                        m_behaviorTimer += Time.deltaTime;
+                    }
 
-                if (m_currentBehavior.IsBehaviorComplete(this))
-                {
-                    TransitionToNextBehavior();
+                    if (m_currentBehavior.IsBehaviorComplete(this))
+                    {
+                        TransitionToNextBehavior();
+                    }
                 }
             }
         }
@@ -106,9 +119,11 @@ namespace Birdie.Birds
         /// Initializes the bird with specific BirdData.
         /// Called by BirdManager when spawning.
         /// </summary>
-        public void Initialize(BirdData birdData)
+        public void Initialize(BirdData birdData, Vector3 landingWorldPosition = default, Vector3 spawnWorldPosition = default)
         {
             m_birdData = birdData;
+            m_landingWorldPosition = landingWorldPosition;
+            m_spawnWorldPosition = spawnWorldPosition;
             DebugBase.Log($"[{nameof(Bird)}] Initialized: {birdData.BirdName}", DebugCategory.Birds);
         }
 
@@ -124,17 +139,14 @@ namespace Birdie.Birds
         }
 
         /// <summary>
-        /// Handles the appearing animation and state.
+        /// Handles the appearing state. The visual fly-in is driven by ArrivingBehavior in VisitAsync.
         /// </summary>
-        private async UniTask AppearAsync()
+        private UniTask AppearAsync()
         {
             m_currentState = BirdState.Appearing;
-            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} is appearing", DebugCategory.Birds);
-
-            // TODO: Play appear animation
-            await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: this.GetCancellationTokenOnDestroy());
-
             m_isInteractable = true;
+            DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} is appearing", DebugCategory.Birds);
+            return UniTask.CompletedTask;
         }
 
         /// <summary>
@@ -192,13 +204,13 @@ namespace Birdie.Birds
         /// </summary>
         private async UniTask VisitAsync()
         {
-            m_currentState = BirdState.Idle;
+            m_currentState = BirdState.Visiting;
             m_visitEndTime = Time.time + m_maxVisitDuration;
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} starting visit behaviors", DebugCategory.Birds);
 
-            // Start first behavior
-            TransitionToNextBehavior();
+            // Start with the arriving behavior if configured, otherwise pick normally.
+            TransitionToNextBehavior(m_birdData.ArrivingBehavior);
 
             // Wait until visit time is over
             await UniTask.WaitUntil(() => Time.time >= m_visitEndTime, cancellationToken: this.GetCancellationTokenOnDestroy());
@@ -213,8 +225,9 @@ namespace Birdie.Birds
 
         /// <summary>
         /// Transitions from current behavior to next behavior.
+        /// Pass an override to force a specific behavior instead of using random selection.
         /// </summary>
-        private void TransitionToNextBehavior()
+        private void TransitionToNextBehavior(BirdBehaviorState overrideBehavior = null)
         {
             // Exit current behavior
             BirdBehaviorState forcedNext = null;
@@ -231,8 +244,8 @@ namespace Birdie.Birds
                 }
             }
 
-            // Use forced next behavior if specified, otherwise pick randomly
-            BirdBehaviorState nextBehavior = forcedNext ?? PickNextBehavior();
+            // Priority: caller override → ForcedNextBehavior → random pick
+            BirdBehaviorState nextBehavior = overrideBehavior ?? forcedNext ?? PickNextBehavior();
 
             if (nextBehavior != null)
             {
@@ -314,8 +327,20 @@ namespace Birdie.Birds
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} is leaving", DebugCategory.Birds);
 
-            // TODO: Play leave animation
-            await UniTask.Delay(TimeSpan.FromSeconds(1f), cancellationToken: this.GetCancellationTokenOnDestroy());
+            if (m_birdData.LeavingBehavior != null)
+            {
+                m_currentBehavior = m_birdData.LeavingBehavior;
+                m_behaviorTimer = 0f;
+                m_behaviorDuration = 0f;
+                m_currentBehavior.OnEnter(this);
+
+                await UniTask.WaitUntil(
+                    () => m_currentBehavior.IsBehaviorComplete(this),
+                    cancellationToken: this.GetCancellationTokenOnDestroy());
+
+                m_currentBehavior.OnExit(this);
+                m_currentBehavior = null;
+            }
 
             Destroy(gameObject);
         }
@@ -416,6 +441,11 @@ namespace Birdie.Birds
             m_currentState = BirdState.Paused;
             m_isInteractable = false;
 
+            if (m_animator != null)
+            {
+                m_animator.speed = 0f;
+            }
+
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} paused", DebugCategory.Birds);
         }
 
@@ -433,6 +463,11 @@ namespace Birdie.Birds
             m_currentState = m_stateBeforePause;
             m_visitEndTime = Time.time + m_remainingVisitTime;
             m_isInteractable = m_currentState != BirdState.Appearing && m_currentState != BirdState.Leaving;
+
+            if (m_animator != null)
+            {
+                m_animator.speed = 1f;
+            }
 
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} resumed", DebugCategory.Birds);
         }
@@ -482,6 +517,18 @@ namespace Birdie.Birds
         public void ResetWalkHop()
         {
             m_walkJumper?.Reset(m_birdData);
+        }
+
+        /// <summary>
+        /// Tilts the visual root by the given angle on the Z axis.
+        /// Call with 0 to reset to upright.
+        /// </summary>
+        public void TiltVisual(float zAngle)
+        {
+            Transform target = m_visualRoot != null ? m_visualRoot : transform;
+            Vector3 euler = target.localEulerAngles;
+            euler.z = zAngle;
+            target.localEulerAngles = euler;
         }
 
         /// <summary>

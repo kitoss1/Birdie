@@ -10,21 +10,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 70219269baca5b648af64fe42e11e0ed, type: 3}
-  m_Name: 001_Herrerillo
+  m_Name: 002_Graja
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.BirdData
-  m_birdName: Herrerillo
-  m_scientificName: Prunella modularis
-  m_birdID: 001
-  m_basicDescription: "Ave frecuente en zonas de monta\xF1a con abundancia de matorral
-    y de sotobosque. En la mitad norte peninsular aparece en ambientes m\xE1s diversos,
-    pero en el sur se restringe a los sistemas monta\xF1osos. Espa\xF1a alberga una
-    poblaci\xF3n residente, a la que se unen en invierno acentores europeos pertenecientes
-    a otra subespecie."
-  m_birdPrefab: {fileID: 7991333266149840317, guid: 6b1cbfbf7eaa6814d91394694816c7e5, type: 3}
+  m_birdName: 'Graja '
+  m_scientificName: 'Corvus frugilegus  '
+  m_birdID: 002
+  m_basicDescription: "La graja es un c\xF3rvido caracter\xEDstico de las regiones
+    templadas y fr\xEDas de Eurasia, donde es bastante com\xFAn, que en nuestro pa\xEDs
+    presenta \xFAnicamente un n\xFAcleo reproductor en la provincia de Le\xF3n, que
+    apenas cuenta con unas 2.000 parejas. Aunque desde la d\xE9cada de los setenta
+    del pasado siglo la especie ha duplicado sus efectivos en Espa\xF1a, se trata
+    de un ave vulnerable a los efectos de la intensificaci\xF3n agr\xEDcola, el uso
+    de pesticidas y el aislamiento de sus poblaciones."
+  m_birdPrefab: {fileID: 7991333266149840317, guid: 053143e486e4f6748a6d20a2e5490dde, type: 3}
   m_birdPhoto: {fileID: 707028069783305357, guid: 344a027a7bf5e63499a455592e89c2c7, type: 3}
-  m_size: 1
+  m_size: 2
   m_rarity: 0
-  m_baseSpawnWeight: 1
+  m_baseSpawnWeight: 100
   m_appearanceTimeRange:
     m_startHour: 8
     m_endHour: 18
@@ -38,19 +40,14 @@ MonoBehaviour:
   m_identificationInfo: 
   m_isThreatened: 0
   m_conservationStatus: 
-  m_songParts:
-  - {fileID: 8300000, guid: 0e52f8663e420794fa0921ca98f3867e, type: 3}
-  - {fileID: 8300000, guid: c1fb843385a0f024a8ca56c9aba51176, type: 3}
-  - {fileID: 8300000, guid: e200eb99765ba24418dbe03ac9bce19f, type: 3}
-  - {fileID: 8300000, guid: db11a74597f0dbd478c2f37493b8afbb, type: 3}
-  - {fileID: 8300000, guid: 7f51292912e2abd4b8054bddbdd82f99, type: 3}
+  m_songParts: []
   m_possibleGifts: []
   m_requiredUpgradeIDs: []
   m_minimumHabitatLevel: 0
   m_arrivingBehavior: {fileID: 11400000, guid: ec43bd9a56ff9214c97871517e3bdf30, type: 2}
   m_leavingBehavior: {fileID: 11400000, guid: 52e7ed0d0f20b074d85ec7df774f8028, type: 2}
   m_visitDurationMin: 30
-  m_visitDurationMax: 200
+  m_visitDurationMax: 35
   m_objectBonusSeconds: 5
   m_movementSpeed: 60
   m_walkHopHeight: 30
@@ -71,4 +68,4 @@ MonoBehaviour:
   m_hasSpecialAnimation: 0
   m_specialAnimationDescription: 
   m_availableMinigames:
-  - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}
+  - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f820587a9e7afc43958fd5ed035a5cf, type: 3}
+  m_Name: ArrivingBehavior
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.ArrivingBehavior
+  m_animationStateName: Landing
+  m_movementAnimationStateName: Flying
+  m_useTimer: 0
+  m_minDuration: 1
+  m_maxDuration: 1
+  m_requiredFriendshipLevel: 0
+  m_requiresSceneObject: 0
+  m_canBeInterrupted: 0
+  m_cooldownDuration: 0
+  m_friendshipReward: 0
+  m_forcedNextBehavior: {fileID: 11400000, guid: 39fea8c70a09ae140817bfddf184aceb, type: 2}
+  m_flySpeed: 300
+  m_swayAmplitude: 80
+  m_swayFrequency: 2
+  m_maxTiltAngle: 25

@@ -6,22 +6,17 @@ namespace Birdie.Birds
     public enum BirdState
     {
         /// <summary>
-        /// Bird is appearing/arriving with intro animation.
+        /// Bird is appearing on screen before the visit starts.
         /// </summary>
         Appearing,
 
         /// <summary>
-        /// Bird is idle and can be interacted with.
+        /// Bird is actively visiting — performing behaviors, interactable by the player.
         /// </summary>
-        Idle,
+        Visiting,
 
         /// <summary>
-        /// Bird is eating food.
-        /// </summary>
-        Eating,
-
-        /// <summary>
-        /// Bird is leaving/departing with outro animation.
+        /// Bird is leaving — flying out to the spawn point before being destroyed.
         /// </summary>
         Leaving,
 

@@ -69,7 +69,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.5}
   m_AnchorMax: {x: 0, y: 0.5}
-  m_AnchoredPosition: {x: 100, y: 0}
+  m_AnchoredPosition: {x: 73, y: 0}
   m_SizeDelta: {x: 20, y: 400}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &5345445815788256340
@@ -121,7 +121,7 @@ Canvas:
   m_GameObject: {fileID: 5345445815788256340}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
+  m_RenderMode: 1
   m_Camera: {fileID: 0}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -186,6 +186,7 @@ GameObject:
   - component: {fileID: 1631801238477927406}
   - component: {fileID: 8451649262497132684}
   - component: {fileID: 421267712003488790}
+  - component: {fileID: 86568353883894241}
   m_Layer: 5
   m_Name: WindowsShelf
   m_TagString: Untagged
@@ -252,6 +253,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &86568353883894241
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6714977114441662459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f76ce11b3b535469f28adb3031ef77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.AlphaHitTestImage
+  m_alphaThreshold: 0.1
 --- !u!1 &7722746268010463523
 GameObject:
   m_ObjectHideFlags: 0
@@ -284,7 +298,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -100, y: 0}
+  m_AnchoredPosition: {x: -93, y: 0}
   m_SizeDelta: {x: 20, y: 400}
   m_Pivot: {x: 1, y: 0.5}
 --- !u!1001 &7083103907090296360

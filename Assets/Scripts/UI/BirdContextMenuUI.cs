@@ -144,6 +144,11 @@ namespace Birdie.UI
                 return;
             }
 
+            if (!bird.AllowClickWhileActive)
+            {
+                return;
+            }
+
             Show(bird);
         }
 

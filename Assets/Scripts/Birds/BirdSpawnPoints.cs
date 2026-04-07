@@ -1,9 +1,29 @@
 using Birdie.Debug;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace Birdie.Birds
 {
+    /// <summary>
+    /// Pairs a spawn transform (where the bird appears, placed at height) with a
+    /// landing transform (where the bird touches down at ground level).
+    /// </summary>
+    [Serializable]
+    public class BirdSpawnEntry
+    {
+        [SerializeField]
+        [Tooltip("Where the bird appears — place this above the scene for the fly-in")]
+        private Transform m_spawnPoint;
+
+        [SerializeField]
+        [Tooltip("Where the bird lands after flying in")]
+        private Transform m_landingPoint;
+
+        public Transform SpawnPoint => m_spawnPoint;
+        public Transform LandingPoint => m_landingPoint;
+    }
+
     /// <summary>
     /// Defines spawn points where birds can appear in the scene.
     /// Add this to a GameObject and configure the spawn locations.
@@ -12,8 +32,8 @@ namespace Birdie.Birds
     {
         [Header("Spawn Configuration")]
         [SerializeField]
-        [Tooltip("List of transforms defining where birds can spawn")]
-        private List<Transform> m_spawnPoints = new List<Transform>();
+        [Tooltip("Each entry pairs a high spawn point with a ground-level landing point")]
+        private List<BirdSpawnEntry> m_spawnPoints = new List<BirdSpawnEntry>();
 
         [SerializeField]
         [Tooltip("Parent transform for spawned birds")]
@@ -44,32 +64,42 @@ namespace Birdie.Birds
         /// </summary>
         public Vector3 GetRandomSpawnPosition()
         {
-            Transform spawnPoint = GetRandomSpawnTransform();
-            return spawnPoint != null ? spawnPoint.position : BirdsContainer.position;
+            GetRandomSpawnAndLanding(out Transform spawnTransform, out _);
+            return spawnTransform != null ? spawnTransform.position : BirdsContainer.position;
+        }
+
+        /// <summary>
+        /// Gets a random entry's spawn and landing transforms.
+        /// landingTransform will be null if the entry has no landing point assigned.
+        /// </summary>
+        public void GetRandomSpawnAndLanding(out Transform spawnTransform, out Transform landingTransform)
+        {
+            spawnTransform = null;
+            landingTransform = null;
+
+            if (m_spawnPoints.Count == 0)
+            {
+                DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] No spawn entries defined, using container position", DebugCategory.Birds);
+                return;
+            }
+
+            BirdSpawnEntry entry = m_spawnPoints[UnityEngine.Random.Range(0, m_spawnPoints.Count)];
+            spawnTransform = entry.SpawnPoint;
+            landingTransform = entry.LandingPoint;
+
+            if (spawnTransform == null)
+            {
+                DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] Selected spawn entry has no spawn point assigned", DebugCategory.Birds);
+            }
         }
 
         /// <summary>
         /// Gets a random spawn point Transform, or null if none are defined.
-        /// Use this when you need anchoredPosition for canvas-based spawning.
         /// </summary>
         public Transform GetRandomSpawnTransform()
         {
-            if (m_spawnPoints.Count == 0)
-            {
-                DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] No spawn points defined, using container position", DebugCategory.Birds);
-                return null;
-            }
-
-            int randomIndex = Random.Range(0, m_spawnPoints.Count);
-            Transform spawnPoint = m_spawnPoints[randomIndex];
-
-            if (spawnPoint == null)
-            {
-                DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] Spawn point at index {randomIndex} is null", DebugCategory.Birds);
-                return null;
-            }
-
-            return spawnPoint;
+            GetRandomSpawnAndLanding(out Transform spawnTransform, out _);
+            return spawnTransform;
         }
 
         /// <summary>
@@ -79,14 +109,14 @@ namespace Birdie.Birds
         {
             if (index < 0 || index >= m_spawnPoints.Count)
             {
-                DebugBase.LogError($"[{nameof(BirdSpawnPoints)}] Invalid spawn point index: {index}", DebugCategory.Birds);
+                DebugBase.LogError($"[{nameof(BirdSpawnPoints)}] Invalid spawn entry index: {index}", DebugCategory.Birds);
                 return BirdsContainer.position;
             }
 
-            Transform spawnPoint = m_spawnPoints[index];
+            Transform spawnPoint = m_spawnPoints[index].SpawnPoint;
             if (spawnPoint == null)
             {
-                DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] Spawn point at index {index} is null", DebugCategory.Birds);
+                DebugBase.LogWarning($"[{nameof(BirdSpawnPoints)}] Spawn entry at index {index} has no spawn point assigned", DebugCategory.Birds);
                 return BirdsContainer.position;
             }
 
@@ -132,12 +162,22 @@ namespace Birdie.Birds
 
             Gizmos.color = m_gizmosColor;
 
-            foreach (Transform spawnPoint in m_spawnPoints)
+            foreach (BirdSpawnEntry entry in m_spawnPoints)
             {
-                if (spawnPoint != null)
+                if (entry.SpawnPoint != null)
                 {
-                    Gizmos.DrawWireSphere(spawnPoint.position, m_gizmosSize);
-                    Gizmos.DrawLine(spawnPoint.position, spawnPoint.position + Vector3.up * m_gizmosSize * 2f);
+                    Gizmos.DrawWireSphere(entry.SpawnPoint.position, m_gizmosSize);
+                    Gizmos.DrawLine(entry.SpawnPoint.position, entry.SpawnPoint.position + Vector3.up * m_gizmosSize * 2f);
+                }
+
+                if (entry.LandingPoint != null)
+                {
+                    Gizmos.DrawWireSphere(entry.LandingPoint.position, m_gizmosSize);
+
+                    if (entry.SpawnPoint != null)
+                    {
+                        Gizmos.DrawLine(entry.SpawnPoint.position, entry.LandingPoint.position);
+                    }
                 }
             }
         }
@@ -151,11 +191,16 @@ namespace Birdie.Birds
 
             Gizmos.color = Color.yellow;
 
-            foreach (Transform spawnPoint in m_spawnPoints)
+            foreach (BirdSpawnEntry entry in m_spawnPoints)
             {
-                if (spawnPoint != null)
+                if (entry.SpawnPoint != null)
                 {
-                    Gizmos.DrawSphere(spawnPoint.position, m_gizmosSize * 0.5f);
+                    Gizmos.DrawSphere(entry.SpawnPoint.position, m_gizmosSize * 0.5f);
+                }
+
+                if (entry.LandingPoint != null)
+                {
+                    Gizmos.DrawSphere(entry.LandingPoint.position, m_gizmosSize * 0.5f);
                 }
             }
         }

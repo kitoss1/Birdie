@@ -168,15 +168,15 @@ namespace Birdie.Managers
             }
 
             Transform spawnParent = m_spawnPoints.BirdsContainer;
-            Transform spawnTransform = m_spawnPoints.GetRandomSpawnTransform();
+            m_spawnPoints.GetRandomSpawnAndLanding(out Transform spawnTransform, out Transform landingTransform);
 
             GameObject birdInstance = Instantiate(birdData.BirdPrefab, spawnParent);
 
             RectTransform birdRect = birdInstance.GetComponent<RectTransform>();
-            RectTransform spawnRect = spawnTransform as RectTransform;
-            if (birdRect != null && spawnRect != null)
+            RectTransform parentRect = spawnParent as RectTransform;
+            if (birdRect != null && parentRect != null && spawnTransform != null)
             {
-                birdRect.anchoredPosition = spawnRect.anchoredPosition;
+                birdRect.localPosition = parentRect.InverseTransformPoint(spawnTransform.position);
             }
             else
             {
@@ -184,12 +184,18 @@ namespace Birdie.Managers
             }
             birdInstance.name = $"{birdData.BirdName}_{System.DateTime.Now:HHmmss}";
 
+            // Resolve landing world position: use landing transform if available, otherwise use spawn position as fallback.
+            Vector3 landingWorldPosition = landingTransform != null
+                ? landingTransform.position
+                : (spawnTransform != null ? spawnTransform.position : spawnParent.position);
+
             Bird birdComponent = birdInstance.GetComponent<Bird>();
             if (birdComponent != null)
             {
-                birdComponent.Initialize(birdData);
+                Vector3 spawnWorldPosition = spawnTransform != null ? spawnTransform.position : spawnParent.position;
+                birdComponent.Initialize(birdData, landingWorldPosition, spawnWorldPosition);
                 m_activeBirds.Add(birdComponent);
-                DebugBase.Log($"[{nameof(BirdManager)}] Spawned {birdData.BirdName} at {birdInstance.transform.position}", DebugCategory.Birds);
+                DebugBase.Log($"[{nameof(BirdManager)}] Spawned {birdData.BirdName} at {birdInstance.transform.position}, landing at {landingWorldPosition}", DebugCategory.Birds);
             }
             else
             {

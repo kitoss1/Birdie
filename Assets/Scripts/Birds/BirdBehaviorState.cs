@@ -21,11 +21,15 @@ namespace Birdie.Birds
 
         [Header("Behavior Settings")]
         [SerializeField]
-        [Tooltip("Minimum duration this behavior lasts (seconds)")]
+        [Tooltip("When disabled the behavior runs until IsBehaviorComplete returns true, ignoring the duration fields below")]
+        private bool m_useTimer = true;
+
+        [SerializeField]
+        [Tooltip("Minimum duration this behavior lasts (seconds). Only used when Use Timer is enabled.")]
         private float m_minDuration = 1f;
 
         [SerializeField]
-        [Tooltip("Maximum duration this behavior lasts (seconds)")]
+        [Tooltip("Maximum duration this behavior lasts (seconds). Only used when Use Timer is enabled.")]
         private float m_maxDuration = 5f;
 
         [Header("Unlock Requirements")]
@@ -122,14 +126,14 @@ namespace Birdie.Birds
 
         /// <summary>
         /// Returns true when the behavior timer should be ticking.
-        /// Override to return false while the bird is still travelling to its target,
-        /// so the activity duration only counts from the moment the bird arrives.
-        /// The default implementation always returns true.
+        /// The default implementation returns the Use Timer inspector flag.
+        /// Override for behaviors that need to activate the timer conditionally
+        /// (e.g. only once the bird has reached its target).
         /// </summary>
         /// <param name="bird">The bird controller executing this behavior</param>
         public virtual bool IsTimerActive(Bird bird)
         {
-            return true;
+            return m_useTimer;
         }
 
         /// <summary>

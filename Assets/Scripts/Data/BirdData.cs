@@ -127,6 +127,14 @@ namespace Birdie.Data
 
         [Header("Visit Behavior")]
         [SerializeField]
+        [Tooltip("Behavior played when the bird first arrives. Handles the fly-in before the visit starts.")]
+        private BirdBehaviorState m_arrivingBehavior;
+
+        [SerializeField]
+        [Tooltip("Behavior played when the bird leaves. Handles the fly-out to the spawn point.")]
+        private BirdBehaviorState m_leavingBehavior;
+
+        [SerializeField]
         [Tooltip("Minimum duration this bird stays during a visit (seconds)")]
         private float m_visitDurationMin = 60f;
 
@@ -346,6 +354,10 @@ namespace Birdie.Data
             get => m_specialAnimationDescription;
             set => m_specialAnimationDescription = value;
         }
+
+        public BirdBehaviorState ArrivingBehavior => m_arrivingBehavior;
+
+        public BirdBehaviorState LeavingBehavior => m_leavingBehavior;
 
         public float VisitDurationMin
         {
