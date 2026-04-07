@@ -148,9 +148,17 @@ namespace Birdie.Managers
             {
                 m_disabledItemIDs.Remove(itemID);
                 isEnabled = true;
+
+                DisableExclusivityGroupSiblings(itemData);
             }
             else
             {
+                if (!CanDisableItem(itemID))
+                {
+                    DebugBase.Log($"[{nameof(StoreManager)}] Cannot disable {itemData.ItemName}: it is the only enabled item in group '{itemData.ExclusivityGroup}'");
+                    return;
+                }
+
                 m_disabledItemIDs.Add(itemID);
                 isEnabled = false;
             }
@@ -202,6 +210,90 @@ namespace Birdie.Managers
         {
             m_itemLookup.TryGetValue(itemID, out StoreItemData itemData);
             return itemData;
+        }
+
+        /// <summary>
+        /// Returns false if disabling this item is blocked because it is the only
+        /// enabled item in its exclusivity group.
+        /// </summary>
+        public bool CanDisableItem(string itemID)
+        {
+            if (!m_itemLookup.TryGetValue(itemID, out StoreItemData itemData))
+            {
+                return true;
+            }
+
+            if (string.IsNullOrEmpty(itemData.ExclusivityGroup))
+            {
+                return true;
+            }
+
+            foreach (KeyValuePair<string, StoreItemData> pair in m_itemLookup)
+            {
+                if (pair.Key == itemID)
+                {
+                    continue;
+                }
+
+                if (pair.Value.ExclusivityGroup == itemData.ExclusivityGroup && IsItemEnabled(pair.Key))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private bool EnsureDefaultOwnedItems()
+        {
+            bool anyGranted = false;
+
+            foreach (StoreItemData item in m_allStoreItems)
+            {
+                if (!item.OwnedByDefault || m_ownedItemIDs.Contains(item.ItemID))
+                {
+                    continue;
+                }
+
+                m_ownedItemIDs.Add(item.ItemID);
+                anyGranted = true;
+
+                DebugBase.Log($"[{nameof(StoreManager)}] Granted default item: {item.ItemName}");
+            }
+
+            return anyGranted;
+        }
+
+        private void DisableExclusivityGroupSiblings(StoreItemData enabledItem)
+        {
+            if (string.IsNullOrEmpty(enabledItem.ExclusivityGroup))
+            {
+                return;
+            }
+
+            foreach (KeyValuePair<string, StoreItemData> pair in m_itemLookup)
+            {
+                if (pair.Key == enabledItem.ItemID)
+                {
+                    continue;
+                }
+
+                if (pair.Value.ExclusivityGroup != enabledItem.ExclusivityGroup)
+                {
+                    continue;
+                }
+
+                if (!IsItemEnabled(pair.Key))
+                {
+                    continue;
+                }
+
+                m_disabledItemIDs.Add(pair.Key);
+                SetSceneObjectActive(pair.Key, false);
+                OnItemToggled?.Invoke(pair.Value, false);
+
+                DebugBase.Log($"[{nameof(StoreManager)}] Auto-disabled {pair.Value.ItemName} (exclusivity group: {enabledItem.ExclusivityGroup})");
+            }
         }
 
         private void BuildItemLookup()
@@ -274,8 +366,15 @@ namespace Birdie.Managers
 
             LoadItemPositions(economyData);
 
+            bool grantedDefaults = EnsureDefaultOwnedItems();
+
             DebugBase.Log($"[{nameof(StoreManager)}] Loaded {m_ownedItemIDs.Count} owned items, {m_disabledItemIDs.Count} disabled");
             OnOwnedItemsLoaded?.Invoke();
+
+            if (grantedDefaults)
+            {
+                SaveToSaveData();
+            }
         }
 
         private void LoadItemPositions(EconomySaveData economyData)

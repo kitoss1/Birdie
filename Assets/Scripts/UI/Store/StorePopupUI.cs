@@ -17,22 +17,26 @@ namespace Birdie.UI.Store
     /// </summary>
     public class StorePopupUI : MonoBehaviour
     {
+        /// <summary>
+        /// Configuration for a single store tab.
+        /// </summary>
+        [Serializable]
+        private struct StoreTabConfig
+        {
+            [Tooltip("Category this tab displays")]
+            public BirdObjectType Category;
+
+            [Tooltip("Button that activates this tab")]
+            public Button TabButton;
+
+            [Tooltip("Visual indicator shown when this tab is selected")]
+            public GameObject SelectedIndicator;
+        }
+
         [Header("Tab System")]
         [SerializeField]
-        [Tooltip("Button for the Feeders tab")]
-        private Button m_feedersTabButton;
-
-        [SerializeField]
-        [Tooltip("Button for the Baths tab")]
-        private Button m_bathsTabButton;
-
-        [SerializeField]
-        [Tooltip("Visual indicator for selected Feeders tab")]
-        private GameObject m_feedersTabSelected;
-
-        [SerializeField]
-        [Tooltip("Visual indicator for selected Baths tab")]
-        private GameObject m_bathsTabSelected;
+        [Tooltip("All available store tabs. Add entries here to support new categories without code changes.")]
+        private StoreTabConfig[] m_tabs;
 
         [Header("Content")]
         [SerializeField]
@@ -116,14 +120,13 @@ namespace Birdie.UI.Store
 
         private void SetupButtonListeners()
         {
-            if (m_feedersTabButton != null)
+            foreach (StoreTabConfig tab in m_tabs)
             {
-                m_feedersTabButton.onClick.AddListener(() => SwitchToTab(BirdObjectType.Feeder));
-            }
-
-            if (m_bathsTabButton != null)
-            {
-                m_bathsTabButton.onClick.AddListener(() => SwitchToTab(BirdObjectType.BirdBath));
+                if (tab.TabButton != null)
+                {
+                    BirdObjectType category = tab.Category;
+                    tab.TabButton.onClick.AddListener(() => SwitchToTab(category));
+                }
             }
 
             if (m_closeButton != null)
@@ -134,14 +137,12 @@ namespace Birdie.UI.Store
 
         private void RemoveButtonListeners()
         {
-            if (m_feedersTabButton != null)
+            foreach (StoreTabConfig tab in m_tabs)
             {
-                m_feedersTabButton.onClick.RemoveAllListeners();
-            }
-
-            if (m_bathsTabButton != null)
-            {
-                m_bathsTabButton.onClick.RemoveAllListeners();
+                if (tab.TabButton != null)
+                {
+                    tab.TabButton.onClick.RemoveAllListeners();
+                }
             }
 
             if (m_closeButton != null)
@@ -180,16 +181,12 @@ namespace Birdie.UI.Store
 
         private void UpdateTabVisuals()
         {
-            bool isFeedersTab = m_currentTab == BirdObjectType.Feeder;
-
-            if (m_feedersTabSelected != null)
+            foreach (StoreTabConfig tab in m_tabs)
             {
-                m_feedersTabSelected.SetActive(isFeedersTab);
-            }
-
-            if (m_bathsTabSelected != null)
-            {
-                m_bathsTabSelected.SetActive(!isFeedersTab);
+                if (tab.SelectedIndicator != null)
+                {
+                    tab.SelectedIndicator.SetActive(tab.Category == m_currentTab);
+                }
             }
         }
 
@@ -214,7 +211,8 @@ namespace Birdie.UI.Store
 
                 bool isOwned = ownedItems.Contains(itemData.ItemID);
                 bool isEnabled = GameManager.Instance.StoreManager.IsItemEnabled(itemData.ItemID);
-                CreateItemUI(itemData, isOwned, isEnabled, currentCurrency >= itemData.Price);
+                bool canToggle = GameManager.Instance.StoreManager.CanDisableItem(itemData.ItemID);
+                CreateItemUI(itemData, isOwned, isEnabled, currentCurrency >= itemData.Price, canToggle);
             }
         }
 
@@ -235,7 +233,7 @@ namespace Birdie.UI.Store
             m_instantiatedItems.Clear();
         }
 
-        private void CreateItemUI(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford)
+        private void CreateItemUI(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford, bool canToggle)
         {
             if (m_storeItemPrefab == null || m_itemsContainer == null)
             {
@@ -247,7 +245,7 @@ namespace Birdie.UI.Store
 
             if (itemUI != null)
             {
-                itemUI.Setup(itemData, isOwned, isEnabled, canAfford);
+                itemUI.Setup(itemData, isOwned, isEnabled, canAfford, canToggle);
                 itemUI.OnBuyClicked += OnItemBuyClicked;
                 itemUI.OnToggleClicked += OnItemToggleClicked;
                 itemUI.OnInfoClicked += OnItemInfoClicked;
@@ -352,7 +350,8 @@ namespace Birdie.UI.Store
                     bool isOwned = ownedItems.Contains(itemUI.ItemData.ItemID);
                     bool isEnabled = GameManager.Instance.StoreManager.IsItemEnabled(itemUI.ItemData.ItemID);
                     bool canAfford = currentCurrency >= itemUI.ItemData.Price;
-                    itemUI.UpdateVisualState(isOwned, isEnabled, canAfford);
+                    bool canToggle = GameManager.Instance.StoreManager.CanDisableItem(itemUI.ItemData.ItemID);
+                    itemUI.UpdateVisualState(isOwned, isEnabled, canAfford, canToggle);
                 }
             }
         }
@@ -419,14 +418,24 @@ namespace Birdie.UI.Store
 #if UNITY_EDITOR
         private void OnValidate()
         {
-            if (m_feedersTabButton == null)
+            if (m_tabs == null || m_tabs.Length == 0)
             {
-                UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Feeders Tab Button reference is missing!", this);
+                UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] No tabs configured!", this);
             }
-
-            if (m_bathsTabButton == null)
+            else
             {
-                UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Baths Tab Button reference is missing!", this);
+                for (int i = 0; i < m_tabs.Length; i++)
+                {
+                    if (m_tabs[i].TabButton == null)
+                    {
+                        UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Tab [{i}] ({m_tabs[i].Category}) is missing a TabButton reference!", this);
+                    }
+
+                    if (m_tabs[i].SelectedIndicator == null)
+                    {
+                        UnityEngine.Debug.LogWarning($"[{nameof(StorePopupUI)}] Tab [{i}] ({m_tabs[i].Category}) is missing a SelectedIndicator reference!", this);
+                    }
+                }
             }
 
             if (m_itemsContainer == null)
