@@ -45,6 +45,54 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::TransparentGame
   m_enableClickThrough: 1
+--- !u!1 &476792325713989214
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6104015627540112323}
+  - component: {fileID: 559250290452273141}
+  m_Layer: 0
+  m_Name: ToastManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6104015627540112323
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476792325713989214}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1945811201683040692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &559250290452273141
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476792325713989214}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8cb2cc19fa16d4a4f8909c1b797e433c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.ToastManager
+  m_canvas: {fileID: 0}
+  m_camera: {fileID: 0}
+  m_toastPrefab: {fileID: 3925478377106759637, guid: 2c956c53372b63244ac80b3e32058240, type: 3}
+  m_maxActiveToasts: 20
 --- !u!1 &482068081170457816
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,7 +236,7 @@ MonoBehaviour:
   - m_category: 1
     m_isEnabled: 0
   - m_category: 2
-    m_isEnabled: 1
+    m_isEnabled: 0
   - m_category: 3
     m_isEnabled: 0
   - m_category: 4
@@ -597,6 +645,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27fc92bcd43a9d94ca04fc247e4c22a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.EnvironmentManager
+  m_leftBound: {fileID: 0}
+  m_rightBound: {fileID: 0}
 --- !u!1 &5161138079246478894
 GameObject:
   m_ObjectHideFlags: 0
@@ -766,6 +816,7 @@ Transform:
   - {fileID: 422116754750538526}
   - {fileID: 6165628284290178043}
   - {fileID: 8005376089944842999}
+  - {fileID: 6104015627540112323}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8671558228544210106
@@ -789,6 +840,7 @@ MonoBehaviour:
   m_storeManager: {fileID: 6397954196651642846}
   m_diaryUIManager: {fileID: 0}
   m_soundManager: {fileID: 3534164553520384587}
+  m_toastManager: {fileID: 559250290452273141}
 --- !u!1 &7541330469607521562
 GameObject:
   m_ObjectHideFlags: 0
@@ -931,6 +983,12 @@ MonoBehaviour:
   - m_itemData: {fileID: 11400000, guid: 74ff30bf67868fd498dbdab6fed8f8d2, type: 2}
     m_sceneObject: {fileID: 0}
   - m_itemData: {fileID: 11400000, guid: e106343459d2a1f4081cec934529c83b, type: 2}
+    m_sceneObject: {fileID: 0}
+  - m_itemData: {fileID: 11400000, guid: 888d2c886af519147889e016171652a1, type: 2}
+    m_sceneObject: {fileID: 0}
+  - m_itemData: {fileID: 11400000, guid: 3c58ce216bcd6b645b24f6602cf50d5d, type: 2}
+    m_sceneObject: {fileID: 0}
+  - m_itemData: {fileID: 11400000, guid: 5e81423b0c294b84d980a4aa464ef98c, type: 2}
     m_sceneObject: {fileID: 0}
 --- !u!1 &8641492508890357711
 GameObject:

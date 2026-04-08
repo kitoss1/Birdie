@@ -83,7 +83,7 @@ namespace Birdie.UI.Store
         /// <summary>
         /// Initializes the item display with data.
         /// </summary>
-        public void Setup(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford, bool canToggle)
+        public void Setup(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford)
         {
             m_itemData = itemData;
             m_isOwned = isOwned;
@@ -99,13 +99,13 @@ namespace Birdie.UI.Store
                 m_nameText.text = itemData.ItemName;
             }
 
-            UpdateVisualState(isOwned, isEnabled, canAfford, canToggle);
+            UpdateVisualState(isOwned, isEnabled, canAfford);
         }
 
         /// <summary>
         /// Updates the visual state based on ownership, enabled state, affordability, and whether disabling is allowed.
         /// </summary>
-        public void UpdateVisualState(bool isOwned, bool isEnabled, bool canAfford, bool canToggle)
+        public void UpdateVisualState(bool isOwned, bool isEnabled, bool canAfford)
         {
             m_isOwned = isOwned;
             m_isEnabled = isEnabled;
@@ -117,7 +117,7 @@ namespace Birdie.UI.Store
 
             if (m_buyButton != null)
             {
-                m_buyButton.interactable = isOwned ? canToggle : canAfford;
+                m_buyButton.interactable = isOwned || canAfford;
             }
 
             if (m_buyButtonText != null)
