@@ -49,10 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f34d121dfc30359439cfc4df382fcd44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Store.StorePopupUI
-  m_feedersTabButton: {fileID: 8165595701390417217}
-  m_bathsTabButton: {fileID: 4696549518174332686}
-  m_feedersTabSelected: {fileID: 3019327421407703305}
-  m_bathsTabSelected: {fileID: 7860176978244513714}
+  m_tabs: []
   m_itemsContainer: {fileID: 5065410362063097573}
   m_storeItemPrefab: {fileID: 5257175996993996828, guid: 48136104d5549b64cab8599556060e9b, type: 3}
   m_currencyText: {fileID: 628122990346795214}
@@ -1526,17 +1523,6 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5993785421085830727, guid: 76151b4fe8bacb84693daf75c0a9f531, type: 3}
   m_PrefabInstance: {fileID: 761466518059146468}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &8165595701390417217 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8918046202618036645, guid: 76151b4fe8bacb84693daf75c0a9f531, type: 3}
-  m_PrefabInstance: {fileID: 761466518059146468}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Button
 --- !u!224 &9180602423654837352 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8500905490179272844, guid: 76151b4fe8bacb84693daf75c0a9f531, type: 3}
