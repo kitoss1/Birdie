@@ -26,7 +26,7 @@ MonoBehaviour:
   m_birdPhoto: {fileID: 707028069783305357, guid: 344a027a7bf5e63499a455592e89c2c7, type: 3}
   m_size: 2
   m_rarity: 0
-  m_baseSpawnWeight: 100
+  m_baseSpawnWeight: 1
   m_appearanceTimeRange:
     m_startHour: 8
     m_endHour: 18
@@ -47,9 +47,10 @@ MonoBehaviour:
   m_arrivingBehavior: {fileID: 11400000, guid: ec43bd9a56ff9214c97871517e3bdf30, type: 2}
   m_leavingBehavior: {fileID: 11400000, guid: 52e7ed0d0f20b074d85ec7df774f8028, type: 2}
   m_visitDurationMin: 30
-  m_visitDurationMax: 35
+  m_visitDurationMax: 200
   m_objectBonusSeconds: 5
   m_movementSpeed: 60
+  m_feederInteractionOffset: 100
   m_walkHopHeight: 30
   m_walkHopDuration: 0.4
   m_walkHopIntervalMin: 1.5
@@ -60,11 +61,11 @@ MonoBehaviour:
   - m_behavior: {fileID: 11400000, guid: 83d10e14225a9b14b84ad00d43fed34b, type: 2}
     m_weight: 30
   - m_behavior: {fileID: 11400000, guid: 95db2598b3e2fb2479c363927df1d3f4, type: 2}
-    m_weight: 10
+    m_weight: 30
   - m_behavior: {fileID: 11400000, guid: fbfaf83a4f53eb1499c4f3e0d7727c06, type: 2}
     m_weight: 20
   - m_behavior: {fileID: 11400000, guid: b02ba06a74186b34aa8985ec709f3e69, type: 2}
-    m_weight: 5
+    m_weight: 1
   m_hasSpecialAnimation: 0
   m_specialAnimationDescription: 
   m_availableMinigames:

@@ -1,5 +1,7 @@
+using System;
 using Birdie.Managers;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace Birdie.Birds
 {
@@ -8,7 +10,7 @@ namespace Birdie.Birds
     /// Examples: bird feeders, bird baths, toys, decorations, etc.
     /// Automatically registers with EnvironmentManager on Enable.
     /// </summary>
-    public abstract class BirdObject : MonoBehaviour
+    public abstract class BirdObject : MonoBehaviour, IPointerClickHandler
     {
         [Header("Object Settings")]
         [SerializeField]
@@ -24,12 +26,18 @@ namespace Birdie.Birds
         [Range(1, 100)]
         private int m_attractiveness = 50;
 
+        [SerializeField]
+        [Tooltip("Whether this object can be clicked by the player to open its context menu")]
+        private bool m_isClickable = false;
+
         [Header("Position Settings")]
         [SerializeField]
         [Tooltip("Position where bird should move to interact with this object")]
         private Transform m_interactionPoint;
 
         private int m_interactingBirdCount;
+
+        public static event Action<BirdObject> ObjectClicked;
 
         // Properties
         public string ObjectID => m_objectID;
@@ -68,6 +76,14 @@ namespace Birdie.Birds
         public virtual bool CanBeUsedBy(Bird bird)
         {
             return true;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (m_isClickable)
+            {
+                ObjectClicked?.Invoke(this);
+            }
         }
 
         protected virtual void OnEnable()

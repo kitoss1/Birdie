@@ -151,6 +151,10 @@ namespace Birdie.Data
         [Tooltip("Movement speed when moving between objects (units per second)")]
         private float m_movementSpeed = 2f;
 
+        [SerializeField]
+        [Tooltip("Horizontal offset from the feeder interaction point. Adjust per bird size so the sprite aligns correctly.")]
+        private float m_feederInteractionOffset = 0f;
+
         [Header("Walk Hop Settings")]
         [SerializeField]
         [Tooltip("Peak height of each hop while walking, in local units (pixels for canvas, world units otherwise). Set to 0 to disable hopping.")]
@@ -376,6 +380,8 @@ namespace Birdie.Data
             get => m_movementSpeed;
             set => m_movementSpeed = value;
         }
+
+        public float FeederInteractionOffset => m_feederInteractionOffset;
 
         public float WalkHopHeight => m_walkHopHeight;
 

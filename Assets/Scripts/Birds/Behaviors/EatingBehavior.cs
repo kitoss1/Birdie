@@ -39,6 +39,7 @@ namespace Birdie.Birds.Behaviors
         private EatingPhase m_phase;
         private float m_lastLoopNormalizedTime;
         private bool m_wantsToLeave;
+        private float m_approachSign;
 
         public override void OnEnter(Bird bird)
         {
@@ -48,9 +49,11 @@ namespace Birdie.Birds.Behaviors
             m_phase = EatingPhase.Walking;
             m_lastLoopNormalizedTime = 0f;
             m_wantsToLeave = false;
+            m_approachSign = 1f;
 
             if (m_targetFeeder != null)
             {
+                m_approachSign = Mathf.Sign(bird.transform.position.x - m_targetFeeder.InteractionPosition.x);
                 DebugBase.Log($"[{nameof(EatingBehavior)}] Found feeder at {m_targetFeeder.InteractionPosition}", DebugCategory.Birds);
                 m_targetFeeder.OnBirdStartInteraction(bird);
 
@@ -105,6 +108,7 @@ namespace Birdie.Birds.Behaviors
             m_phase = EatingPhase.Walking;
             m_lastLoopNormalizedTime = 0f;
             m_wantsToLeave = false;
+            m_approachSign = 1f;
 
             base.OnExit(bird);
         }
@@ -134,23 +138,12 @@ namespace Birdie.Birds.Behaviors
             return FindNearestFeeder(bird) != null;
         }
 
-        public override int CalculateWeight(Bird bird, int baseWeight)
-        {
-            int weight = base.CalculateWeight(bird, baseWeight);
-
-            BirdObject feeder = FindNearestFeeder(bird);
-            if (feeder != null)
-            {
-                weight += feeder.Attractiveness;
-            }
-
-            return weight;
-        }
 
         private void ExecuteWalking(Bird bird)
         {
             float moveSpeed = bird.BirdData?.MovementSpeed ?? 60f;
-            bool reached = MoveTowardsTarget(bird, m_targetFeeder, moveSpeed);
+            float xOffset = (bird.BirdData?.FeederInteractionOffset ?? 0f) * m_approachSign;
+            bool reached = MoveTowardsTarget(bird, m_targetFeeder, moveSpeed, xOffset);
 
             if (!reached)
             {

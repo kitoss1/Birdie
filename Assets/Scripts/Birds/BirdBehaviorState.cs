@@ -166,15 +166,28 @@ namespace Birdie.Birds
         /// </summary>
         protected bool MoveTowardsTarget(Bird bird, BirdObject target, float speed)
         {
+            return MoveTowardsTarget(bird, target, speed, 0f);
+        }
+
+        /// <summary>
+        /// Moves the bird toward a BirdObject's interaction point plus a horizontal offset, at the given speed.
+        /// Use xOffset to adjust the stop position per bird size.
+        /// Returns true when the bird has reached the target.
+        /// </summary>
+        protected bool MoveTowardsTarget(Bird bird, BirdObject target, float speed, float xOffset)
+        {
             RectTransform birdRect = bird.transform as RectTransform;
 
             if (birdRect != null && birdRect.parent != null)
             {
                 Vector2 targetLocal = birdRect.parent.InverseTransformPoint(target.InteractionPosition);
+                targetLocal.x += xOffset;
                 return MoveTowardsLocalPosition(bird, birdRect, targetLocal, speed);
             }
 
-            return MoveTowardsWorldPosition(bird, target.InteractionPosition, speed);
+            Vector3 worldPos = target.InteractionPosition;
+            worldPos.x += xOffset;
+            return MoveTowardsWorldPosition(bird, worldPos, speed);
         }
 
         /// <summary>

@@ -1,4 +1,7 @@
 using Birdie.Debug;
+using Birdie.Managers;
+using Birdie.Save;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Birdie.Birds
@@ -11,28 +14,29 @@ namespace Birdie.Birds
     {
         [Header("Feeder Settings")]
         [SerializeField]
-        [Tooltip("Type of food provided by this feeder")]
-        private Data.DietType m_foodType = Data.DietType.Seeds;
+        [Tooltip("Visual elements per food level, index 0 is the first to be hidden")]
+        private GameObject[] m_foodLevelVisuals;
 
-        [SerializeField]
-        [Tooltip("Does this feeder have food available?")]
-        private bool m_hasFoodAvailable = true;
+        private int m_currentFoodLevel;
 
-        [SerializeField]
-        [Tooltip("Visual representation of food (for animations)")]
-        private GameObject m_foodVisual;
-
-        public Data.DietType FoodType => m_foodType;
-        public bool HasFoodAvailable => m_hasFoodAvailable;
+        public bool HasFoodAvailable => m_currentFoodLevel > 0;
+        public int CurrentFoodLevel => m_currentFoodLevel;
+        public int MaxFoodLevel => m_foodLevelVisuals?.Length ?? 0;
 
         private void Awake()
         {
-            // Initialize as feeder type if not set in inspector
+            m_currentFoodLevel = MaxFoodLevel;
+            UpdateFoodVisuals();
+
             if (string.IsNullOrEmpty(ObjectID))
             {
-                // ObjectID will be set via inspector, but we log for debugging
                 DebugBase.Log($"[{nameof(BirdFeeder)}] Feeder initialized at {transform.position}", DebugCategory.Birds);
             }
+        }
+
+        private void Start()
+        {
+            LoadFromSaveData();
         }
 
         public override void OnBirdStartInteraction(Bird bird)
@@ -40,12 +44,6 @@ namespace Birdie.Birds
             base.OnBirdStartInteraction(bird);
 
             DebugBase.Log($"[{nameof(BirdFeeder)}] {bird.BirdData?.BirdName} started eating from feeder", DebugCategory.Birds);
-
-            // Show food visual if available
-            if (m_foodVisual != null)
-            {
-                m_foodVisual.SetActive(true);
-            }
 
             // TODO: Play feeder animation (seeds visible, etc.)
             // TODO: Spawn particle effects (seeds falling)
@@ -57,26 +55,20 @@ namespace Birdie.Birds
 
             DebugBase.Log($"[{nameof(BirdFeeder)}] {bird.BirdData?.BirdName} finished eating from feeder", DebugCategory.Birds);
 
-            // Hide food visual
-            if (m_foodVisual != null)
-            {
-                m_foodVisual.SetActive(false);
-            }
+            m_currentFoodLevel--;
+            DebugBase.Log($"[{nameof(BirdFeeder)}] Food level: {m_currentFoodLevel}/{MaxFoodLevel}", DebugCategory.Birds);
 
-            // TODO: Reduce food amount
-            // TODO: Check if feeder is empty
+            UpdateFoodVisuals();
+            SaveToSaveData();
         }
 
         public override bool CanBeUsedBy(Bird bird)
         {
-            // Only usable if food is available
-            if (!m_hasFoodAvailable)
+            if (!HasFoodAvailable)
             {
                 return false;
             }
 
-            // TODO: Check if bird's diet matches feeder food type
-            // For now, all birds can use any feeder
             return base.CanBeUsedBy(bird);
         }
 
@@ -86,10 +78,74 @@ namespace Birdie.Birds
         /// </summary>
         public void Refill()
         {
-            m_hasFoodAvailable = true;
-            DebugBase.Log($"[{nameof(BirdFeeder)}] Feeder refilled", DebugCategory.Birds);
+            m_currentFoodLevel = MaxFoodLevel;
+            UpdateFoodVisuals();
+            SaveToSaveData();
+            DebugBase.Log($"[{nameof(BirdFeeder)}] Feeder refilled to {MaxFoodLevel}", DebugCategory.Birds);
 
             // TODO: Play refill animation/effects
+        }
+
+        private void LoadFromSaveData()
+        {
+            SaveManager saveManager = GameManager.Instance?.SaveManager;
+
+            if (saveManager?.CurrentSaveData == null)
+            {
+                DebugBase.LogWarning($"[{nameof(BirdFeeder)}] SaveManager not available, using default food level", DebugCategory.Birds);
+                return;
+            }
+
+            List<FeederFoodEntry> entries = saveManager.CurrentSaveData.economy.feederFoodLevels;
+            FeederFoodEntry entry = entries.Find(e => e.feederID == ObjectID);
+
+            if (entry != null)
+            {
+                m_currentFoodLevel = entry.foodLevel;
+                UpdateFoodVisuals();
+                DebugBase.Log($"[{nameof(BirdFeeder)}] Loaded food level: {m_currentFoodLevel}/{MaxFoodLevel}", DebugCategory.Birds);
+            }
+        }
+
+        private void SaveToSaveData()
+        {
+            SaveManager saveManager = GameManager.Instance?.SaveManager;
+
+            if (saveManager?.CurrentSaveData == null)
+            {
+                DebugBase.LogWarning($"[{nameof(BirdFeeder)}] SaveManager not available, cannot save food level", DebugCategory.Birds);
+                return;
+            }
+
+            List<FeederFoodEntry> entries = saveManager.CurrentSaveData.economy.feederFoodLevels;
+            FeederFoodEntry entry = entries.Find(e => e.feederID == ObjectID);
+
+            if (entry != null)
+            {
+                entry.foodLevel = m_currentFoodLevel;
+            }
+            else
+            {
+                entries.Add(new FeederFoodEntry { feederID = ObjectID, foodLevel = m_currentFoodLevel });
+            }
+
+            saveManager.SaveGame();
+        }
+
+        private void UpdateFoodVisuals()
+        {
+            if (m_foodLevelVisuals == null)
+            {
+                return;
+            }
+
+            for (int i = 0; i < m_foodLevelVisuals.Length; i++)
+            {
+                if (m_foodLevelVisuals[i] != null)
+                {
+                    m_foodLevelVisuals[i].SetActive(i < m_currentFoodLevel);
+                }
+            }
         }
     }
 }

@@ -14,13 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Birds.Behaviors.EatingBehavior
   m_animationStateName: EatingLoop
   m_movementAnimationStateName: Walking
+  m_useTimer: 1
   m_minDuration: 8
   m_maxDuration: 20
   m_requiredFriendshipLevel: 0
   m_requiresSceneObject: 1
   m_canBeInterrupted: 1
-  m_cooldownDuration: 60
-  m_baseWeight: 25
+  m_cooldownDuration: 5
   m_friendshipReward: 3
+  m_forcedNextBehavior: {fileID: 0}
   m_eatingStartStateName: EatingStart
   m_eatingLeaveStateName: EatingLeave

@@ -106,19 +106,6 @@ namespace Birdie.Birds.Behaviors
             return bath != null;
         }
 
-        public override int CalculateWeight(Bird bird, int baseWeight)
-        {
-            int weight = base.CalculateWeight(bird, baseWeight);
-
-            // Find bird bath and boost weight based on attractiveness
-            BirdObject bath = FindNearestBirdBath(bird);
-            if (bath != null)
-            {
-                weight += bath.Attractiveness;
-            }
-
-            return weight;
-        }
 
         /// <summary>
         /// Finds the nearest bird bath using EnvironmentManager.

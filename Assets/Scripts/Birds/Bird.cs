@@ -299,6 +299,14 @@ namespace Birdie.Birds
                 totalWeight += weight;
             }
 
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+            sb.AppendLine($"[{nameof(Bird)}] {m_birdData?.BirdName} picking behavior (total weight: {totalWeight}):");
+            for (int i = 0; i < availableEntries.Count; i++)
+            {
+                sb.AppendLine($"  {availableEntries[i].Behavior.name} — weight {weights[i]}");
+            }
+            DebugBase.Log(sb.ToString(), DebugCategory.Birds);
+
             // Weighted random selection
             int randomValue = UnityEngine.Random.Range(0, totalWeight);
             int cumulativeWeight = 0;
@@ -308,6 +316,7 @@ namespace Birdie.Birds
                 cumulativeWeight += weights[i];
                 if (randomValue < cumulativeWeight)
                 {
+                    DebugBase.Log($"[{nameof(Bird)}] Selected: {availableEntries[i].Behavior.name} (roll: {randomValue})", DebugCategory.Birds);
                     return availableEntries[i].Behavior;
                 }
             }
