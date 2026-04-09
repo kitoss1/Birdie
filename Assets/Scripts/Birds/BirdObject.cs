@@ -36,6 +36,7 @@ namespace Birdie.Birds
         private Transform m_interactionPoint;
 
         private int m_interactingBirdCount;
+        private bool m_isBeingMoved;
 
         public static event Action<BirdObject> ObjectClicked;
 
@@ -48,6 +49,12 @@ namespace Birdie.Birds
             ? m_interactionPoint as RectTransform
             : transform as RectTransform;
         public bool IsBeingUsed => m_interactingBirdCount > 0;
+        public bool IsBeingMoved => m_isBeingMoved;
+
+        public void SetBeingMoved(bool isBeingMoved)
+        {
+            m_isBeingMoved = isBeingMoved;
+        }
 
         /// <summary>
         /// Called when a bird starts interacting with this object.
@@ -75,7 +82,7 @@ namespace Birdie.Birds
         /// </summary>
         public virtual bool CanBeUsedBy(Bird bird)
         {
-            return true;
+            return !m_isBeingMoved;
         }
 
         public void OnPointerClick(PointerEventData eventData)

@@ -1,3 +1,4 @@
+using Birdie.Birds;
 using Birdie.Debug;
 using Birdie.Managers;
 using UnityEngine;
@@ -99,6 +100,8 @@ namespace Birdie.UI.Store
             m_isMoving = true;
             m_isPlaced = false;
             m_skipFirstFrame = true;
+
+            targetObject.GetComponent<BirdObject>()?.SetBeingMoved(true);
 
             gameObject.SetActive(true);
             SetBackdropVisible(true);
@@ -206,6 +209,8 @@ namespace Birdie.UI.Store
         {
             m_isMoving = false;
             m_isPlaced = false;
+
+            m_targetObject?.GetComponent<BirdObject>()?.SetBeingMoved(false);
             m_targetObject = null;
             m_targetItemID = null;
 
