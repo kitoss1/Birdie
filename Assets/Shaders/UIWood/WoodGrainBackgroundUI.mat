@@ -31,9 +31,10 @@ Material:
     m_Floats:
     - _ColorMask: 15
     - _GrainAngle: 0
-    - _GrainScale: 3
+    - _GrainScale: 9
     - _GrainStrength: 0.33
     - _LineDarkness: 0
+    - _LineScale: 1
     - _LineSharpness: 0.5
     - _MaxStrokes: 30
     - _NoiseStrength: 0.8

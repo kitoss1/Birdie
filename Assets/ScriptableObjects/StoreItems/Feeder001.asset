@@ -15,6 +15,9 @@ MonoBehaviour:
   m_itemID: Feeder001
   m_itemName: Feeder001
   m_description: First feeder to test
-  m_icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_icon: {fileID: 21300000, guid: 3b0e6c3947f15b4459b45a08a049cf22, type: 3}
   m_price: 10
   m_category: 0
+  m_isMovable: 1
+  m_exclusivityGroup: 
+  m_ownedByDefault: 0

@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a51245828cca873489d832dc9ef2e2de
+guid: 3b0e6c3947f15b4459b45a08a049cf22
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2861489025513507430
-    second: InteriorUIBox_0
+      213: -577374096406330163
+    second: Feeder1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 500, y: 500, z: 500, w: 500}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -72,10 +72,10 @@ TextureImporter:
   platformSettings:
   - serializedVersion: 4
     buildTarget: DefaultTexturePlatform
-    maxTextureSize: 4096
+    maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,23 +100,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: InteriorUIBox_0
+      name: Feeder1_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 10868
-        height: 6701
+        width: 1839
+        height: 1657
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 66a496e9b1d06b720800000000000000
-      internalID: 2861489025513507430
+      spriteID: dc440318151ccf7f0800000000000000
+      internalID: -577374096406330163
       vertices: []
       indices: 
       edges: []
@@ -126,7 +126,7 @@ TextureImporter:
     physicsShape: []
     bones: []
     spriteID: 5e97eb03825dee720800000000000000
-    internalID: 1537655665
+    internalID: 0
     vertices: []
     indices: 
     edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      InteriorUIBox_0: 2861489025513507430
+      Feeder1_0: -577374096406330163
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

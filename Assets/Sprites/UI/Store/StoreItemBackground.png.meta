@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: a51245828cca873489d832dc9ef2e2de
+guid: a1a537db6a5c63645852155ff0384419
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 2861489025513507430
-    second: InteriorUIBox_0
+      213: -874545390754182587
+    second: StoreItemBackground_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -52,7 +52,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
-  spriteBorder: {x: 500, y: 500, z: 500, w: 500}
+  spriteBorder: {x: 400, y: 400, z: 400, w: 400}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
   alphaIsTransparency: 1
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: InteriorUIBox_0
+      name: StoreItemBackground_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 10868
-        height: 6701
+        width: 5260
+        height: 2894
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 66a496e9b1d06b720800000000000000
-      internalID: 2861489025513507430
+      spriteID: 54a4424c99dfcd3f0800000000000000
+      internalID: -874545390754182587
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      InteriorUIBox_0: 2861489025513507430
+      StoreItemBackground_0: -874545390754182587
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

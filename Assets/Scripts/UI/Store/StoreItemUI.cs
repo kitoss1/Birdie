@@ -26,12 +26,12 @@ namespace Birdie.UI.Store
         private TextMeshProUGUI m_priceText;
 
         [SerializeField]
-        [Tooltip("Button to purchase the item")]
-        private Button m_buyButton;
+        [Tooltip("Currency icon shown next to the price")]
+        private GameObject m_currencyIcon;
 
         [SerializeField]
-        [Tooltip("Text on the buy button")]
-        private TextMeshProUGUI m_buyButtonText;
+        [Tooltip("Button to purchase the item")]
+        private Button m_buyButton;
 
         [SerializeField]
         [Tooltip("Button to show item info popup")]
@@ -43,10 +43,6 @@ namespace Birdie.UI.Store
 
         [Header("Visual States")]
         [SerializeField]
-        [Tooltip("GameObject shown when item is already owned")]
-        private GameObject m_ownedOverlay;
-
-        [SerializeField]
         [Tooltip("Color for price text when player can afford")]
         private Color m_affordableColor = Color.white;
 
@@ -54,9 +50,32 @@ namespace Birdie.UI.Store
         [Tooltip("Color for price text when player cannot afford")]
         private Color m_unaffordableColor = Color.red;
 
+        [Header("Move Button Sprites")]
+        [SerializeField]
+        [Tooltip("Sprite for the move button when interactable")]
+        private Sprite m_moveEnabledSprite;
+
+        [SerializeField]
+        [Tooltip("Sprite for the move button when not interactable")]
+        private Sprite m_moveDisabledSprite;
+
+        [Header("Buy Button Sprites")]
+        [SerializeField]
+        [Tooltip("Sprite for the buy button when item is not owned (showing price)")]
+        private Sprite m_buySprite;
+
+        [SerializeField]
+        [Tooltip("Sprite for the buy button when item is owned and enabled (showing Disable)")]
+        private Sprite m_disableSprite;
+
+        [SerializeField]
+        [Tooltip("Sprite for the buy button when item is owned and disabled (showing Enable)")]
+        private Sprite m_enableSprite;
+
         private StoreItemData m_itemData;
         private bool m_isOwned;
-        private bool m_isEnabled;
+        private Image m_buyButtonImage;
+        private Image m_moveButtonImage;
 
         /// <summary>
         /// Event fired when the buy button is clicked (for non-owned items).
@@ -86,8 +105,6 @@ namespace Birdie.UI.Store
         public void Setup(StoreItemData itemData, bool isOwned, bool isEnabled, bool canAfford)
         {
             m_itemData = itemData;
-            m_isOwned = isOwned;
-            m_isEnabled = isEnabled;
 
             if (m_iconImage != null && itemData.Icon != null)
             {
@@ -108,35 +125,27 @@ namespace Birdie.UI.Store
         public void UpdateVisualState(bool isOwned, bool isEnabled, bool canAfford)
         {
             m_isOwned = isOwned;
-            m_isEnabled = isEnabled;
-
-            if (m_ownedOverlay != null)
-            {
-                m_ownedOverlay.SetActive(isOwned);
-            }
 
             if (m_buyButton != null)
             {
                 m_buyButton.interactable = isOwned || canAfford;
+
+                if (m_buyButtonImage != null)
+                {
+                    m_buyButtonImage.sprite = !isOwned ? m_buySprite : isEnabled ? m_disableSprite : m_enableSprite;
+                }
             }
 
-            if (m_buyButtonText != null)
+            if (m_currencyIcon != null)
             {
-                if (isOwned)
-                {
-                    m_buyButtonText.text = isEnabled ? "Enabled" : "Disabled";
-                }
-                else
-                {
-                    m_buyButtonText.text = "Buy";
-                }
+                m_currencyIcon.SetActive(!isOwned);
             }
 
             if (m_priceText != null)
             {
                 if (isOwned)
                 {
-                    m_priceText.text = isEnabled ? "Enabled" : "Disabled";
+                    m_priceText.text = isEnabled ? "Disable" : "Enable";
                     m_priceText.color = m_affordableColor;
                 }
                 else
@@ -148,7 +157,19 @@ namespace Birdie.UI.Store
 
             if (m_moveButton != null)
             {
-                m_moveButton.gameObject.SetActive(isOwned && isEnabled && (m_itemData?.IsMovable ?? false));
+                bool isMovable = m_itemData?.IsMovable ?? false;
+                m_moveButton.gameObject.SetActive(isMovable);
+
+                if (isMovable)
+                {
+                    bool moveInteractable = isOwned && isEnabled;
+                    m_moveButton.interactable = moveInteractable;
+
+                    if (m_moveButtonImage != null)
+                    {
+                        m_moveButtonImage.sprite = moveInteractable ? m_moveEnabledSprite : m_moveDisabledSprite;
+                    }
+                }
             }
         }
 
@@ -157,6 +178,7 @@ namespace Birdie.UI.Store
             if (m_buyButton != null)
             {
                 m_buyButton.onClick.AddListener(OnBuyButtonClicked);
+                m_buyButtonImage = m_buyButton.GetComponent<Image>();
             }
 
             if (m_infoButton != null)
@@ -167,6 +189,7 @@ namespace Birdie.UI.Store
             if (m_moveButton != null)
             {
                 m_moveButton.onClick.AddListener(OnMoveButtonClicked);
+                m_moveButtonImage = m_moveButton.GetComponent<Image>();
             }
         }
 
