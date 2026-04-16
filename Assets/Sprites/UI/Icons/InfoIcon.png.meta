@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 06f49c396dbf2504caebd13e0d9dfdff
+guid: 7381755e8599b214ea5cb6ea906cdc2d
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -78,7 +78,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -106,10 +106,10 @@ TextureImporter:
       name: InfoIcon_0
       rect:
         serializedVersion: 2
-        x: 635
-        y: 507
-        width: 163
-        height: 161
+        x: 626
+        y: 539
+        width: 156
+        height: 152
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,10 +128,10 @@ TextureImporter:
       name: InfoIcon_1
       rect:
         serializedVersion: 2
-        x: 583
-        y: 106
-        width: 242
-        height: 385
+        x: 598
+        y: 75
+        width: 217
+        height: 430
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

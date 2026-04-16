@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: c6af35dd1681d874594814791556366e
+guid: 0c8037b9fd06f66418d537dc9d24c6b1
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -103,10 +103,10 @@ TextureImporter:
       name: CancelIcon_0
       rect:
         serializedVersion: 2
-        x: 423
-        y: 102
-        width: 562
-        height: 547
+        x: 424
+        y: 103
+        width: 560
+        height: 551
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

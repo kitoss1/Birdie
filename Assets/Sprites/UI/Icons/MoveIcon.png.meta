@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b997d2c08146f4640946c6bdd83bab2f
+guid: b6f594c9a7f575a4b97b18b8554bcd58
 TextureImporter:
   internalIDToNameTable:
   - first:
@@ -75,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -103,10 +103,10 @@ TextureImporter:
       name: MoveIcon_0
       rect:
         serializedVersion: 2
-        x: 403
-        y: 69
-        width: 602
-        height: 599
+        x: 341
+        y: 41
+        width: 726
+        height: 683
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

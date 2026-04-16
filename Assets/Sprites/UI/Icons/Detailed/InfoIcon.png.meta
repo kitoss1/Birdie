@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: c6af35dd1681d874594814791556366e
+guid: 06f49c396dbf2504caebd13e0d9dfdff
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 4563256274745774917
-    second: CancelIcon_0
+      213: -4840956905274968816
+    second: InfoIcon_0
+  - first:
+      213: -2189356871946207686
+    second: InfoIcon_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -75,7 +78,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -100,13 +103,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: CancelIcon_0
+      name: InfoIcon_0
       rect:
         serializedVersion: 2
-        x: 423
-        y: 102
-        width: 562
-        height: 547
+        x: 635
+        y: 507
+        width: 163
+        height: 161
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +118,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 5435b4b9761f35f30800000000000000
-      internalID: 4563256274745774917
+      spriteID: 0157c18d75771dcb0800000000000000
+      internalID: -4840956905274968816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: InfoIcon_1
+      rect:
+        serializedVersion: 2
+        x: 583
+        y: 106
+        width: 242
+        height: 385
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3ef5115687dd91e0800000000000000
+      internalID: -2189356871946207686
       vertices: []
       indices: 
       edges: []
@@ -135,7 +160,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      CancelIcon_0: 4563256274745774917
+      InfoIcon_0: -4840956905274968816
+      InfoIcon_1: -2189356871946207686
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
