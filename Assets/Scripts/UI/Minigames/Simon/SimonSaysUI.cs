@@ -61,6 +61,7 @@ namespace Birdie.UI.Minigames
         private int m_maxScore;
         private SimonState m_currentState;
         private CancellationToken m_destroyCancellation;
+        private Action<int>[] m_buttonHandlers;
 
         private enum SimonState
         {
@@ -79,11 +80,15 @@ namespace Birdie.UI.Minigames
                 m_gameOverPanel.CloseClicked += OnCloseClicked;
             }
 
-            foreach (SimonSaysButton button in m_buttons)
+            m_buttonHandlers = new Action<int>[m_buttons.Length];
+
+            for (int i = 0; i < m_buttons.Length; i++)
             {
-                if (button != null)
+                if (m_buttons[i] != null)
                 {
-                    button.Pressed += OnButtonPressed;
+                    int arrayIndex = i;
+                    m_buttonHandlers[i] = _ => OnButtonPressed(arrayIndex);
+                    m_buttons[i].Pressed += m_buttonHandlers[i];
                 }
             }
         }
@@ -95,11 +100,11 @@ namespace Birdie.UI.Minigames
                 m_gameOverPanel.CloseClicked -= OnCloseClicked;
             }
 
-            foreach (SimonSaysButton button in m_buttons)
+            for (int i = 0; i < m_buttons.Length; i++)
             {
-                if (button != null)
+                if (m_buttons[i] != null && m_buttonHandlers != null && m_buttonHandlers[i] != null)
                 {
-                    button.Pressed -= OnButtonPressed;
+                    m_buttons[i].Pressed -= m_buttonHandlers[i];
                 }
             }
 
@@ -172,19 +177,19 @@ namespace Birdie.UI.Minigames
             }
         }
 
-        private void OnButtonPressed(int colorIndex)
+        private void OnButtonPressed(int arrayIndex)
         {
             if (m_currentState != SimonState.WaitingForInput)
             {
                 return;
             }
 
-            if (colorIndex >= 0 && colorIndex < m_buttons.Length && m_buttons[colorIndex] != null)
+            if (arrayIndex >= 0 && arrayIndex < m_buttons.Length && m_buttons[arrayIndex] != null)
             {
-                m_buttons[colorIndex].PlayPressAnimation();
+                m_buttons[arrayIndex].PlayPressAnimation();
             }
 
-            if (m_sequence[m_currentInputIndex] == colorIndex)
+            if (m_sequence[m_currentInputIndex] == arrayIndex)
             {
                 m_currentInputIndex++;
 
