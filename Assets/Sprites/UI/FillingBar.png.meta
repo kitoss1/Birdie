@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 56b075ae71ec4d849a27278dc0018f2c
+guid: 6ef234f12e30aec4196bf72828423b13
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1692592161189739971
-    second: BaseSimonButton_0
+      213: 2566506530627577246
+    second: FillingBar_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -100,13 +100,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: BaseSimonButton_0
+      name: FillingBar_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 1711
-        height: 1711
+        width: 9413
+        height: 456
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -115,8 +115,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: d32ccaaa564b288e0800000000000000
-      internalID: -1692592161189739971
+      spriteID: e95e6c777101e9320800000000000000
+      internalID: 2566506530627577246
       vertices: []
       indices: 
       edges: []
@@ -135,7 +135,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      BaseSimonButton_0: -1692592161189739971
+      FillingBar_0: 2566506530627577246
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

@@ -141,7 +141,7 @@ namespace Birdie.UI.Minigames
 
             if (m_rewardBar != null)
             {
-                m_rewardBar.Initialize(rewardTiers, completionReward);
+                m_rewardBar.Initialize(rewardTiers, completionReward, reversed: true);
             }
         }
 

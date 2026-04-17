@@ -29,23 +29,26 @@ namespace Birdie.UI.Minigames
         [Tooltip("Parent transform for spawned threshold markers")]
         private RectTransform m_markerContainer;
 
+
         private MinigameRewardTier[] m_rewardTiers;
         private int m_maxScore;
         private int m_completionReward;
+        private bool m_reversed;
         private readonly List<RectTransform> m_spawnedMarkers = new List<RectTransform>();
 
         /// <summary>
         /// Stores the reward tiers, computes the max score, and spawns threshold markers.
         /// </summary>
-        public void Initialize(MinigameRewardTier[] tiers, int completionReward = 0)
+        public void Initialize(MinigameRewardTier[] tiers, int completionReward = 0, bool reversed = false)
         {
             m_rewardTiers = tiers;
             m_completionReward = completionReward;
+            m_reversed = reversed;
             m_maxScore = MinigameRewardTier.ComputeMaxScore(tiers);
 
             ClearMarkers();
-            SpawnCompletionMarker();
-            SpawnMarkers();
+            RectTransform completionMarker = SpawnCompletionMarker();
+            SpawnMarkers(completionMarker);
             UpdateScore(0);
 
             DebugBase.Log(
@@ -77,16 +80,16 @@ namespace Birdie.UI.Minigames
             ClearMarkers();
         }
 
-        private void SpawnCompletionMarker()
+        private RectTransform SpawnCompletionMarker()
         {
             if (m_completionReward <= 0)
             {
-                return;
+                return null;
             }
 
             if (m_thresholdMarkerTemplate == null || m_markerContainer == null)
             {
-                return;
+                return null;
             }
 
             var marker = Instantiate(m_thresholdMarkerTemplate, m_markerContainer);
@@ -102,9 +105,10 @@ namespace Birdie.UI.Minigames
             }
 
             m_spawnedMarkers.Add(marker);
+            return marker;
         }
 
-        private void SpawnMarkers()
+        private void SpawnMarkers(RectTransform completionMarker)
         {
             if (m_thresholdMarkerTemplate == null || m_markerContainer == null || m_rewardTiers == null)
             {
@@ -115,6 +119,9 @@ namespace Birdie.UI.Minigames
             {
                 return;
             }
+
+            RectTransform firstTierMarker = null;
+            RectTransform lastMarker = null;
 
             foreach (MinigameRewardTier tier in m_rewardTiers)
             {
@@ -138,6 +145,37 @@ namespace Birdie.UI.Minigames
                 }
 
                 m_spawnedMarkers.Add(marker);
+                firstTierMarker ??= marker;
+                lastMarker = marker;
+            }
+
+            if (m_reversed)
+            {
+                if (lastMarker != null)
+                {
+                    lastMarker.gameObject.SetActive(false);
+                }
+
+                RectTransform visualFirstMarker = completionMarker ?? firstTierMarker;
+                if (visualFirstMarker != null)
+                {
+                    var line = visualFirstMarker.GetComponentInChildren<Image>();
+                    if (line != null)
+                    {
+                        line.enabled = false;
+                    }
+                }
+            }
+            else
+            {
+                if (lastMarker != null)
+                {
+                    var line = lastMarker.GetComponentInChildren<Image>();
+                    if (line != null)
+                    {
+                        line.enabled = false;
+                    }
+                }
             }
         }
 
@@ -162,6 +200,7 @@ namespace Birdie.UI.Minigames
                 UnityEngine.Debug.LogWarning(
                     $"[{nameof(MinigameRewardBar)}] Fill bar Image is not assigned", this);
             }
+
         }
 #endif
     }
