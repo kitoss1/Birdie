@@ -19,8 +19,8 @@ namespace Birdie.UI
         private CanvasGroup m_canvasGroup;
 
         [SerializeField]
-        [Tooltip("Progress bar slider (optional)")]
-        private Slider m_progressBar;
+        [Tooltip("Progress bar fill image (optional)")]
+        private Image m_progressBar;
 
         [SerializeField]
         [Tooltip("Progress percentage text (optional)")]
@@ -67,7 +67,7 @@ namespace Birdie.UI
 
             if (m_progressBar != null)
             {
-                m_progressBar.value = progress;
+                m_progressBar.fillAmount = progress;
             }
 
             if (m_progressText != null)

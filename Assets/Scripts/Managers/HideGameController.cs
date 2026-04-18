@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Birdie.Debug;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Birdie.Managers
 {
@@ -19,6 +20,18 @@ namespace Birdie.Managers
         [SerializeField]
         [Tooltip("Canvas containing the toggle button — always visible in both hidden and shown states")]
         private Canvas m_buttonCanvas;
+
+        [SerializeField]
+        [Tooltip("Image component on the toggle button whose sprite will change with state")]
+        private Image m_buttonImage;
+
+        [SerializeField]
+        [Tooltip("Sprite shown when the game is visible (clicking will hide it)")]
+        private Sprite m_hideSprite;
+
+        [SerializeField]
+        [Tooltip("Sprite shown when the game is hidden (clicking will show it)")]
+        private Sprite m_showSprite;
 
         private readonly List<Camera> m_cameras = new List<Camera>();
         private readonly List<int> m_originalCullingMasks = new List<int>();
@@ -103,6 +116,7 @@ namespace Birdie.Managers
             HideCanvases();
             m_isHidden = true;
 
+            SetButtonSprite(m_showSprite);
             OnGameHidden?.Invoke();
             DebugBase.Log($"[{nameof(HideGameController)}] Game hidden");
         }
@@ -121,6 +135,7 @@ namespace Birdie.Managers
             RestoreCanvases();
             m_isHidden = false;
 
+            SetButtonSprite(m_hideSprite);
             OnGameShown?.Invoke();
             DebugBase.Log($"[{nameof(HideGameController)}] Game shown");
         }
@@ -189,6 +204,14 @@ namespace Birdie.Managers
             }
 
             return canvas == m_buttonCanvas || canvas.transform.IsChildOf(m_buttonCanvas.transform);
+        }
+
+        private void SetButtonSprite(Sprite sprite)
+        {
+            if (m_buttonImage != null && sprite != null)
+            {
+                m_buttonImage.sprite = sprite;
+            }
         }
 
         private void EnableButtonCanvas()
