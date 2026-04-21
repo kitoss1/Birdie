@@ -29,7 +29,6 @@ namespace Birdie.UI.Minigames
         private float m_snapBackDuration = 0.25f;
 
         private RectTransform m_rectTransform;
-        private Canvas m_parentCanvas;
         private Vector2 m_originalPosition;
         private bool m_isDragging;
         private bool m_inputEnabled;
@@ -91,11 +90,6 @@ namespace Birdie.UI.Minigames
                 return;
             }
 
-            if (m_parentCanvas == null)
-            {
-                return;
-            }
-
             RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 RectTransform.parent as RectTransform,
                 eventData.position,
@@ -144,7 +138,6 @@ namespace Birdie.UI.Minigames
         private void Awake()
         {
             m_rectTransform = GetComponent<RectTransform>();
-            m_parentCanvas = GetComponentInParent<Canvas>();
         }
 
         private void OnDestroy()

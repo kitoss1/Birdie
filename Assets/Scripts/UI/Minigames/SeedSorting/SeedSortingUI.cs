@@ -67,6 +67,7 @@ namespace Birdie.UI.Minigames
         [Tooltip("Minimum distance between scattered seeds")]
         private float m_minSeedSpacing = 40f;
 
+
         [Header("Reward Bar")]
         [SerializeField]
         [Tooltip("Progress bar showing score thresholds and friendship rewards")]
@@ -101,6 +102,7 @@ namespace Birdie.UI.Minigames
         private int m_errors;
         private int m_remainingSeeds;
         private SeedSortingState m_currentState;
+        private Canvas m_canvas;
 
         private enum SeedSortingState
         {
@@ -163,6 +165,8 @@ namespace Birdie.UI.Minigames
 
         private void Awake()
         {
+            m_canvas = GetComponentInParent<Canvas>();
+
             if (m_gameOverPanel != null)
             {
                 m_gameOverPanel.CloseClicked += OnCloseClicked;
@@ -274,6 +278,7 @@ namespace Birdie.UI.Minigames
 
             Vector2 position = FindScatterPosition(usedPositions);
             seed.RectTransform.anchoredPosition = position;
+            seed.RectTransform.localRotation = Quaternion.Euler(0f, 0f, UnityEngine.Random.Range(0f, 360f));
             usedPositions.Add(position);
 
             m_activeSeeds.Add(seed);
@@ -370,12 +375,14 @@ namespace Birdie.UI.Minigames
 
         private SeedSortingDropTarget ResolveDropTarget(Vector2 screenPosition)
         {
-            if (m_bowlZone != null && m_bowlZone.ContainsScreenPoint(screenPosition, null))
+            Camera renderCamera = m_canvas != null ? m_canvas.worldCamera : null;
+
+            if (m_bowlZone != null && m_bowlZone.ContainsScreenPoint(screenPosition, renderCamera))
             {
                 return SeedSortingDropTarget.Bowl;
             }
 
-            if (m_trashZone != null && m_trashZone.ContainsScreenPoint(screenPosition, null))
+            if (m_trashZone != null && m_trashZone.ContainsScreenPoint(screenPosition, renderCamera))
             {
                 return SeedSortingDropTarget.Trash;
             }

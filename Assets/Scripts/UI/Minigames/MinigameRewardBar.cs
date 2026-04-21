@@ -47,7 +47,7 @@ namespace Birdie.UI.Minigames
             m_maxScore = MinigameRewardTier.ComputeMaxScore(tiers);
 
             ClearMarkers();
-            RectTransform completionMarker = SpawnCompletionMarker();
+            RectTransform completionMarker = m_reversed ? SpawnCompletionMarker() : null;
             SpawnMarkers(completionMarker);
             UpdateScore(0);
 
@@ -120,8 +120,10 @@ namespace Birdie.UI.Minigames
                 return;
             }
 
-            RectTransform firstTierMarker = null;
-            RectTransform lastMarker = null;
+            RectTransform leftmostMarker = null;
+            RectTransform rightmostMarker = null;
+            float leftmostPos = float.MaxValue;
+            float rightmostPos = float.MinValue;
 
             foreach (MinigameRewardTier tier in m_rewardTiers)
             {
@@ -145,21 +147,31 @@ namespace Birdie.UI.Minigames
                 }
 
                 m_spawnedMarkers.Add(marker);
-                firstTierMarker ??= marker;
-                lastMarker = marker;
+
+                if (normalizedPosition < leftmostPos)
+                {
+                    leftmostPos = normalizedPosition;
+                    leftmostMarker = marker;
+                }
+
+                if (normalizedPosition > rightmostPos)
+                {
+                    rightmostPos = normalizedPosition;
+                    rightmostMarker = marker;
+                }
             }
 
             if (m_reversed)
             {
-                if (lastMarker != null)
+                if (rightmostMarker != null)
                 {
-                    lastMarker.gameObject.SetActive(false);
+                    rightmostMarker.gameObject.SetActive(false);
                 }
 
-                RectTransform visualFirstMarker = completionMarker ?? firstTierMarker;
-                if (visualFirstMarker != null)
+                RectTransform visualLeftmost = completionMarker ?? leftmostMarker;
+                if (visualLeftmost != null)
                 {
-                    var line = visualFirstMarker.GetComponentInChildren<Image>();
+                    var line = visualLeftmost.GetComponentInChildren<Image>();
                     if (line != null)
                     {
                         line.enabled = false;
@@ -168,9 +180,9 @@ namespace Birdie.UI.Minigames
             }
             else
             {
-                if (lastMarker != null)
+                if (rightmostMarker != null)
                 {
-                    var line = lastMarker.GetComponentInChildren<Image>();
+                    var line = rightmostMarker.GetComponentInChildren<Image>();
                     if (line != null)
                     {
                         line.enabled = false;

@@ -25,6 +25,11 @@ namespace Birdie.UI.Minigames
         [Tooltip("Color when a seed is hovering over the zone")]
         private Color m_highlightColor = new Color(1f, 1f, 1f, 0.8f);
 
+        [Header("Hit Area")]
+        [SerializeField]
+        [Tooltip("Override RectTransform used as the drop hit area. Defaults to this GameObject's RectTransform if not set.")]
+        private RectTransform m_hitArea;
+
         private RectTransform m_rectTransform;
 
         public SeedSortingDropTarget DropTarget => m_dropTarget;
@@ -49,7 +54,8 @@ namespace Birdie.UI.Minigames
 
         public bool ContainsScreenPoint(Vector2 screenPoint, Camera cam)
         {
-            return RectTransformUtility.RectangleContainsScreenPoint(m_rectTransform, screenPoint, cam);
+            RectTransform hitRect = m_hitArea != null ? m_hitArea : m_rectTransform;
+            return RectTransformUtility.RectangleContainsScreenPoint(hitRect, screenPoint, cam);
         }
 
         public void SetHighlighted(bool highlighted)
