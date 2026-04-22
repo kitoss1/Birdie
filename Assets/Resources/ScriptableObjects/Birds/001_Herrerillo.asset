@@ -12,16 +12,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70219269baca5b648af64fe42e11e0ed, type: 3}
   m_Name: 001_Herrerillo
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.BirdData
-  m_birdName: Herrerillo
-  m_scientificName: Prunella modularis
+  m_birdName: "Herrerillo com\xFAn"
+  m_scientificName: Cyanistes caeruleus
   m_birdID: 001
   m_basicDescription: "Ave frecuente en zonas de monta\xF1a con abundancia de matorral
     y de sotobosque. En la mitad norte peninsular aparece en ambientes m\xE1s diversos,
     pero en el sur se restringe a los sistemas monta\xF1osos. Espa\xF1a alberga una
     poblaci\xF3n residente, a la que se unen en invierno acentores europeos pertenecientes
-    a otra subespecie."
+    a otra subespecie.\n\n----\n\nAve frecuente en zonas de monta\xF1a con abundancia
+    de matorral y de sotobosque. En la mitad norte peninsular aparece en ambientes
+    m\xE1s diversos, pero en el sur se restringe a los sistemas monta\xF1osos. Espa\xF1a
+    alberga una poblaci\xF3n residente, a la que se unen en invierno acentores europeos
+    pertenecientes a otra subespecie."
   m_birdPrefab: {fileID: 7991333266149840317, guid: 6b1cbfbf7eaa6814d91394694816c7e5, type: 3}
-  m_birdPhoto: {fileID: 707028069783305357, guid: 344a027a7bf5e63499a455592e89c2c7, type: 3}
+  m_birdPhoto: {fileID: 21300000, guid: 55c815fe8a58fa445b7802a8efda42aa, type: 3}
   m_size: 1
   m_rarity: 0
   m_baseSpawnWeight: 100
@@ -34,7 +38,7 @@ MonoBehaviour:
   m_friendshipUnlocks: []
   m_dietType: 0
   m_habitat: 
-  m_habitatMap: {fileID: 0}
+  m_habitatMap: {fileID: 7475527344487684069, guid: 0e719344f1aa73a40b59964c2993204a, type: 3}
   m_identificationInfo: 
   m_isThreatened: 0
   m_conservationStatus: 

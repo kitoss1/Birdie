@@ -25,49 +25,57 @@ namespace Birdie.UI
         [Tooltip("CanvasGroup for back content visibility control")]
         [SerializeField] private CanvasGroup m_backCanvasGroup;
 
-        [Header("Back Elements")]
-        [Tooltip("The image component that displays the bird's photo")]
-        [SerializeField] private Image m_birdPhoto;
-
-        [Tooltip("Text displaying the bird's rarity level")]
-        [SerializeField] private TextMeshProUGUI m_rarityText;
-
-        [Tooltip("Text displaying the bird's scientific name")]
-        [SerializeField] private TextMeshProUGUI m_scientificNameText;
-
-        [Tooltip("Text displaying the bird's diet type")]
-        [SerializeField] private TextMeshProUGUI m_foodText;
-
-        [Tooltip("Text displaying the numbers of times a player interacted with a bird")]
-        [SerializeField] private TextMeshProUGUI m_interactionCounterText;
-
         [Header("Front Elements")]
         [Tooltip("Mark as true for intro page which has different front elements")]
         [SerializeField] private bool m_isIntroPage;
 
-        [Tooltip("Text displaying the bird's common name")]
-        [SerializeField] private TextMeshProUGUI m_nameText;
-
         [Tooltip("Text displaying the bird's description")]
         [SerializeField] private TextMeshProUGUI m_descriptionText;
 
-        [Tooltip("Friendship progress bar tracker")]
-        [SerializeField] private ResourceBarTracker m_friendshipBar;
+        [Tooltip("Image displaying the bird's habitat map")]
+        [SerializeField] private Image m_mapImage;
+
+        [Tooltip("Image displaying the feather decoration")]
+        [SerializeField] private Image m_featherImage;
+
+        [Header("Back Elements")]
+        [Tooltip("The image component that displays the bird's photo")]
+        [SerializeField] private Image m_birdPhoto;
+
+        [Tooltip("Text displaying the bird's common name")]
+        [SerializeField] private TextMeshProUGUI m_nameText;
+
+        [Tooltip("Text displaying the bird's scientific name")]
+        [SerializeField] private TextMeshProUGUI m_scientificNameText;
+
+        [Tooltip("Text displaying the numbers of times a player interacted with a bird")]
+        [SerializeField] private TextMeshProUGUI m_interactionCounterText;
 
         [Tooltip("Text displaying the current friendship level")]
         [SerializeField] private TextMeshProUGUI m_friendshipLevelText;
 
+        [Tooltip("Friendship progress bar tracker")]
+        [SerializeField] private ResourceBarTracker m_friendshipBar;
+
+        [Tooltip("Text displaying the bird's visit hours")]
+        [SerializeField] private TextMeshProUGUI m_visitHoursText;
+
+        [Tooltip("Text displaying the bird's diet type")]
+        [SerializeField] private TextMeshProUGUI m_foodText;
+
         public GameObject BackParent => m_backParent;
         public GameObject FrontParent => m_frontParent;
-        public Image BirdPhoto => m_birdPhoto;
-        public TextMeshProUGUI RarityText => m_rarityText;
-        public TextMeshProUGUI ScientificNameText => m_scientificNameText;
-        public TextMeshProUGUI FoodText => m_foodText;
-        public TextMeshProUGUI NameText => m_nameText;
         public TextMeshProUGUI DescriptionText => m_descriptionText;
+        public Image MapImage => m_mapImage;
+        public Image FeatherImage => m_featherImage;
+        public Image BirdPhoto => m_birdPhoto;
+        public TextMeshProUGUI NameText => m_nameText;
+        public TextMeshProUGUI ScientificNameText => m_scientificNameText;
         public TextMeshProUGUI InteractionCounterText => m_interactionCounterText;
-        public ResourceBarTracker FriendshipBar => m_friendshipBar;
         public TextMeshProUGUI FriendshipLevelText => m_friendshipLevelText;
+        public ResourceBarTracker FriendshipBar => m_friendshipBar;
+        public TextMeshProUGUI VisitHoursText => m_visitHoursText;
+        public TextMeshProUGUI FoodText => m_foodText;
 
         private int m_originalSiblingIndex;
 
@@ -89,11 +97,13 @@ namespace Birdie.UI
             if (m_frontCanvasGroup != null)
             {
                 m_frontCanvasGroup.alpha = isShowingFront ? 1f : 0f;
+                m_frontCanvasGroup.blocksRaycasts = isShowingFront;
             }
 
             if (m_backCanvasGroup != null)
             {
                 m_backCanvasGroup.alpha = isShowingFront ? 0f : 1f;
+                m_backCanvasGroup.blocksRaycasts = !isShowingFront;
             }
         }
 
@@ -104,14 +114,14 @@ namespace Birdie.UI
         /// <param name="showingBack">True to turn to show the back, false to turn to show the front</param>
         public async UniTask TurnPageAsync(float turnDuration, bool showingBack)
         {
-            float targetRotation = showingBack ? 180f : 0f;
+            // Use a signed delta so forward (+180°) and backward (-180°) always rotate
+            // in opposite directions, regardless of DOTween's path-selection for 180° targets.
+            float rotationDelta = showingBack ? 180f : -180f;
 
-            // Create the rotation tween
-            await transform.DOLocalRotate(new Vector3(0f, targetRotation, 0f), turnDuration)
+            await transform.DOLocalRotate(new Vector3(0f, rotationDelta, 0f), turnDuration, RotateMode.LocalAxisAdd)
                 .SetEase(Ease.InOutCubic)
                 .OnUpdate(() =>
                 {
-                    // Update visibility during rotation
                     UpdateContentVisibility(transform.localEulerAngles.y);
                 })
                 .AsyncWaitForCompletion();
@@ -167,7 +177,6 @@ namespace Birdie.UI
         /// </summary>
         private void OnValidate()
         {
-            // Validate parent objects
             if (m_frontParent == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Front Parent reference is missing!", this);
@@ -178,7 +187,6 @@ namespace Birdie.UI
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Back Parent reference is missing!", this);
             }
 
-            // Validate canvas groups
             if (m_frontCanvasGroup == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Front CanvasGroup reference is missing!", this);
@@ -189,38 +197,26 @@ namespace Birdie.UI
                 UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Back CanvasGroup reference is missing!", this);
             }
 
-            // Validate back elements
-            if (m_birdPhoto == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Bird Photo reference is missing!", this);
-            }
-
-            if (m_rarityText == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Rarity Text reference is missing!", this);
-            }
-
-            if (m_scientificNameText == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Scientific Name Text reference is missing!", this);
-            }
-
-            if (m_foodText == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Food Text reference is missing!", this);
-            }
-
-            // Validate front elements (skip for intro page which has different elements)
             if (!m_isIntroPage)
             {
+                if (m_descriptionText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Description Text reference is missing!", this);
+                }
+
+                if (m_birdPhoto == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Bird Photo reference is missing!", this);
+                }
+
                 if (m_nameText == null)
                 {
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Name Text reference is missing!", this);
                 }
 
-                if (m_descriptionText == null)
+                if (m_scientificNameText == null)
                 {
-                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Description Text reference is missing!", this);
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Scientific Name Text reference is missing!", this);
                 }
 
                 if (m_interactionCounterText == null)
@@ -228,14 +224,24 @@ namespace Birdie.UI
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Interaction Counter Text reference is missing!", this);
                 }
 
+                if (m_friendshipLevelText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Level Text reference is missing!", this);
+                }
+
                 if (m_friendshipBar == null)
                 {
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Bar reference is missing!", this);
                 }
 
-                if (m_friendshipLevelText == null)
+                if (m_visitHoursText == null)
                 {
-                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Friendship Level Text reference is missing!", this);
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Visit Hours Text reference is missing!", this);
+                }
+
+                if (m_foodText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Food Text reference is missing!", this);
                 }
             }
         }

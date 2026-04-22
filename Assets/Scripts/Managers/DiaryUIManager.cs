@@ -37,11 +37,11 @@ namespace Birdie.Managers
         [SerializeField] private float m_pageTurnDuration = 0.5f;
 
         [Header("Locked Bird Settings")]
+        [Tooltip("Text to display for undiscovered bird descriptions")]
+        [SerializeField] private string m_lockedDescriptionText = "Este pájaro todavía no ha sido descubierto.";
+
         [Tooltip("Text to display for undiscovered bird names")]
         [SerializeField] private string m_lockedNameText = "???";
-
-        [Tooltip("Text to display for undiscovered bird descriptions")]
-        [SerializeField] private string m_lockedDescriptionText = "This bird has not been discovered yet.";
 
         [Tooltip("Color to tint undiscovered bird photos")]
         [SerializeField] private Color m_lockedPhotoTint = new Color(0.2f, 0.2f, 0.2f, 1f);
@@ -198,12 +198,14 @@ namespace Birdie.Managers
                 return;
             }
 
-            // Populate introduction page's BACK with first bird's LEFT page
+            // Populate introduction page's BACK with first bird's back page
             BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
             if (introPageUI != null)
             {
-                PopulateLeftPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.RarityText,
-                    introPageUI.ScientificNameText, introPageUI.FoodText, introPageUI.InteractionCounterText, allBirds[0]);
+                PopulateBackPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.NameText,
+                    introPageUI.ScientificNameText, introPageUI.InteractionCounterText,
+                    introPageUI.FriendshipLevelText, introPageUI.FriendshipBar,
+                    introPageUI.VisitHoursText, introPageUI.FoodText, allBirds[0]);
 
                 // Initialize introduction page to show front (0 degrees rotation)
                 introPageUI.SetPageSide(showingBack: false);
@@ -225,15 +227,16 @@ namespace Birdie.Managers
                     continue;
                 }
 
-                // Populate FRONT with bird[i]'s RIGHT page (name, description, friendship)
-                PopulateRightPage(pageUI.FrontParent, pageUI.NameText, pageUI.DescriptionText,
-                    pageUI.FriendshipBar, pageUI.FriendshipLevelText, allBirds[i]);
+                // Populate FRONT with bird[i]'s front page (description, map)
+                PopulateFrontPage(pageUI.FrontParent, pageUI.DescriptionText, pageUI.MapImage, allBirds[i]);
 
-                // Populate BACK with bird[i+1]'s LEFT page (if exists)
+                // Populate BACK with bird[i+1]'s back page (photo, name, stats)
                 if (i + 1 < allBirds.Count)
                 {
-                    PopulateLeftPage(pageUI.BackParent, pageUI.BirdPhoto, pageUI.RarityText,
-                        pageUI.ScientificNameText, pageUI.FoodText, pageUI.InteractionCounterText, allBirds[i + 1]);
+                    PopulateBackPage(pageUI.BackParent, pageUI.BirdPhoto, pageUI.NameText,
+                        pageUI.ScientificNameText, pageUI.InteractionCounterText,
+                        pageUI.FriendshipLevelText, pageUI.FriendshipBar,
+                        pageUI.VisitHoursText, pageUI.FoodText, allBirds[i + 1]);
                 }
                 else
                 {
@@ -258,12 +261,11 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Populates the LEFT page (photo, stats) of a bird.
-        /// Shown on the back of pages.
+        /// Populates the FRONT page (description, map) of a bird.
+        /// Shown on the front of pages (right side of the spread).
         /// </summary>
-        private void PopulateLeftPage(GameObject parentObject, Image birdPhoto, TextMeshProUGUI rarityText,
-            TextMeshProUGUI scientificNameText, TextMeshProUGUI foodText, TextMeshProUGUI interactionCounterText,
-            BirdData birdData)
+        private void PopulateFrontPage(GameObject parentObject, TextMeshProUGUI descriptionText,
+            Image mapImage, BirdData birdData)
         {
             if (parentObject != null)
             {
@@ -272,7 +274,41 @@ namespace Birdie.Managers
 
             bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
 
-            // Set bird photo
+            if (descriptionText != null)
+            {
+                descriptionText.text = isDiscovered ? birdData.BasicDescription : m_lockedDescriptionText;
+            }
+
+            if (mapImage != null)
+            {
+                if (isDiscovered && birdData.HabitatMap != null)
+                {
+                    mapImage.sprite = birdData.HabitatMap;
+                    mapImage.color = Color.white;
+                }
+                else
+                {
+                    mapImage.color = m_lockedPhotoTint;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Populates the BACK page (photo, name, stats) of a bird.
+        /// Shown on the back of pages (left side of the spread).
+        /// </summary>
+        private void PopulateBackPage(GameObject parentObject, Image birdPhoto, TextMeshProUGUI nameText,
+            TextMeshProUGUI scientificNameText, TextMeshProUGUI interactionCounterText,
+            TextMeshProUGUI friendshipLevelText, ResourceBarTracker friendshipBar,
+            TextMeshProUGUI visitHoursText, TextMeshProUGUI foodText, BirdData birdData)
+        {
+            if (parentObject != null)
+            {
+                parentObject.SetActive(true);
+            }
+
+            bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
+
             if (birdPhoto != null)
             {
                 if (isDiscovered && birdData.BirdPhoto != null)
@@ -286,68 +322,49 @@ namespace Birdie.Managers
                 }
             }
 
-            // Set rarity text
-            if (rarityText != null)
-            {
-                rarityText.text = isDiscovered ? $"Rarity: {birdData.Rarity}" : "Rarity: ???";
-            }
-
-            // Set scientific name
-            if (scientificNameText != null)
-            {
-                scientificNameText.text = isDiscovered ? birdData.ScientificName : "???";
-            }
-
-            // Set food/diet text
-            if (foodText != null)
-            {
-                foodText.text = isDiscovered ? $"Diet: {birdData.DietType}" : "Diet: ???";
-            }
-
-            // Set interaction counter
-            if (interactionCounterText != null)
-            {
-                if (isDiscovered)
-                {
-                    int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
-                    interactionCounterText.text = $"Interactions: {encounterCount}";
-                }
-                else
-                {
-                    interactionCounterText.text = "Interactions: ???";
-                }
-            }
-        }
-
-        /// <summary>
-        /// Populates the RIGHT page (name, description, friendship) of a bird.
-        /// Shown on the front of pages.
-        /// </summary>
-        private void PopulateRightPage(GameObject parentObject, TextMeshProUGUI nameText,
-            TextMeshProUGUI descriptionText, ResourceBarTracker friendshipBar,
-            TextMeshProUGUI friendshipLevelText, BirdData birdData)
-        {
-            if (parentObject != null)
-            {
-                parentObject.SetActive(true);
-            }
-
-            bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
-
-            // Set bird name
             if (nameText != null)
             {
                 nameText.text = isDiscovered ? birdData.BirdName : m_lockedNameText;
             }
 
-            // Set description
-            if (descriptionText != null)
+            if (scientificNameText != null)
             {
-                descriptionText.text = isDiscovered ? birdData.BasicDescription : m_lockedDescriptionText;
+                scientificNameText.text = isDiscovered ? birdData.ScientificName : "???";
             }
 
-            // Set friendship bar and level
+            if (interactionCounterText != null)
+            {
+                if (isDiscovered)
+                {
+                    int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
+                    interactionCounterText.text = $"Visitas: {encounterCount}";
+                }
+                else
+                {
+                    interactionCounterText.text = "Visitas: ???";
+                }
+            }
+
             PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered);
+
+            if (visitHoursText != null)
+            {
+                if (isDiscovered)
+                {
+                    visitHoursText.text = birdData.AppearsAnytime
+                        ? "Cualquier hora"
+                        : $"{birdData.AppearanceTimeRange.StartHour}h - {birdData.AppearanceTimeRange.EndHour}h";
+                }
+                else
+                {
+                    visitHoursText.text = "???";
+                }
+            }
+
+            if (foodText != null)
+            {
+                foodText.text = isDiscovered ? $"{birdData.DietType}" : "???";
+            }
         }
 
         /// <summary>
@@ -366,7 +383,7 @@ namespace Birdie.Managers
 
                 if (friendshipLevelText != null)
                 {
-                    friendshipLevelText.text = "Lv. 0";
+                    friendshipLevelText.text = "Amistad: 0";
                 }
 
                 return;
@@ -378,7 +395,7 @@ namespace Birdie.Managers
 
             if (friendshipLevelText != null)
             {
-                friendshipLevelText.text = $"Lv. {currentLevel}";
+                friendshipLevelText.text = $"Amistad: {currentLevel}";
             }
 
             if (friendshipBar != null)
@@ -781,39 +798,40 @@ namespace Birdie.Managers
 
             List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
 
-            // Refresh LEFT page (photo, stats) - shown on back of intro page or previous page
+            // Refresh BACK page (photo, name, stats) - shown on back of intro page or previous page
             if (birdIndex == 0)
             {
-                // First bird's left page is on the intro page back
                 BirdPageUI introPageUI = m_firstPage.GetComponent<BirdPageUI>();
                 if (introPageUI != null)
                 {
-                    PopulateLeftPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.RarityText,
-                        introPageUI.ScientificNameText, introPageUI.FoodText, introPageUI.InteractionCounterText, birdData);
+                    PopulateBackPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.NameText,
+                        introPageUI.ScientificNameText, introPageUI.InteractionCounterText,
+                        introPageUI.FriendshipLevelText, introPageUI.FriendshipBar,
+                        introPageUI.VisitHoursText, introPageUI.FoodText, birdData);
                 }
             }
             else if (birdIndex - 1 >= 0 && birdIndex - 1 < m_instantiatedPages.Count)
             {
-                // Bird's left page is on the back of the previous instantiated page
                 GameObject prevPage = m_instantiatedPages[birdIndex - 1];
                 BirdPageUI prevPageUI = prevPage.GetComponent<BirdPageUI>();
                 if (prevPageUI != null)
                 {
-                    PopulateLeftPage(prevPageUI.BackParent, prevPageUI.BirdPhoto, prevPageUI.RarityText,
-                        prevPageUI.ScientificNameText, prevPageUI.FoodText, prevPageUI.InteractionCounterText, birdData);
+                    PopulateBackPage(prevPageUI.BackParent, prevPageUI.BirdPhoto, prevPageUI.NameText,
+                        prevPageUI.ScientificNameText, prevPageUI.InteractionCounterText,
+                        prevPageUI.FriendshipLevelText, prevPageUI.FriendshipBar,
+                        prevPageUI.VisitHoursText, prevPageUI.FoodText, birdData);
                 }
             }
 
-            // Refresh RIGHT page (name, description) - shown on front of current page
+            // Refresh FRONT page (description, map) - shown on front of current page
             if (birdIndex >= 0 && birdIndex < m_instantiatedPages.Count)
             {
                 GameObject currentPage = m_instantiatedPages[birdIndex];
                 BirdPageUI currentPageUI = currentPage.GetComponent<BirdPageUI>();
                 if (currentPageUI != null)
                 {
-                    PopulateRightPage(currentPageUI.FrontParent, currentPageUI.NameText,
-                        currentPageUI.DescriptionText, currentPageUI.FriendshipBar,
-                        currentPageUI.FriendshipLevelText, birdData);
+                    PopulateFrontPage(currentPageUI.FrontParent, currentPageUI.DescriptionText,
+                        currentPageUI.MapImage, birdData);
                 }
             }
 

@@ -2038,6 +2038,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6403314215120860705, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
   m_PrefabInstance: {fileID: 5133509383242270236}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &503709596 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 9044978160804998769, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+  m_PrefabInstance: {fileID: 1878388518364864232}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &519304037
 GameObject:
   m_ObjectHideFlags: 0
@@ -3790,7 +3795,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -3867,7 +3872,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1186132561}
   m_OnClick:
     m_PersistentCalls:
@@ -6396,7 +6401,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -6473,7 +6478,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 1894403188}
   m_OnClick:
     m_PersistentCalls:
@@ -8064,9 +8069,61 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 441782782657557796, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1583923484852519092, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1583923484852519092, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1583923484852519092, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2085028005830604709, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_Name
       value: DiaryCanvas
+      objectReference: {fileID: 0}
+    - target: {fileID: 2609959678490814919, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_backParent
+      value: 
+      objectReference: {fileID: 503709596}
+    - target: {fileID: 2948688096740904176, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: b8f9475dd98425b4e8dd66be1b4c4e99, type: 3}
+    - target: {fileID: 2948688096740904176, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_PreserveAspect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992120336575405981, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 31.65
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992120336575405981, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992120336575405981, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 24
+      objectReference: {fileID: 0}
+    - target: {fileID: 2992120336575405981, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -0.83000183
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175950845320241033, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 187.5525
+      objectReference: {fileID: 0}
+    - target: {fileID: 3175950845320241033, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 187.5525
       objectReference: {fileID: 0}
     - target: {fileID: 3694475420163692876, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_Pivot.x
@@ -8148,10 +8205,34 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4200749726600769408, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4939163787754708746, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_BlocksRaycasts
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7693512700322394347, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 519420031}
+    - target: {fileID: 8676850227155830184, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 8676850227155830184, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_VerticalAlignment
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 8676850227155830184, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9044978160804998769, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -9792,6 +9873,10 @@ PrefabInstance:
       propertyPath: m_Transition
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2766210078547970868, guid: 71f4cf82b05469b42bd687805641a90f, type: 3}
+      propertyPath: m_Interactable
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4118892398387290266, guid: 71f4cf82b05469b42bd687805641a90f, type: 3}
       propertyPath: m_SizeDelta.x
       value: 19.16
@@ -9812,6 +9897,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: 21300000, guid: 34ce80d4dc82afb45969c5bcc9ad5507, type: 3}
+    - target: {fileID: 6069063288776418378, guid: 71f4cf82b05469b42bd687805641a90f, type: 3}
+      propertyPath: m_RaycastTarget
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8253266817166454238, guid: 71f4cf82b05469b42bd687805641a90f, type: 3}
       propertyPath: m_Name
       value: DiaryButton
