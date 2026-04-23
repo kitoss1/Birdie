@@ -1,3 +1,5 @@
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -25,6 +27,29 @@ namespace Birdie.UI
             m_resourceCurrent = current;
             m_resourceMax = max;
             UpdateBar();
+        }
+
+        /// <summary>
+        /// Animates the bar from a starting fill ratio to the new values.
+        /// </summary>
+        public async UniTask AnimateAsync(float fromFill, int toCurrent, int toMax, float duration)
+        {
+            m_resourceCurrent = toCurrent;
+            m_resourceMax = toMax;
+
+            if (m_bar != null)
+            {
+                m_bar.fillAmount = fromFill;
+                float targetFill = m_resourceMax <= 0 ? 0f : Mathf.Clamp01((float)m_resourceCurrent / m_resourceMax);
+                await m_bar.DOFillAmount(targetFill, duration)
+                    .SetEase(Ease.OutCubic)
+                    .AsyncWaitForCompletion();
+            }
+
+            if (m_valueText != null)
+            {
+                m_valueText.text = $"{m_resourceCurrent} / {m_resourceMax}";
+            }
         }
 
         private void UpdateBar()

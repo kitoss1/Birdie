@@ -36,6 +36,9 @@ namespace Birdie.Managers
         [Tooltip("Duration of page turn animation in seconds")]
         [SerializeField] private float m_pageTurnDuration = 0.5f;
 
+        [Tooltip("Duration of the friendship bar fill animation in seconds")]
+        [SerializeField] private float m_friendshipBarAnimationDuration = 1f;
+
         [Header("Locked Bird Settings")]
         [Tooltip("Text to display for undiscovered bird descriptions")]
         [SerializeField] private string m_lockedDescriptionText = "Este pájaro todavía no ha sido descubierto.";
@@ -51,6 +54,7 @@ namespace Birdie.Managers
 
         private readonly List<GameObject> m_instantiatedPages = new List<GameObject>();
         private readonly Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
+        private readonly HashSet<string> m_animatedThisSession = new HashSet<string>();
         private int m_currentPageIndex = 0;
 
         private bool m_isAnimating = false;
@@ -61,6 +65,12 @@ namespace Birdie.Managers
         /// Event fired when close button is clicked.
         /// </summary>
         public event Action OnCloseClicked;
+
+        private void OnEnable()
+        {
+            m_animatedThisSession.Clear();
+            TriggerFriendshipAnimationAsync(m_currentPageIndex);
+        }
 
         public override void Initialize()
         {
@@ -400,21 +410,31 @@ namespace Birdie.Managers
 
             if (friendshipBar != null)
             {
-                int currentThreshold = birdData.GetFriendshipRequirement(currentLevel);
-                int nextLevel = currentLevel + 1;
-                int nextThreshold = birdData.GetFriendshipRequirement(nextLevel);
+                // If a friendship animation is pending for this bird, display the bar at the
+                // last-seen value so it doesn't flash the new value before the animation starts.
+                int displayPoints = currentPoints;
+                if (!m_animatedThisSession.Contains(birdData.BirdID))
+                {
+                    int lastSeen = GameManager.Instance.FriendshipManager.GetLastSeenFriendship(birdData.BirdID);
+                    if (currentPoints > lastSeen)
+                    {
+                        displayPoints = lastSeen;
+                    }
+                }
 
-                // At max level: bar is full
+                int displayLevel = friendshipManager.GetFriendshipLevelForPoints(birdData, displayPoints);
+                int currentThreshold = birdData.GetFriendshipRequirement(displayLevel);
+                int nextThreshold = birdData.GetFriendshipRequirement(displayLevel + 1);
+
                 if (nextThreshold == int.MaxValue)
                 {
-                    int lastThreshold = birdData.GetFriendshipRequirement(currentLevel);
-                    int prevThreshold = currentLevel > 0 ? birdData.GetFriendshipRequirement(currentLevel - 1) : 0;
-                    int levelRange = lastThreshold - prevThreshold;
+                    int prevThreshold = displayLevel > 0 ? birdData.GetFriendshipRequirement(displayLevel - 1) : 0;
+                    int levelRange = currentThreshold - prevThreshold;
                     friendshipBar.SetValues(levelRange, levelRange);
                 }
                 else
                 {
-                    int levelProgress = currentPoints - currentThreshold;
+                    int levelProgress = displayPoints - currentThreshold;
                     int levelRange = nextThreshold - currentThreshold;
                     friendshipBar.SetValues(levelProgress, levelRange);
                 }
@@ -731,6 +751,7 @@ namespace Birdie.Managers
             m_currentPageIndex = pageIndex;
             m_isAnimating = false;
             UpdateNavigationButtons();
+            TriggerFriendshipAnimationAsync(pageIndex);
 
             if (pageIndex == -1)
             {
@@ -740,6 +761,159 @@ namespace Birdie.Managers
             {
                 DebugBase.Log($"[{nameof(DiaryUIManager)}] Animated to page {pageIndex + 1}/{m_instantiatedPages.Count}", DebugCategory.UI);
             }
+        }
+
+        /// <summary>
+        /// Animates the friendship bar for the bird shown at pageIndex, if new points were gained
+        /// since the last time the player viewed that page.
+        /// </summary>
+        private async void TriggerFriendshipAnimationAsync(int pageIndex)
+        {
+            try
+            {
+                if (pageIndex < 0)
+                {
+                    return;
+                }
+
+                List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
+                if (pageIndex >= allBirds.Count)
+                {
+                    return;
+                }
+
+                BirdData birdData = allBirds[pageIndex];
+                if (!GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData))
+                {
+                    return;
+                }
+
+                string birdID = birdData.BirdID;
+                if (m_animatedThisSession.Contains(birdID))
+                {
+                    return;
+                }
+
+                int currentPoints = GameManager.Instance.FriendshipManager.GetFriendship(birdID);
+                int lastSeenPoints = GameManager.Instance.FriendshipManager.GetLastSeenFriendship(birdID);
+                GameManager.Instance.FriendshipManager.UpdateLastSeenFriendship(birdID, currentPoints);
+
+                if (currentPoints <= lastSeenPoints)
+                {
+                    return;
+                }
+
+                ResourceBarTracker friendshipBar = GetFriendshipBarForBird(pageIndex);
+                if (friendshipBar == null)
+                {
+                    return;
+                }
+
+                m_animatedThisSession.Add(birdID);
+
+                FriendshipManager fm = GameManager.Instance.FriendshipManager;
+                int lastLevel = fm.GetFriendshipLevelForPoints(birdData, lastSeenPoints);
+                int currentLevel = fm.GetFriendshipLevelForPoints(birdData, currentPoints);
+
+                float fromFill = ComputeFriendshipFill(birdData, lastSeenPoints);
+                GetFriendshipBarValues(birdData, currentPoints, out int toCurrent, out int toMax);
+
+                if (lastLevel == currentLevel)
+                {
+                    await friendshipBar.AnimateAsync(fromFill, toCurrent, toMax, m_friendshipBarAnimationDuration);
+                    return;
+                }
+
+                // Leveled up: animate through each level boundary at constant speed.
+
+                // Step 1: fill the remainder of the starting level
+                float remaining = 1f - fromFill;
+                if (remaining > 0f)
+                {
+                    int startThreshold = birdData.GetFriendshipRequirement(lastLevel);
+                    int startNextThreshold = birdData.GetFriendshipRequirement(lastLevel + 1);
+                    int startRange = startNextThreshold - startThreshold;
+                    await friendshipBar.AnimateAsync(fromFill, startRange, startRange, m_friendshipBarAnimationDuration * remaining);
+                }
+
+                // Step 2: animate through each fully-completed intermediate level
+                for (int level = lastLevel + 1; level < currentLevel; level++)
+                {
+                    int threshold = birdData.GetFriendshipRequirement(level);
+                    int nextThreshold = birdData.GetFriendshipRequirement(level + 1);
+                    if (nextThreshold == int.MaxValue)
+                    {
+                        break;
+                    }
+
+                    int range = nextThreshold - threshold;
+                    await friendshipBar.AnimateAsync(0f, range, range, m_friendshipBarAnimationDuration);
+                }
+
+                // Final step: animate from 0 to the correct position in the new level
+                float finalRatio = toMax > 0 ? Mathf.Clamp01((float)toCurrent / toMax) : 0f;
+                await friendshipBar.AnimateAsync(0f, toCurrent, toMax, m_friendshipBarAnimationDuration * finalRatio);
+            }
+            catch (Exception e)
+            {
+                DebugBase.LogError($"[{nameof(DiaryUIManager)}] TriggerFriendshipAnimationAsync failed: {e.Message}");
+            }
+        }
+
+        private ResourceBarTracker GetFriendshipBarForBird(int birdIndex)
+        {
+            if (birdIndex == 0)
+            {
+                return m_firstPage.GetComponent<BirdPageUI>()?.FriendshipBar;
+            }
+
+            if (birdIndex - 1 < m_instantiatedPages.Count)
+            {
+                return m_instantiatedPages[birdIndex - 1].GetComponent<BirdPageUI>()?.FriendshipBar;
+            }
+
+            return null;
+        }
+
+        private float ComputeFriendshipFill(BirdData birdData, int points)
+        {
+            FriendshipManager fm = GameManager.Instance.FriendshipManager;
+            int level = fm.GetFriendshipLevelForPoints(birdData, points);
+            int currentThreshold = birdData.GetFriendshipRequirement(level);
+            int nextThreshold = birdData.GetFriendshipRequirement(level + 1);
+
+            if (nextThreshold == int.MaxValue)
+            {
+                return 1f;
+            }
+
+            int levelRange = nextThreshold - currentThreshold;
+            if (levelRange <= 0)
+            {
+                return 0f;
+            }
+
+            return Mathf.Clamp01((float)(points - currentThreshold) / levelRange);
+        }
+
+        private void GetFriendshipBarValues(BirdData birdData, int points, out int current, out int max)
+        {
+            FriendshipManager fm = GameManager.Instance.FriendshipManager;
+            int level = fm.GetFriendshipLevelForPoints(birdData, points);
+            int currentThreshold = birdData.GetFriendshipRequirement(level);
+            int nextThreshold = birdData.GetFriendshipRequirement(level + 1);
+
+            if (nextThreshold == int.MaxValue)
+            {
+                int prevThreshold = level > 0 ? birdData.GetFriendshipRequirement(level - 1) : 0;
+                int levelRange = currentThreshold - prevThreshold;
+                current = levelRange;
+                max = levelRange;
+                return;
+            }
+
+            current = points - currentThreshold;
+            max = nextThreshold - currentThreshold;
         }
 
         /// <summary>

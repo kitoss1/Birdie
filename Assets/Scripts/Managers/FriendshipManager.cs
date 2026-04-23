@@ -14,6 +14,7 @@ namespace Birdie.Managers
     public class FriendshipManager : BaseManager
     {
         private readonly Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
+        private readonly Dictionary<string, int> m_lastSeenFriendshipPoints = new Dictionary<string, int>();
         private SaveManager m_saveManager;
 
         public event Action<string> OnFriendshipChanged;
@@ -86,7 +87,14 @@ namespace Birdie.Managers
         public int GetFriendshipLevel(string birdID, BirdData birdData)
         {
             int points = GetFriendship(birdID);
+            return GetFriendshipLevelForPoints(birdData, points);
+        }
 
+        /// <summary>
+        /// Computes the friendship level for an arbitrary point value.
+        /// </summary>
+        public int GetFriendshipLevelForPoints(BirdData birdData, int points)
+        {
             for (int i = birdData.FriendshipLevelThresholds.Count - 1; i >= 0; i--)
             {
                 if (points >= birdData.FriendshipLevelThresholds[i])
@@ -112,12 +120,21 @@ namespace Birdie.Managers
             FriendshipSaveData friendshipData = m_saveManager.CurrentSaveData.friendship;
 
             m_birdFriendshipPoints.Clear();
+            m_lastSeenFriendshipPoints.Clear();
 
             if (friendshipData.birdIDs != null && friendshipData.friendshipPoints != null)
             {
                 for (int i = 0; i < friendshipData.birdIDs.Count && i < friendshipData.friendshipPoints.Count; i++)
                 {
                     m_birdFriendshipPoints[friendshipData.birdIDs[i]] = friendshipData.friendshipPoints[i];
+                }
+            }
+
+            if (friendshipData.birdIDs != null && friendshipData.lastSeenFriendshipPoints != null)
+            {
+                for (int i = 0; i < friendshipData.birdIDs.Count && i < friendshipData.lastSeenFriendshipPoints.Count; i++)
+                {
+                    m_lastSeenFriendshipPoints[friendshipData.birdIDs[i]] = friendshipData.lastSeenFriendshipPoints[i];
                 }
             }
 
@@ -140,9 +157,27 @@ namespace Birdie.Managers
             friendshipData.birdIDs = new List<string>(m_birdFriendshipPoints.Keys);
             friendshipData.friendshipPoints = new List<int>(m_birdFriendshipPoints.Values);
 
+            friendshipData.lastSeenFriendshipPoints = new List<int>();
+            foreach (string id in friendshipData.birdIDs)
+            {
+                friendshipData.lastSeenFriendshipPoints.Add(
+                    m_lastSeenFriendshipPoints.TryGetValue(id, out int p) ? p : 0);
+            }
+
             m_saveManager.SaveGame();
 
             DebugBase.Log($"[{nameof(FriendshipManager)}] Saved friendship data: {m_birdFriendshipPoints.Count} birds", DebugCategory.Friendship);
+        }
+
+        public int GetLastSeenFriendship(string birdID)
+        {
+            return m_lastSeenFriendshipPoints.TryGetValue(birdID, out int points) ? points : 0;
+        }
+
+        public void UpdateLastSeenFriendship(string birdID, int points)
+        {
+            m_lastSeenFriendshipPoints[birdID] = points;
+            SaveToSaveData();
         }
 
         /// <summary>

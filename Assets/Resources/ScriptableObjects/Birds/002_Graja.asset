@@ -23,10 +23,10 @@ MonoBehaviour:
     de un ave vulnerable a los efectos de la intensificaci\xF3n agr\xEDcola, el uso
     de pesticidas y el aislamiento de sus poblaciones."
   m_birdPrefab: {fileID: 7991333266149840317, guid: 053143e486e4f6748a6d20a2e5490dde, type: 3}
-  m_birdPhoto: {fileID: 707028069783305357, guid: 344a027a7bf5e63499a455592e89c2c7, type: 3}
+  m_birdPhoto: {fileID: 21300000, guid: 942de749dd6e2594abf1a81b903999d2, type: 3}
   m_size: 2
   m_rarity: 0
-  m_baseSpawnWeight: 1
+  m_baseSpawnWeight: 100
   m_appearanceTimeRange:
     m_startHour: 8
     m_endHour: 18
@@ -36,7 +36,7 @@ MonoBehaviour:
   m_friendshipUnlocks: []
   m_dietType: 0
   m_habitat: 
-  m_habitatMap: {fileID: 0}
+  m_habitatMap: {fileID: 21300000, guid: 63bb6fd48e7b7bd449a4ba9c5ac58498, type: 3}
   m_identificationInfo: 
   m_isThreatened: 0
   m_conservationStatus: 
@@ -69,4 +69,7 @@ MonoBehaviour:
   m_hasSpecialAnimation: 0
   m_specialAnimationDescription: 
   m_availableMinigames:
+  - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
+  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}
+  - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}
   - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}

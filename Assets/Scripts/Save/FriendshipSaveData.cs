@@ -13,6 +13,7 @@ namespace Birdie.Save
         public List<string> birdIDs = new List<string>();
         public List<int> friendshipPoints = new List<int>();
         public List<int> friendshipLevels = new List<int>();
+        public List<int> lastSeenFriendshipPoints = new List<int>();
 
         /// <summary>
         /// Creates an empty friendship save data.
@@ -28,9 +29,7 @@ namespace Birdie.Save
         {
             return birdIDs != null &&
                    friendshipPoints != null &&
-                   friendshipLevels != null &&
-                   birdIDs.Count == friendshipPoints.Count &&
-                   birdIDs.Count == friendshipLevels.Count;
+                   birdIDs.Count == friendshipPoints.Count;
         }
     }
 }
