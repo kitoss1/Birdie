@@ -191,6 +191,10 @@ namespace Birdie.Data
 
         [Header("Minigames")]
         [SerializeField]
+        [Tooltip("Seconds before the play action is available again after one play. 0 = locked for the full visit.")]
+        private float m_minigameCooldownDuration = 0f;
+
+        [SerializeField]
         [Tooltip("List of minigames this bird species can play")]
         private List<MinigameData> m_availableMinigames = new List<MinigameData>();
 
@@ -402,6 +406,8 @@ namespace Birdie.Data
             get => m_possibleBehaviors;
             set => m_possibleBehaviors = value;
         }
+
+        public float MinigameCooldownDuration => m_minigameCooldownDuration;
 
         public List<MinigameData> AvailableMinigames
         {

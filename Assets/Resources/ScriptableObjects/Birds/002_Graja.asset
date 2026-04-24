@@ -40,7 +40,12 @@ MonoBehaviour:
   m_identificationInfo: 
   m_isThreatened: 0
   m_conservationStatus: 
-  m_songParts: []
+  m_songParts:
+  - {fileID: 8300000, guid: 33c42a3840d317949aefa6d87fab4c3d, type: 3}
+  - {fileID: 8300000, guid: b734885d4f3ed4d4ebc9e5f82dc24142, type: 3}
+  - {fileID: 8300000, guid: d8e431e87f3a95c4eb2391a0dfa42aef, type: 3}
+  - {fileID: 8300000, guid: 79c17b811b63eb24bbd91e9ab1f491d6, type: 3}
+  - {fileID: 8300000, guid: 2eecb6c650b2e3542acfb66e479390d0, type: 3}
   m_possibleGifts: []
   m_requiredUpgradeIDs: []
   m_minimumHabitatLevel: 0
@@ -68,6 +73,7 @@ MonoBehaviour:
     m_weight: 1
   m_hasSpecialAnimation: 0
   m_specialAnimationDescription: 
+  m_minigameCooldownDuration: 120
   m_availableMinigames:
   - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
   - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}

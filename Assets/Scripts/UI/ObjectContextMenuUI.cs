@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Birdie.Birds;
 using Birdie.Debug;
 using UnityEngine;
@@ -20,7 +21,7 @@ namespace Birdie.UI
         [SerializeField] private Button m_backdropButton;
 
         [Header("Action Buttons")]
-        [SerializeField] private Button m_refillButton;
+        [SerializeField] private List<ObjectPopupMenuButtonEntry> m_actionButtons;
 
         [Header("Positioning")]
         [SerializeField] private float m_verticalOffset = 80f;
@@ -73,9 +74,15 @@ namespace Birdie.UI
                 m_backdropButton.onClick.AddListener(Hide);
             }
 
-            if (m_refillButton != null)
+            foreach (ObjectPopupMenuButtonEntry entry in m_actionButtons)
             {
-                m_refillButton.onClick.AddListener(OnRefillClicked);
+                if (entry.Button == null)
+                {
+                    continue;
+                }
+
+                ObjectPopupMenuAction action = entry.Action;
+                entry.Button.onClick.AddListener(() => OnActionClicked(action));
             }
         }
 
@@ -86,9 +93,12 @@ namespace Birdie.UI
                 m_backdropButton.onClick.RemoveListener(Hide);
             }
 
-            if (m_refillButton != null)
+            foreach (ObjectPopupMenuButtonEntry entry in m_actionButtons)
             {
-                m_refillButton.onClick.RemoveAllListeners();
+                if (entry.Button != null)
+                {
+                    entry.Button.onClick.RemoveAllListeners();
+                }
             }
         }
 
@@ -114,7 +124,7 @@ namespace Birdie.UI
             m_backdrop.SetActive(true);
             m_menuPanel.SetActive(true);
 
-            UpdateButtons(obj);
+            RefreshButtonStates(obj);
             PositionMenuAboveObject(obj);
 
             DebugBase.Log($"[{nameof(ObjectContextMenuUI)}] Showing menu for {obj.ObjectID}", DebugCategory.UI);
@@ -129,19 +139,55 @@ namespace Birdie.UI
             DebugBase.Log($"[{nameof(ObjectContextMenuUI)}] Menu hidden", DebugCategory.UI);
         }
 
-        private void UpdateButtons(BirdObject obj)
+        private void RefreshButtonStates(BirdObject obj)
         {
-            BirdFeeder feeder = obj as BirdFeeder;
-
-            if (m_refillButton != null)
+            foreach (ObjectPopupMenuButtonEntry entry in m_actionButtons)
             {
-                bool isFeeder = feeder != null;
-                m_refillButton.gameObject.SetActive(isFeeder);
-
-                if (isFeeder)
+                if (entry.Button == null)
                 {
-                    m_refillButton.interactable = feeder.CurrentFoodLevel < feeder.MaxFoodLevel;
+                    continue;
                 }
+
+                bool visible = IsActionVisible(entry.Action, obj);
+                entry.Button.gameObject.SetActive(visible);
+
+                if (visible)
+                {
+                    entry.Button.interactable = IsActionAvailable(entry.Action, obj);
+                }
+            }
+        }
+
+        private bool IsActionVisible(ObjectPopupMenuAction action, BirdObject obj)
+        {
+            return action switch
+            {
+                ObjectPopupMenuAction.Refill => obj is BirdFeeder,
+                _ => true,
+            };
+        }
+
+        private bool IsActionAvailable(ObjectPopupMenuAction action, BirdObject obj)
+        {
+            return action switch
+            {
+                ObjectPopupMenuAction.Refill => obj is BirdFeeder feeder && feeder.CurrentFoodLevel < feeder.MaxFoodLevel,
+                _ => true,
+            };
+        }
+
+        private void OnActionClicked(ObjectPopupMenuAction action)
+        {
+            if (m_currentObject == null)
+            {
+                return;
+            }
+
+            switch (action)
+            {
+                case ObjectPopupMenuAction.Refill:
+                    OnRefillClicked();
+                    break;
             }
         }
 
@@ -192,6 +238,7 @@ namespace Birdie.UI
                 -halfCanvasWidth + halfPanelWidth,
                 halfCanvasWidth - halfPanelWidth);
 
+            // If the menu goes above the top, flip it below the object instead
             if (localPoint.y + panelSize.y > halfCanvasHeight)
             {
                 localPoint.y -= m_verticalOffset * 2f + panelSize.y;

@@ -40,6 +40,7 @@ namespace Birdie.Birds
         private bool m_isInteractable = false;
         private bool m_hasBeenClickedThisVisit = false;
         private bool m_hasPlayedMinigameThisVisit = false;
+        private float m_minigameCooldownEndTime;
         private BirdState m_stateBeforePause;
         private float m_remainingVisitTime;
 
@@ -60,6 +61,10 @@ namespace Birdie.Birds
         public bool IsInteractable => m_isInteractable;
 
         public bool CanPlayMinigame => !m_hasPlayedMinigameThisVisit;
+
+        public float MinigameCooldownRemaining => m_hasPlayedMinigameThisVisit
+            ? Mathf.Max(0f, m_minigameCooldownEndTime - Time.time)
+            : 0f;
 
         public bool AllowClickWhileActive => m_currentBehavior == null || m_currentBehavior.CanBeInterrupted;
 
@@ -92,6 +97,11 @@ namespace Birdie.Birds
 
         private void Update()
         {
+            if (m_hasPlayedMinigameThisVisit && m_birdData.MinigameCooldownDuration > 0f && Time.time >= m_minigameCooldownEndTime)
+            {
+                AllowMinigameReplay();
+            }
+
             // Execute current behavior
             if (m_currentBehavior != null && (m_currentState == BirdState.Visiting || m_currentState == BirdState.Leaving))
             {
@@ -658,6 +668,7 @@ namespace Birdie.Birds
         public void MarkMinigamePlayed()
         {
             m_hasPlayedMinigameThisVisit = true;
+            m_minigameCooldownEndTime = Time.time + m_birdData.MinigameCooldownDuration;
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} marked as having played a minigame this visit", DebugCategory.Birds);
         }
 

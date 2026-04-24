@@ -1,8 +1,9 @@
+using System.Collections.Generic;
 using Birdie.Birds;
-using Birdie.Core;
 using Birdie.Data;
 using Birdie.Debug;
 using Birdie.Managers;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -23,10 +24,12 @@ namespace Birdie.UI
         [SerializeField] private Button m_backdropButton;
 
         [Header("Action Buttons")]
-        [SerializeField] private Button m_feedButton;
-        [SerializeField] private Button m_playSongButton;
-        [SerializeField] private Button m_playButton;
-        [SerializeField] private Button m_scareAwayButton;
+        [SerializeField] private List<PopupMenuButtonEntry> m_actionButtons;
+
+        [Header("Play Cooldown Timer")]
+        [SerializeField] private GameObject m_playTimerContainer;
+        [SerializeField] private TextMeshProUGUI m_playTimerLabel;
+        [SerializeField] private Image m_playTimerFill;
 
         [Header("Positioning")]
         [SerializeField] private float m_verticalOffset = 80f;
@@ -52,6 +55,16 @@ namespace Birdie.UI
         {
             Bird.BirdClicked -= OnBirdClicked;
             Bird.BirdLeaving -= OnBirdLeaving;
+        }
+
+        private void Update()
+        {
+            if (m_currentBird == null || !m_menuPanel.activeSelf)
+            {
+                return;
+            }
+
+            UpdatePlayTimer();
         }
 
         private void OnDestroy()
@@ -81,24 +94,15 @@ namespace Birdie.UI
                 m_backdropButton.onClick.AddListener(Hide);
             }
 
-            if (m_feedButton != null)
+            foreach (PopupMenuButtonEntry entry in m_actionButtons)
             {
-                m_feedButton.onClick.AddListener(OnFeedClicked);
-            }
+                if (entry.Button == null)
+                {
+                    continue;
+                }
 
-            if (m_playSongButton != null)
-            {
-                m_playSongButton.onClick.AddListener(OnPlaySongClicked);
-            }
-
-            if (m_playButton != null)
-            {
-                m_playButton.onClick.AddListener(OnPlayClicked);
-            }
-
-            if (m_scareAwayButton != null)
-            {
-                m_scareAwayButton.onClick.AddListener(OnScareAwayClicked);
+                PopupMenuAction action = entry.Action;
+                entry.Button.onClick.AddListener(() => OnActionClicked(action));
             }
         }
 
@@ -109,24 +113,12 @@ namespace Birdie.UI
                 m_backdropButton.onClick.RemoveListener(Hide);
             }
 
-            if (m_feedButton != null)
+            foreach (PopupMenuButtonEntry entry in m_actionButtons)
             {
-                m_feedButton.onClick.RemoveAllListeners();
-            }
-
-            if (m_playSongButton != null)
-            {
-                m_playSongButton.onClick.RemoveAllListeners();
-            }
-
-            if (m_playButton != null)
-            {
-                m_playButton.onClick.RemoveAllListeners();
-            }
-
-            if (m_scareAwayButton != null)
-            {
-                m_scareAwayButton.onClick.RemoveAllListeners();
+                if (entry.Button != null)
+                {
+                    entry.Button.onClick.RemoveAllListeners();
+                }
             }
         }
 
@@ -162,7 +154,6 @@ namespace Birdie.UI
 
         private void Show(Bird bird)
         {
-            // Resume previous bird if switching between birds
             if (m_currentBird != null)
             {
                 m_currentBird.Resume();
@@ -173,11 +164,7 @@ namespace Birdie.UI
             m_backdrop.SetActive(true);
             m_menuPanel.SetActive(true);
 
-            if (m_playButton != null)
-            {
-                m_playButton.interactable = bird.CanPlayMinigame;
-            }
-
+            RefreshButtonStates();
             PositionMenuAboveBird(bird);
 
             DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Showing menu for {bird.BirdData.BirdName}", DebugCategory.UI);
@@ -194,7 +181,109 @@ namespace Birdie.UI
             m_backdrop.SetActive(false);
             m_currentBird = null;
 
+            if (m_playTimerContainer != null)
+            {
+                m_playTimerContainer.SetActive(false);
+            }
+
             DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Menu hidden", DebugCategory.UI);
+        }
+
+        private void RefreshButtonStates()
+        {
+            foreach (PopupMenuButtonEntry entry in m_actionButtons)
+            {
+                if (entry.Button != null)
+                {
+                    entry.Button.interactable = IsActionAvailable(entry.Action);
+                }
+            }
+        }
+
+        private void UpdatePlayTimer()
+        {
+            float remaining = m_currentBird.MinigameCooldownRemaining;
+            bool onCooldown = !m_currentBird.CanPlayMinigame && remaining > 0f;
+
+            if (m_playTimerContainer != null)
+            {
+                m_playTimerContainer.SetActive(onCooldown);
+            }
+
+            if (onCooldown)
+            {
+                if (m_playTimerLabel != null)
+                {
+                    m_playTimerLabel.text = FormatCooldownTime(remaining);
+                }
+
+                if (m_playTimerFill != null)
+                {
+                    float total = m_currentBird.BirdData.MinigameCooldownDuration;
+                    m_playTimerFill.fillAmount = total > 0f ? remaining / total : 0f;
+                }
+            }
+
+            if (!m_currentBird.CanPlayMinigame && remaining <= 0f)
+            {
+                RefreshButtonStates();
+            }
+        }
+
+        private static string FormatCooldownTime(float seconds)
+        {
+            int mins = Mathf.FloorToInt(seconds / 60f);
+            int secs = Mathf.FloorToInt(seconds % 60f);
+            return mins > 0 ? $"{mins}:{secs:D2}" : $"{secs}s";
+        }
+
+        private bool IsActionAvailable(PopupMenuAction action)
+        {
+            return action switch
+            {
+                PopupMenuAction.Play => m_currentBird != null && m_currentBird.CanPlayMinigame,
+                _ => true,
+            };
+        }
+
+        private void OnActionClicked(PopupMenuAction action)
+        {
+            if (m_currentBird == null)
+            {
+                return;
+            }
+
+            switch (action)
+            {
+                case PopupMenuAction.Play:
+                    OnPlayClicked();
+                    break;
+                case PopupMenuAction.ScareAway:
+                    OnScareAwayClicked();
+                    break;
+            }
+        }
+
+        private void OnPlayClicked()
+        {
+            Bird bird = m_currentBird;
+            BirdData birdData = bird.BirdData;
+            bird.MarkMinigamePlayed();
+            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Play clicked for {birdData.BirdName}", DebugCategory.UI);
+            Hide();
+
+            if (GameManager.Instance?.MenuManager != null)
+            {
+                GameManager.Instance.MenuManager.OpenMinigamesMenu(birdData);
+            }
+        }
+
+        private void OnScareAwayClicked()
+        {
+            Bird bird = m_currentBird;
+            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Scare Away clicked for {bird.BirdData.BirdName}", DebugCategory.UI);
+            Hide();
+            bird.ForceDeparture();
         }
 
         private void PositionMenuAboveBird(Bird bird)
@@ -213,12 +302,8 @@ namespace Birdie.UI
                 m_mainCamera,
                 out Vector2 localPoint);
 
-            // Position above the bird
             localPoint.y += m_verticalOffset;
-
-            // Clamp to canvas bounds
             localPoint = ClampToCanvas(localPoint);
-
             m_menuPanelRect.anchoredPosition = localPoint;
         }
 
@@ -230,81 +315,23 @@ namespace Birdie.UI
             float halfCanvasHeight = canvasSize.y * 0.5f;
             float halfPanelWidth = panelSize.x * 0.5f;
 
-            // Clamp horizontal
             localPoint.x = Mathf.Clamp(
                 localPoint.x,
                 -halfCanvasWidth + halfPanelWidth,
                 halfCanvasWidth - halfPanelWidth);
 
-            // If menu goes above the top, place it below the bird instead
+            // If the menu goes above the top, flip it below the bird instead
             if (localPoint.y + panelSize.y > halfCanvasHeight)
             {
                 localPoint.y -= m_verticalOffset * 2f + panelSize.y;
             }
 
-            // Clamp bottom
             if (localPoint.y < -halfCanvasHeight)
             {
                 localPoint.y = -halfCanvasHeight;
             }
 
             return localPoint;
-        }
-
-        private void OnFeedClicked()
-        {
-            if (m_currentBird == null)
-            {
-                return;
-            }
-
-            Bird bird = m_currentBird;
-            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Feed clicked for {bird.BirdData.BirdName}", DebugCategory.UI);
-            Hide();
-            bird.OnBirdFed(bird.BirdData.DietType);
-        }
-
-        private void OnPlaySongClicked()
-        {
-            if (m_currentBird == null)
-            {
-                return;
-            }
-
-            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Play Song clicked for {m_currentBird.BirdData.BirdName}", DebugCategory.UI);
-            m_currentBird.PlaySong();
-        }
-
-        private void OnPlayClicked()
-        {
-            if (m_currentBird == null)
-            {
-                return;
-            }
-
-            Bird bird = m_currentBird;
-            BirdData birdData = bird.BirdData;
-            bird.MarkMinigamePlayed();
-            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Play clicked for {birdData.BirdName}", DebugCategory.UI);
-            Hide();
-
-            if (GameManager.Instance?.MenuManager != null)
-            {
-                GameManager.Instance.MenuManager.OpenMinigamesMenu(birdData);
-            }
-        }
-
-        private void OnScareAwayClicked()
-        {
-            if (m_currentBird == null)
-            {
-                return;
-            }
-
-            Bird bird = m_currentBird;
-            DebugBase.Log($"[{nameof(BirdContextMenuUI)}] Scare Away clicked for {bird.BirdData.BirdName}", DebugCategory.UI);
-            Hide();
-            bird.ForceDeparture();
         }
     }
 }
