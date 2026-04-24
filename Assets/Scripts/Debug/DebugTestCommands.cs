@@ -11,6 +11,18 @@ namespace Birdie.Debug
     {
         private const int DebugCurrencyAmount = 100;
 
+        [DebugCommand("Clear All Trash", "Windowsill")]
+        public void ClearAllTrash()
+        {
+            if (GameManager.Instance?.WindowsillManager == null)
+            {
+                DebugBase.Log($"[{nameof(DebugTestCommands)}] WindowsillManager not available", DebugCategory.Debug);
+                return;
+            }
+
+            GameManager.Instance.WindowsillManager.ClearAllTrash();
+        }
+
         [DebugCommand("Add 100 Currency", "Economy")]
         public void AddTestCurrency()
         {

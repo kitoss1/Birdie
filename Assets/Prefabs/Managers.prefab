@@ -516,7 +516,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f631f69692f11c14d8216d30cacdfd69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.HideGameController
-  m_restoreCanvas: {fileID: 0}
+  m_buttonCanvas: {fileID: 0}
+  m_buttonImage: {fileID: 0}
+  m_hideSprite: {fileID: 21300000, guid: eb11ae8fd7081c74ea0b5e2dc8b3a1f5, type: 3}
+  m_showSprite: {fileID: 21300000, guid: 979701a56c24c8e4385d9663ddbdc958, type: 3}
 --- !u!1 &4208574186915445598
 GameObject:
   m_ObjectHideFlags: 0
@@ -863,6 +866,7 @@ Transform:
   - {fileID: 8005376089944842999}
   - {fileID: 6104015627540112323}
   - {fileID: 8362028216667426420}
+  - {fileID: 2364800991527212451}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &8671558228544210106
@@ -887,6 +891,7 @@ MonoBehaviour:
   m_diaryUIManager: {fileID: 0}
   m_soundManager: {fileID: 3534164553520384587}
   m_toastManager: {fileID: 559250290452273141}
+  m_windowsillManager: {fileID: 9050204291063181831}
 --- !u!1 &7541330469607521562
 GameObject:
   m_ObjectHideFlags: 0
@@ -1165,3 +1170,57 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &8655829771913158910
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2364800991527212451}
+  - component: {fileID: 9050204291063181831}
+  m_Layer: 0
+  m_Name: WindowsillManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2364800991527212451
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8655829771913158910}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1945811201683040692}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &9050204291063181831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8655829771913158910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e1ced37c13eba0347a3dfb66a31b85b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.WindowsillManager
+  m_trashPrefabs:
+  - {fileID: 2479044966624590255, guid: 4755c9750bdd54748a61a5fdab2663a2, type: 3}
+  - {fileID: 8319867696208978389, guid: fb71335e14f9a6f478122bc12f2ac4cb, type: 3}
+  - {fileID: 6799361575813152379, guid: 4dc0a86fe3f53fe4ebe9304d5b707406, type: 3}
+  m_trashParent: {fileID: 0}
+  m_windowsillAnchor: {fileID: 0}
+  m_maxTrashCount: 5
+  m_minSpawnInterval: 120
+  m_maxSpawnInterval: 1800
+  m_yVariation: 0.1

@@ -62,6 +62,7 @@ namespace Birdie.Managers
         [SerializeField] private DiaryUIManager m_diaryUIManager;
         [SerializeField] private SoundManager m_soundManager;
         [SerializeField] private ToastManager m_toastManager;
+        [SerializeField] private WindowsillManager m_windowsillManager;
 
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
@@ -73,6 +74,7 @@ namespace Birdie.Managers
         public DiaryUIManager DiaryUIManager => m_diaryUIManager;
         public SoundManager SoundManager => m_soundManager;
         public ToastManager ToastManager => m_toastManager;
+        public WindowsillManager WindowsillManager => m_windowsillManager;
 
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
@@ -194,7 +196,8 @@ namespace Birdie.Managers
                 InitializeFriendshipManagerAsync(),
                 InitializeEnvironmentManagerAsync(),
                 InitializeSoundManagerAsync(),
-                InitializeToastManagerAsync()
+                InitializeToastManagerAsync(),
+                InitializeWindowsillManagerAsync()
             );
 
             // Initialize managers that depend on other managers (sequential)
@@ -274,6 +277,11 @@ namespace Birdie.Managers
             {
                 DebugBase.LogError($"[{nameof(GameManager)}] ToastManager is not assigned!");
             }
+
+            if (m_windowsillManager == null)
+            {
+                DebugBase.LogError($"[{nameof(GameManager)}] WindowsillManager is not assigned!");
+            }
         }
 
         /// <summary>
@@ -347,6 +355,19 @@ namespace Birdie.Managers
             if (m_toastManager != null)
             {
                 m_toastManager.Initialize();
+                await UniTask.Yield();
+            }
+        }
+
+        /// <summary>
+        /// Initializes WindowsillManager. Depends on SaveManager.
+        /// </summary>
+        private async UniTask InitializeWindowsillManagerAsync()
+        {
+            if (m_windowsillManager != null)
+            {
+                m_windowsillManager.Initialize();
+                m_windowsillManager.SetSaveManager(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -577,6 +598,7 @@ namespace Birdie.Managers
             status += $"DiaryUIManager: {(m_diaryUIManager != null ? "✓" : "✗")}\n";
             status += $"SoundManager: {(m_soundManager != null ? "✓" : "✗")}\n";
             status += $"ToastManager: {(m_toastManager != null ? "✓" : "✗")}\n";
+            status += $"WindowsillManager: {(m_windowsillManager != null ? "✓" : "✗")}\n";
             status += $"Game State: {CurrentState}\n";
             status += $"Current Menu: {m_currentOpenMenu}";
             return status;
@@ -598,7 +620,8 @@ namespace Birdie.Managers
                    m_storeManager != null && m_storeManager.IsInitialized &&
                    m_diaryUIManager != null && m_diaryUIManager.IsInitialized &&
                    m_soundManager != null && m_soundManager.IsInitialized &&
-                   m_toastManager != null && m_toastManager.IsInitialized;
+                   m_toastManager != null && m_toastManager.IsInitialized &&
+                   m_windowsillManager != null && m_windowsillManager.IsInitialized;
         }
 
         private void OnApplicationQuit()

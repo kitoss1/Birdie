@@ -181,6 +181,14 @@ public class TransparentGame : MonoBehaviour
         }
 
         Vector2 mousePosition = GetMousePosition();
+
+        if (TryGetUIClickable(mousePosition, out IClickable uiClickable))
+        {
+            DebugBase.Log($"[{nameof(TransparentGame)}] Click sent to UI clickable", DebugCategory.Mouse);
+            uiClickable.OnClicked();
+            return;
+        }
+
         SpriteRenderer hit = GetSpriteRendererAtPosition(mousePosition);
         if (hit == null)
         {
@@ -195,6 +203,36 @@ public class TransparentGame : MonoBehaviour
 
         DebugBase.Log($"[{nameof(TransparentGame)}] Click sent to {hit.gameObject.name}", DebugCategory.Mouse);
         clickable.OnClicked();
+    }
+
+    private bool TryGetUIClickable(Vector2 mousePosition, out IClickable clickable)
+    {
+        clickable = null;
+
+        if (EventSystem.current == null)
+        {
+            return false;
+        }
+
+        PointerEventData pointerData = new PointerEventData(EventSystem.current)
+        {
+            position = mousePosition,
+        };
+
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(pointerData, results);
+
+        foreach (RaycastResult result in results)
+        {
+            IClickable found = result.gameObject.GetComponentInParent<IClickable>();
+            if (found != null)
+            {
+                clickable = found;
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private Vector2 GetMousePosition()
