@@ -18,6 +18,7 @@ namespace Birdie.Birds
     public class Bird : MonoBehaviour, IClickable
     {
         public static event Action<Bird> BirdClicked;
+        public static event Action<Bird> BirdLanded;
         public static event Action<Bird> BirdLeaving;
 
         [Header("Bird Configuration")]
@@ -217,6 +218,7 @@ namespace Birdie.Birds
             m_currentState = BirdState.Visiting;
             m_visitEndTime = Time.time + m_maxVisitDuration;
 
+            BirdLanded?.Invoke(this);
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} starting visit behaviors", DebugCategory.Birds);
 
             // Start with the arriving behavior if configured, otherwise pick normally.

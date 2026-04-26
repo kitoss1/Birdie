@@ -63,6 +63,7 @@ namespace Birdie.Managers
         [SerializeField] private SoundManager m_soundManager;
         [SerializeField] private ToastManager m_toastManager;
         [SerializeField] private WindowsillManager m_windowsillManager;
+        [SerializeField] private DailyMissionManager m_dailyMissionManager;
 
         public BirdManager BirdManager => m_birdManager;
         public EconomyManager EconomyManager => m_economyManager;
@@ -75,6 +76,7 @@ namespace Birdie.Managers
         public SoundManager SoundManager => m_soundManager;
         public ToastManager ToastManager => m_toastManager;
         public WindowsillManager WindowsillManager => m_windowsillManager;
+        public DailyMissionManager DailyMissionManager => m_dailyMissionManager;
 
         private MenuType m_currentOpenMenu = MenuType.None;
         public MenuType CurrentOpenMenu => m_currentOpenMenu;
@@ -201,10 +203,11 @@ namespace Birdie.Managers
             );
 
             // Initialize managers that depend on other managers (sequential)
-            await InitializeDiaryManagerAsync();   // Depends on BirdManager, SaveManager
-            await InitializeStoreManagerAsync();   // Depends on SaveManager, EconomyManager
-            await InitializeDiaryUIManagerAsync(); // Depends on DiaryManager, FriendshipManager
-            await InitializeMenuManagerAsync();    // Depends on all other managers
+            await InitializeDiaryManagerAsync();        // Depends on BirdManager, SaveManager
+            await InitializeStoreManagerAsync();        // Depends on SaveManager, EconomyManager
+            await InitializeDiaryUIManagerAsync();      // Depends on DiaryManager, FriendshipManager
+            await InitializeMenuManagerAsync();         // Depends on all other managers
+            await InitializeDailyMissionManagerAsync(); // Depends on all other managers (subscribes to their events)
 
             DebugBase.Log($"[{nameof(GameManager)}] All managers initialized");
         }
@@ -281,6 +284,11 @@ namespace Birdie.Managers
             if (m_windowsillManager == null)
             {
                 DebugBase.LogError($"[{nameof(GameManager)}] WindowsillManager is not assigned!");
+            }
+
+            if (m_dailyMissionManager == null)
+            {
+                DebugBase.LogError($"[{nameof(GameManager)}] DailyMissionManager is not assigned!");
             }
         }
 
@@ -368,6 +376,19 @@ namespace Birdie.Managers
             {
                 m_windowsillManager.Initialize();
                 m_windowsillManager.SetSaveManager(m_saveManager);
+                await UniTask.Yield();
+            }
+        }
+
+        /// <summary>
+        /// Initializes DailyMissionManager. Depends on all other managers.
+        /// </summary>
+        private async UniTask InitializeDailyMissionManagerAsync()
+        {
+            if (m_dailyMissionManager != null)
+            {
+                m_dailyMissionManager.Initialize();
+                m_dailyMissionManager.SetSaveManager(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -599,6 +620,7 @@ namespace Birdie.Managers
             status += $"SoundManager: {(m_soundManager != null ? "✓" : "✗")}\n";
             status += $"ToastManager: {(m_toastManager != null ? "✓" : "✗")}\n";
             status += $"WindowsillManager: {(m_windowsillManager != null ? "✓" : "✗")}\n";
+            status += $"DailyMissionManager: {(m_dailyMissionManager != null ? "✓" : "✗")}\n";
             status += $"Game State: {CurrentState}\n";
             status += $"Current Menu: {m_currentOpenMenu}";
             return status;
@@ -621,7 +643,8 @@ namespace Birdie.Managers
                    m_diaryUIManager != null && m_diaryUIManager.IsInitialized &&
                    m_soundManager != null && m_soundManager.IsInitialized &&
                    m_toastManager != null && m_toastManager.IsInitialized &&
-                   m_windowsillManager != null && m_windowsillManager.IsInitialized;
+                   m_windowsillManager != null && m_windowsillManager.IsInitialized &&
+                   m_dailyMissionManager != null && m_dailyMissionManager.IsInitialized;
         }
 
         private void OnApplicationQuit()

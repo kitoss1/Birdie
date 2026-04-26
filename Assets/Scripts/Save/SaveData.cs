@@ -20,6 +20,7 @@ namespace Birdie.Save
         public FriendshipSaveData friendship = new FriendshipSaveData();
         public AudioSaveData audio = new AudioSaveData();
         public WindowsillSaveData windowsill = new WindowsillSaveData();
+        public DailyMissionSaveData missions = new DailyMissionSaveData();
 
         /// <summary>
         /// Creates a new save data with default values.
@@ -50,7 +51,8 @@ namespace Birdie.Save
                    economy != null && economy.IsValid() &&
                    friendship != null && friendship.IsValid() &&
                    audio != null && audio.IsValid() &&
-                   windowsill != null && windowsill.IsValid();
+                   windowsill != null && windowsill.IsValid() &&
+                   missions != null && missions.IsValid();
         }
 
         /// <summary>

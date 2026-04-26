@@ -3626,21 +3626,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1591734273}
     - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
-      propertyPath: m_yVariation
-      value: 0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_trashParent
       value: 
       objectReference: {fileID: 1926201832}
-    - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
-      propertyPath: m_maxSpawnInterval
-      value: 1800
-      objectReference: {fileID: 0}
-    - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
-      propertyPath: m_minSpawnInterval
-      value: 120
-      objectReference: {fileID: 0}
     - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_windowsillAnchor
       value: 
