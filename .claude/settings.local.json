@@ -12,7 +12,8 @@
       "mcp__UnityMCP__validate_script",
       "Bash(ls:*)",
       "Bash(dir:*)",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "PowerShell(Add-Type -AssemblyName System.Drawing; [System.IO.File]::Exists\\(\"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\TFG\\\\Writing\\\\Memoria_first_parts.pdf\"\\))"
     ],
     "deny": [],
     "ask": []

@@ -29,6 +29,9 @@ namespace Birdie.Managers
         [Tooltip("Minigames menu panel")]
         [SerializeField] private GameObject m_minigamesPanel;
 
+        [Tooltip("Daily missions menu panel")]
+        [SerializeField] private GameObject m_dailyMissionsPanel;
+
         private Dictionary<MenuType, GameObject> m_menuPanels;
         private MenuType m_currentOpenMenu = MenuType.None;
         private bool m_isSettingsOpen = false;
@@ -56,7 +59,8 @@ namespace Birdie.Managers
                 { MenuType.Shop, m_shopPanel },
                 { MenuType.Settings, m_settingsPanel },
                 { MenuType.Tutorial, m_tutorialPanel },
-                { MenuType.Minigames, m_minigamesPanel }
+                { MenuType.Minigames, m_minigamesPanel },
+                { MenuType.DailyMissions, m_dailyMissionsPanel }
             };
 
             HideAllMenus();
@@ -512,6 +516,13 @@ namespace Birdie.Managers
         private void DebugCloseSettings()
         {
             CloseOverlayMenu(MenuType.Settings);
+        }
+
+        [DebugCommand("OpenDailyMissions", "UI")]
+        [ContextMenu("Open Daily Missions")]
+        private void DebugOpenDailyMissions()
+        {
+            OpenMenu(MenuType.DailyMissions);
         }
 #endif
     }

@@ -10,6 +10,7 @@ namespace Birdie.Core
         Shop,
         Settings,
         Tutorial,
-        Minigames
+        Minigames,
+        DailyMissions
     }
 }
