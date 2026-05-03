@@ -71,12 +71,12 @@ namespace Birdie.Managers
             }
         }
 
-        private void SpawnRandomTrash()
+        private bool SpawnRandomTrash()
         {
             if (m_trashPrefabs == null || m_trashPrefabs.Length == 0)
             {
                 DebugBase.LogWarning($"[{nameof(WindowsillManager)}] No trash prefabs assigned");
-                return;
+                return false;
             }
 
             int index = Random.Range(0, m_trashPrefabs.Length);
@@ -84,10 +84,11 @@ namespace Birdie.Managers
 
             if (!TryGetSpawnPosition(out Vector3 position))
             {
-                return;
+                return false;
             }
 
             SpawnTrash(index, position, rotation);
+            return true;
         }
 
         private void SpawnTrash(int prefabIndex, Vector3 position, float rotation)
@@ -129,7 +130,7 @@ namespace Birdie.Managers
         {
             if (m_windowsillAnchor == null)
             {
-                DebugBase.LogWarning($"[{nameof(WindowsillManager)}] Windowsill anchor is not assigned");
+                DebugBase.LogError($"[{nameof(WindowsillManager)}] Windowsill anchor is not assigned");
                 position = Vector3.zero;
                 return false;
             }
@@ -138,7 +139,7 @@ namespace Birdie.Managers
 
             if (envManager == null || !envManager.TryGetMovementBoundsWorldX(out float minX, out float maxX))
             {
-                DebugBase.LogWarning($"[{nameof(WindowsillManager)}] Cannot get movement bounds for trash spawn");
+                DebugBase.LogError($"[{nameof(WindowsillManager)}] Cannot get movement bounds for trash spawn — check EnvironmentManager bounds transforms");
                 position = Vector3.zero;
                 return false;
             }
@@ -192,8 +193,10 @@ namespace Birdie.Managers
             int spawned = 0;
             for (int i = 0; i < offlineSpawns && m_activeTrash.Count < m_maxTrashCount; i++)
             {
-                SpawnRandomTrash();
-                spawned++;
+                if (SpawnRandomTrash())
+                {
+                    spawned++;
+                }
             }
 
             if (spawned > 0)

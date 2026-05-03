@@ -379,6 +379,11 @@ namespace Birdie.Birds
                 return;
             }
 
+            if (GameManager.Instance != null && !GameManager.Instance.CanInteractWithBirds())
+            {
+                return;
+            }
+
             DebugBase.Log($"[{nameof(Bird)}] {m_birdData.BirdName} was clicked", DebugCategory.Birds);
 
             if (!m_hasBeenClickedThisVisit)

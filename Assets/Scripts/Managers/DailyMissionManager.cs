@@ -266,7 +266,7 @@ namespace Birdie.Managers
             m_saveManager.CurrentSaveData.missions.missionClaimed[missionIndex] = true;
 
             int reward = m_activeMissions[missionIndex].GoldenSeedsReward;
-            GameManager.Instance.EconomyManager.AddGoldenSeeds(reward);
+            GameManager.Instance.EconomyManager?.AddGoldenSeeds(reward);
 
             SaveToSaveData();
             DebugBase.Log($"[{nameof(DailyMissionManager)}] Reward claimed for mission {missionIndex}: {reward} golden seeds");

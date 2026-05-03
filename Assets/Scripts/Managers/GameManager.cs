@@ -199,15 +199,15 @@ namespace Birdie.Managers
                 InitializeEnvironmentManagerAsync(),
                 InitializeSoundManagerAsync(),
                 InitializeToastManagerAsync(),
-                InitializeWindowsillManagerAsync()
+                InitializeWindowsillManagerAsync(),
+                InitializeDiaryManagerAsync(),          // Only depends on SaveManager
+                InitializeStoreManagerAsync(),          // Only depends on SaveManager
+                InitializeMenuManagerAsync()            // Only depends on GameManager events
             );
 
-            // Initialize managers that depend on other managers (sequential)
-            await InitializeDiaryManagerAsync();        // Depends on BirdManager, SaveManager
-            await InitializeStoreManagerAsync();        // Depends on SaveManager, EconomyManager
-            await InitializeDiaryUIManagerAsync();      // Depends on DiaryManager, FriendshipManager
-            await InitializeMenuManagerAsync();         // Depends on all other managers
-            await InitializeDailyMissionManagerAsync(); // Depends on all other managers (subscribes to their events)
+            // Initialize managers with true init-time dependencies on the above
+            await InitializeDiaryUIManagerAsync();      // Subscribes to DiaryManager + FriendshipManager events
+            await InitializeDailyMissionManagerAsync(); // Subscribes to WindowsillManager + GameManager events
 
             DebugBase.Log($"[{nameof(GameManager)}] All managers initialized");
         }
@@ -381,7 +381,7 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Initializes DailyMissionManager. Depends on all other managers.
+        /// Initializes DailyMissionManager. Subscribes to WindowsillManager and GameManager events.
         /// </summary>
         private async UniTask InitializeDailyMissionManagerAsync()
         {
@@ -394,7 +394,7 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Initializes DiaryManager. Depends on SaveManager and BirdManager.
+        /// Initializes DiaryManager. Depends on SaveManager only (BirdManager is accessed at runtime).
         /// </summary>
         private async UniTask InitializeDiaryManagerAsync()
         {
@@ -407,7 +407,7 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Initializes StoreManager. Depends on SaveManager and EconomyManager.
+        /// Initializes StoreManager. Depends on SaveManager only (EconomyManager is accessed at runtime).
         /// </summary>
         private async UniTask InitializeStoreManagerAsync()
         {
@@ -432,7 +432,7 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Initializes MenuManager.
+        /// Initializes MenuManager. Only subscribes to GameManager events; no manager init-time dependencies.
         /// </summary>
         private async UniTask InitializeMenuManagerAsync()
         {
@@ -510,6 +510,7 @@ namespace Birdie.Managers
             if (m_birdManager != null)
             {
                 m_birdManager.PauseBirdSpawning();
+                m_birdManager.PauseAllBirds();
             }
 
             OnMinigameStarted?.Invoke();
@@ -532,6 +533,7 @@ namespace Birdie.Managers
             if (m_birdManager != null)
             {
                 m_birdManager.ResumeBirdSpawning();
+                m_birdManager.ResumeAllBirds();
             }
 
             OnMinigameEnded?.Invoke();
@@ -551,7 +553,7 @@ namespace Birdie.Managers
         /// </summary>
         public bool CanInteractWithBirds()
         {
-            return CurrentState == GameState.Playing;
+            return CurrentState != GameState.InMinigame && CurrentState != GameState.Loading;
         }
 
         /// <summary>

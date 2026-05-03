@@ -54,6 +54,7 @@ namespace Birdie.Managers
 
         private readonly List<GameObject> m_instantiatedPages = new List<GameObject>();
         private readonly Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
+        private readonly Dictionary<string, BirdData> m_birdDataByID = new Dictionary<string, BirdData>();
         private readonly HashSet<string> m_animatedThisSession = new HashSet<string>();
         private int m_currentPageIndex = 0;
 
@@ -120,21 +121,13 @@ namespace Birdie.Managers
 
         private void OnFriendshipChanged(string birdID)
         {
-            if (!m_birdIDToPageIndex.ContainsKey(birdID))
+            if (!m_birdDataByID.TryGetValue(birdID, out BirdData bird))
             {
                 return;
             }
 
-            List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
-            foreach (BirdData bird in allBirds)
-            {
-                if (bird.BirdID == birdID)
-                {
-                    DebugBase.Log($"[{nameof(DiaryUIManager)}] Friendship changed for {bird.BirdName}, refreshing page", DebugCategory.UI);
-                    RefreshSinglePage(bird);
-                    return;
-                }
-            }
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Friendship changed for {bird.BirdName}, refreshing page", DebugCategory.UI);
+            RefreshSinglePage(bird);
         }
 
         /// <summary>
@@ -198,6 +191,7 @@ namespace Birdie.Managers
 
             m_instantiatedPages.Clear();
             m_birdIDToPageIndex.Clear();
+            m_birdDataByID.Clear();
 
             // Get birds from DiaryManager (already sorted)
             List<BirdData> allBirds = GameManager.Instance.DiaryManager.GetAllBirdsForDiary();
@@ -262,6 +256,7 @@ namespace Birdie.Managers
 
                 m_instantiatedPages.Add(pageInstance);
                 m_birdIDToPageIndex[allBirds[i].BirdID] = i;
+                m_birdDataByID[allBirds[i].BirdID] = allBirds[i];
             }
 
             // Show introduction page initially (index -1), hide all instantiated pages

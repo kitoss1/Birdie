@@ -13,7 +13,11 @@
       "Bash(ls:*)",
       "Bash(dir:*)",
       "Bash(findstr:*)",
-      "PowerShell(Add-Type -AssemblyName System.Drawing; [System.IO.File]::Exists\\(\"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\TFG\\\\Writing\\\\Memoria_first_parts.pdf\"\\))"
+      "PowerShell(Add-Type -AssemblyName System.Drawing; [System.IO.File]::Exists\\(\"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\TFG\\\\Writing\\\\Memoria_first_parts.pdf\"\\))",
+      "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\" -Recurse -Directory)",
+      "Bash(Select-Object FullName)",
+      "Bash(Sort-Object FullName)",
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\" -Recurse | Where-Object {$_.PSIsContainer} | Select-Object -ExpandProperty FullName | Sort-Object)"
     ],
     "deny": [],
     "ask": []
