@@ -27,8 +27,8 @@ namespace Birdie.UI.Minigames
         private RectTransform m_gridContainer;
 
         [SerializeField]
-        [Tooltip("Source image texture to slice into tiles")]
-        private Texture m_sourceImage;
+        [Tooltip("Pool of textures to randomly pick from when building the puzzle")]
+        private Texture[] m_sourceImages;
 
         [Header("HUD")]
         [SerializeField]
@@ -175,14 +175,15 @@ namespace Birdie.UI.Minigames
 
             m_grid[m_emptyIndex] = EmptyCell;
 
-            if (m_tileTemplate == null || m_gridContainer == null || m_sourceImage == null)
+            if (m_tileTemplate == null || m_gridContainer == null || m_sourceImages == null || m_sourceImages.Length == 0)
             {
                 DebugBase.LogWarning(
-                    $"[{nameof(SlidingPuzzleUI)}] Missing references: template, container, or source image",
+                    $"[{nameof(SlidingPuzzleUI)}] Missing references: template, container, or source images",
                     DebugCategory.UI);
                 return;
             }
 
+            Texture selectedImage = m_sourceImages[UnityEngine.Random.Range(0, m_sourceImages.Length)];
             Vector2 tileSize = CalculateTileSize();
 
             for (int i = 0; i < totalCells - 1; i++)
@@ -201,7 +202,7 @@ namespace Birdie.UI.Minigames
                     continue;
                 }
 
-                tile.Initialize(m_sourceImage, uvRect, i, i);
+                tile.Initialize(selectedImage, uvRect, i, i);
                 tile.SetSize(tileSize);
                 tile.Pressed += OnTilePressed;
                 m_tiles.Add(tile);

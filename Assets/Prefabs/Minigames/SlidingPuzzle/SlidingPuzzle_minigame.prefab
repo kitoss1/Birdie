@@ -468,7 +468,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.SlidingPuzzleUI
   m_tileTemplate: {fileID: 1856483807917335094}
   m_gridContainer: {fileID: 8201958876028939658}
-  m_sourceImage: {fileID: 2800000, guid: 33d9c8418c45c8d41b785cf36110d3d5, type: 3}
+  m_sourceImages:
+  - {fileID: 2800000, guid: fd204f682b7e56a4592b9f24bf26321b, type: 3}
+  - {fileID: 2800000, guid: bccff47479a0a544f83d1690c67920af, type: 3}
   m_moveCountText: {fileID: 4949898169732794958}
   m_scoreDisplay: {fileID: 449361372338028026}
   m_rewardBar: {fileID: 3890315577039668109}

@@ -32,6 +32,6 @@ MonoBehaviour:
       type: {class: SlidingPuzzleDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
         m_gridSize: 3
-        m_shuffleMoves: 10
+        m_shuffleMoves: 5
         m_maxScore: 100
         m_slideDuration: 0.15
