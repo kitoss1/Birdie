@@ -12,7 +12,6 @@ namespace Birdie.Managers
     public class EconomyManager : BaseManager
     {
         private int m_goldenSeeds = 0;
-        private SaveManager m_saveManager;
 
         /// <summary>
         /// Event fired when the golden seeds balance changes.
@@ -22,19 +21,12 @@ namespace Birdie.Managers
 
         public int GoldenSeeds => m_goldenSeeds;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
+            if (m_saveManager != null)
+                LoadFromSaveData();
             DebugBase.Log($"[{nameof(EconomyManager)}] Economy system initialized");
-        }
-
-        /// <summary>
-        /// Sets the save manager reference and loads economy data.
-        /// </summary>
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            LoadFromSaveData();
         }
 
         /// <summary>

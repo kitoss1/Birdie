@@ -299,8 +299,7 @@ namespace Birdie.Managers
         {
             if (m_economyManager != null)
             {
-                m_economyManager.Initialize();
-                m_economyManager.SetSaveManager(m_saveManager);
+                m_economyManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -324,8 +323,7 @@ namespace Birdie.Managers
         {
             if (m_friendshipManager != null)
             {
-                m_friendshipManager.Initialize();
-                m_friendshipManager.SetSaveManager(m_saveManager);
+                m_friendshipManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -349,8 +347,7 @@ namespace Birdie.Managers
         {
             if (m_soundManager != null)
             {
-                m_soundManager.Initialize();
-                m_soundManager.SetSaveManager(m_saveManager);
+                m_soundManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -374,8 +371,7 @@ namespace Birdie.Managers
         {
             if (m_windowsillManager != null)
             {
-                m_windowsillManager.Initialize();
-                m_windowsillManager.SetSaveManager(m_saveManager);
+                m_windowsillManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -387,8 +383,7 @@ namespace Birdie.Managers
         {
             if (m_dailyMissionManager != null)
             {
-                m_dailyMissionManager.Initialize();
-                m_dailyMissionManager.SetSaveManager(m_saveManager);
+                m_dailyMissionManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -400,8 +395,7 @@ namespace Birdie.Managers
         {
             if (m_diaryManager != null)
             {
-                m_diaryManager.Initialize();
-                m_diaryManager.SetSaveManager(m_saveManager);
+                m_diaryManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }
@@ -413,8 +407,7 @@ namespace Birdie.Managers
         {
             if (m_storeManager != null)
             {
-                m_storeManager.Initialize();
-                m_storeManager.SetSaveManager(m_saveManager);
+                m_storeManager.Initialize(m_saveManager);
                 await UniTask.Yield();
             }
         }

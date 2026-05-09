@@ -27,8 +27,6 @@ namespace Birdie.Managers
         [SerializeField]
         private AudioSource m_ambientSource;
 
-        private SaveManager m_saveManager;
-
         private float m_masterVolume = 1f;
         private float m_sfxVolume = 1f;
         private float m_musicVolume = 1f;
@@ -58,9 +56,9 @@ namespace Birdie.Managers
 
         public bool AmbientMuted => m_ambientMuted;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
 
             ValidateAudioSources();
 
@@ -72,16 +70,10 @@ namespace Birdie.Managers
             ConfigureMusicSource();
             ConfigureAmbientSource();
 
-            DebugBase.Log($"[{nameof(SoundManager)}] Sound system initialized", DebugCategory.Audio);
-        }
+            if (m_saveManager != null)
+                LoadFromSaveData();
 
-        /// <summary>
-        /// Sets the save manager reference and loads audio settings.
-        /// </summary>
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            LoadFromSaveData();
+            DebugBase.Log($"[{nameof(SoundManager)}] Sound system initialized", DebugCategory.Audio);
         }
 
         // --- SFX Playback ---

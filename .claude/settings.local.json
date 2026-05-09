@@ -17,7 +17,12 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\" -Recurse -Directory)",
       "Bash(Select-Object FullName)",
       "Bash(Sort-Object FullName)",
-      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\" -Recurse | Where-Object {$_.PSIsContainer} | Select-Object -ExpandProperty FullName | Sort-Object)"
+      "PowerShell(Get-ChildItem -Path \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\" -Recurse | Where-Object {$_.PSIsContainer} | Select-Object -ExpandProperty FullName | Sort-Object)",
+      "Bash(Get-ChildItem -Path \"Assets\\\\Scripts\\\\Birds\\\\Behaviors\" -Filter \"*.cs\")",
+      "Bash(Select-Object Name)",
+      "PowerShell(New-Item *)",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\technical\\\\codebase.md\" | Measure-Object -Line\\).Lines)",
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\technical\\\\class-relationships.md\" | Measure-Object -Line\\).Lines)"
     ],
     "deny": [],
     "ask": []

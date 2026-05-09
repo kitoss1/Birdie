@@ -1,4 +1,5 @@
 using Birdie.Debug;
+using Birdie.Save;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,9 +25,9 @@ namespace Birdie.Managers
         private readonly List<Birds.BirdObject> m_allObjects = new List<Birds.BirdObject>();
         private readonly HashSet<Birds.BirdObject> m_registeredObjects = new HashSet<Birds.BirdObject>();
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
             DebugBase.Log($"[{nameof(EnvironmentManager)}] Initialized", DebugCategory.Managers);
         }
 

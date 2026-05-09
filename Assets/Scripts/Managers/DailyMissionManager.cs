@@ -20,7 +20,6 @@ namespace Birdie.Managers
 
         [SerializeField] private DailyMissionDefinition[] m_missionPool;
 
-        private SaveManager m_saveManager;
         private DailyMissionDefinition[] m_activeMissions;
         private readonly HashSet<string> m_visitedBirdIDsToday = new HashSet<string>();
 
@@ -30,26 +29,22 @@ namespace Birdie.Managers
 
         public IReadOnlyList<DailyMissionDefinition> ActiveMissions => m_activeMissions;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
 
             if (m_missionPool == null || m_missionPool.Length < DailyMissionCount)
             {
                 DebugBase.LogWarning($"[{nameof(DailyMissionManager)}] Mission pool has fewer than {DailyMissionCount} entries");
             }
 
-            DebugBase.Log($"[{nameof(DailyMissionManager)}] Daily mission system initialized");
-        }
+            if (m_saveManager != null)
+            {
+                RefreshDailyMissions();
+                SubscribeToEvents();
+            }
 
-        /// <summary>
-        /// Sets the save manager reference, loads or generates today's missions, and subscribes to game events.
-        /// </summary>
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            RefreshDailyMissions();
-            SubscribeToEvents();
+            DebugBase.Log($"[{nameof(DailyMissionManager)}] Daily mission system initialized");
         }
 
         private void RefreshDailyMissions()

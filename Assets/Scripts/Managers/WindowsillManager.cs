@@ -29,7 +29,6 @@ namespace Birdie.Managers
         [SerializeField] private float m_yVariation = 0.5f;
 
         private readonly List<TrashItem> m_activeTrash = new List<TrashItem>();
-        private SaveManager m_saveManager;
         private CancellationTokenSource m_cts;
 
         public event Action<TrashItem> OnTrashSpawned;
@@ -37,17 +36,15 @@ namespace Birdie.Managers
 
         public int ActiveTrashCount => m_activeTrash.Count;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
+            if (m_saveManager != null)
+            {
+                LoadFromSaveData();
+                StartSpawnLoop();
+            }
             DebugBase.Log($"[{nameof(WindowsillManager)}] Initialized", DebugCategory.Managers);
-        }
-
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            LoadFromSaveData();
-            StartSpawnLoop();
         }
 
         private void StartSpawnLoop()

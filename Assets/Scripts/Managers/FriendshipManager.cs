@@ -15,23 +15,15 @@ namespace Birdie.Managers
     {
         private readonly Dictionary<string, int> m_birdFriendshipPoints = new Dictionary<string, int>();
         private readonly Dictionary<string, int> m_lastSeenFriendshipPoints = new Dictionary<string, int>();
-        private SaveManager m_saveManager;
 
         public event Action<string> OnFriendshipChanged;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
+            if (m_saveManager != null)
+                LoadFromSaveData();
             DebugBase.Log($"[{nameof(FriendshipManager)}] Friendship system initialized");
-        }
-
-        /// <summary>
-        /// Sets the save manager reference and loads friendship data.
-        /// </summary>
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            LoadFromSaveData();
         }
 
         /// <summary>

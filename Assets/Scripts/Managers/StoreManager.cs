@@ -22,7 +22,6 @@ namespace Birdie.Managers
         private HashSet<string> m_disabledItemIDs = new HashSet<string>();
         private Dictionary<string, StoreItemData> m_itemLookup = new Dictionary<string, StoreItemData>();
         private Dictionary<string, GameObject> m_sceneObjects = new Dictionary<string, GameObject>();
-        private SaveManager m_saveManager;
 
         /// <summary>
         /// Event fired when an item is purchased.
@@ -44,21 +43,16 @@ namespace Birdie.Managers
 
         public IReadOnlyList<StoreItemData> AllStoreItems => m_allStoreItems;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
             BuildItemLookup();
+            if (m_saveManager != null)
+            {
+                LoadFromSaveData();
+                RefreshSceneObjects();
+            }
             DebugBase.Log($"[{nameof(StoreManager)}] Store system initialized with {m_allStoreItems.Count} items");
-        }
-
-        /// <summary>
-        /// Sets the save manager reference and loads owned items.
-        /// </summary>
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            LoadFromSaveData();
-            RefreshSceneObjects();
         }
 
         /// <summary>

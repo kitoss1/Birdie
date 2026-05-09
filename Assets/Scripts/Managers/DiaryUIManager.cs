@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Birdie.Data;
 using Birdie.Debug;
+using Birdie.Save;
 using Birdie.UI;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -73,9 +74,9 @@ namespace Birdie.Managers
             TriggerFriendshipAnimationAsync(m_currentPageIndex);
         }
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
 
             SetupNavigation();
             CreateBirdPages();

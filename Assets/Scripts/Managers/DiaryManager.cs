@@ -17,25 +17,15 @@ namespace Birdie.Managers
         private readonly Dictionary<string, DateTime> m_discoveryDates = new Dictionary<string, DateTime>();
         private readonly Dictionary<string, int> m_encounterCounts = new Dictionary<string, int>();
 
-        private SaveManager m_saveManager;
-
         public event Action<BirdData> OnBirdDiscovered;
         public event Action<BirdData> OnBirdEncountered;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
-
+            base.Initialize(saveManager);
+            if (m_saveManager != null)
+                LoadFromSaveData();
             DebugBase.Log($"[{nameof(DiaryManager)}] Diary system initialized", DebugCategory.General);
-        }
-
-        /// <summary>
-        /// Sets the save manager reference and loads diary data.
-        /// </summary>
-        public void SetSaveManager(SaveManager saveManager)
-        {
-            m_saveManager = saveManager;
-            LoadFromSaveData();
         }
 
         /// <summary>

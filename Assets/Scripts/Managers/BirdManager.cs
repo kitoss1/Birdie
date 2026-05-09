@@ -1,6 +1,7 @@
 using Birdie.Birds;
 using Birdie.Data;
 using Birdie.Debug;
+using Birdie.Save;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -30,9 +31,9 @@ namespace Birdie.Managers
         private readonly List<Bird> m_activeBirds = new List<Bird>();
         private readonly List<BirdData> m_availableBirds = new List<BirdData>();
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
 
             DebugBase.Log($"[{nameof(BirdManager)}] Setting up bird spawning system...", DebugCategory.Birds);
 

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using Birdie.Core;
 using Birdie.Data;
 using Birdie.Debug;
+using Birdie.Save;
 using Birdie.UI;
 using UnityEngine;
 
@@ -37,9 +38,9 @@ namespace Birdie.Managers
         private bool m_isSettingsOpen = false;
         private BaseMenuButton[] m_registeredButtons;
 
-        public override void Initialize()
+        public override void Initialize(SaveManager saveManager = null)
         {
-            base.Initialize();
+            base.Initialize(saveManager);
 
             InitializeMenuPanels();
             SubscribeToEvents();

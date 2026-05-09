@@ -1,4 +1,5 @@
 using Birdie.Debug;
+using Birdie.Save;
 using UnityEngine;
 
 namespace Birdie.Managers
@@ -12,13 +13,14 @@ namespace Birdie.Managers
     public abstract class BaseManager : MonoBehaviour
     {
         protected bool m_isInitialized = false;
+        protected SaveManager m_saveManager;
 
         /// <summary>
         /// Initializes the manager.
         /// This is called by GameManager during its initialization phase.
         /// Override this in child classes to add custom initialization logic.
         /// </summary>
-        public virtual void Initialize()
+        public virtual void Initialize(SaveManager saveManager = null)
         {
             if (m_isInitialized)
             {
@@ -27,6 +29,7 @@ namespace Birdie.Managers
             }
 
             m_isInitialized = true;
+            m_saveManager = saveManager;
 
             DebugBase.Log($"[{GetType().Name}] Initialized successfully");
         }

@@ -15,6 +15,7 @@ public class TransparentGame : MonoBehaviour
     [Tooltip("Enable click-through for the window")]
     private bool m_enableClickThrough = true;
     private bool m_isClickThroughEnabled = false;
+    private int m_lastSpriteRendererCount = -1;
 
     private Camera m_mainCamera;
 
@@ -358,6 +359,12 @@ public class TransparentGame : MonoBehaviour
     {
         Vector2 worldPoint = m_mainCamera.ScreenToWorldPoint(mousePosition);
         SpriteRenderer[] renderers = FindObjectsByType<SpriteRenderer>(FindObjectsSortMode.None);
+
+        if (renderers.Length != m_lastSpriteRendererCount)
+        {
+            m_lastSpriteRendererCount = renderers.Length;
+            DebugBase.Log($"[{nameof(TransparentGame)}] SpriteRenderer scan: {renderers.Length} renderers in scene — consider migrating to UI Images", DebugCategory.Transparency);
+        }
 
         foreach (SpriteRenderer sr in renderers)
         {
