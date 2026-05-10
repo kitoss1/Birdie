@@ -10,6 +10,16 @@ namespace Birdie.Data
     /// This data is used by the BirdManager to spawn and manage birds.
     /// Based on the design document specifications.
     /// </summary>
+    [Serializable]
+    public struct DietIconEntry
+    {
+        [Tooltip("Icon sprite to display in the diary grid")]
+        public Sprite icon;
+
+        [Tooltip("Food name shown in the toast when the icon is clicked")]
+        public string name;
+    }
+
     [CreateAssetMenu(fileName = "New Bird", menuName = "Birdie/Bird Data")]
     public class BirdData : ScriptableObject
     {
@@ -73,15 +83,68 @@ namespace Birdie.Data
         [Tooltip("Friendship points needed for each level")]
         private List<int> m_friendshipLevelThresholds = new List<int> { 0, 25, 75, 150 };
 
-        [Header("Unlockable Information")]
+        [Header("Diary Unlock Levels")]
         [SerializeField]
-        [Tooltip("Information revealed at each friendship level")]
-        private List<FriendshipLevelInfo> m_friendshipUnlocks = new List<FriendshipLevelInfo>();
+        [Tooltip("Friendship level required to show the full bird photo (below this level the photo is shown darkened)")]
+        [Range(0, 10)]
+        private int m_fullPhotoUnlockLevel = 1;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the scientific name")]
+        [Range(0, 10)]
+        private int m_scientificNameUnlockLevel = 1;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the visit hours")]
+        [Range(0, 10)]
+        private int m_visitHoursUnlockLevel = 1;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the diet type")]
+        [Range(0, 10)]
+        private int m_dietUnlockLevel = 1;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the description text")]
+        [Range(0, 10)]
+        private int m_descriptionUnlockLevel = 2;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the habitat map")]
+        [Range(0, 10)]
+        private int m_habitatMapUnlockLevel = 3;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the conservation danger icon")]
+        [Range(0, 10)]
+        private int m_peligroUnlockLevel = 1;
+
+        [SerializeField]
+        [Tooltip("Sprite shown as the conservation danger icon for this bird")]
+        private Sprite m_peligroSprite;
+
+        [SerializeField]
+        [TextArea(2, 4)]
+        [Tooltip("Description shown in the popup when clicking the peligro icon")]
+        private string m_peligroDescription;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to show the feather decoration on the front page")]
+        [Range(0, 10)]
+        private int m_featherUnlockLevel = 4;
+
+        [SerializeField]
+        [Tooltip("Feather sprite shown on the diary front page at max friendship")]
+        private Sprite m_featherSprite;
 
         [Header("Habitat and Diet")]
         [SerializeField]
-        [Tooltip("Preferred diet type")]
+        [Tooltip("Preferred diet type (used for the feeding mechanic)")]
         private DietType m_dietType;
+
+        [SerializeField]
+        [Tooltip("Diet icons to display in the diary page grid")]
+        private List<DietIconEntry> m_dietIcons = new List<DietIconEntry>();
 
         [SerializeField]
         [Tooltip("Natural habitat description")]
@@ -91,20 +154,6 @@ namespace Birdie.Data
         [SerializeField]
         [Tooltip("Habitat map/sprite (optional)")]
         private Sprite m_habitatMap;
-
-        [Header("Identification")]
-        [SerializeField]
-        [Tooltip("Extended information on how to identify this bird")]
-        [TextArea(3, 6)]
-        private string m_identificationInfo;
-
-        [SerializeField]
-        [Tooltip("Is this species threatened/endangered?")]
-        private bool m_isThreatened = false;
-
-        [SerializeField]
-        [Tooltip("Conservation status")]
-        private string m_conservationStatus;
 
         [Header("Audio")]
         [SerializeField]
@@ -276,16 +325,28 @@ namespace Birdie.Data
             set => m_friendshipLevelThresholds = value;
         }
 
-        public List<FriendshipLevelInfo> FriendshipUnlocks
-        {
-            get => m_friendshipUnlocks;
-            set => m_friendshipUnlocks = value;
-        }
+        public int FullPhotoUnlockLevel => m_fullPhotoUnlockLevel;
+        public int ScientificNameUnlockLevel => m_scientificNameUnlockLevel;
+        public int VisitHoursUnlockLevel => m_visitHoursUnlockLevel;
+        public int DietUnlockLevel => m_dietUnlockLevel;
+        public int PeligroUnlockLevel => m_peligroUnlockLevel;
+        public Sprite PeligroSprite => m_peligroSprite;
+        public string PeligroDescription => m_peligroDescription;
+        public int DescriptionUnlockLevel => m_descriptionUnlockLevel;
+        public int HabitatMapUnlockLevel => m_habitatMapUnlockLevel;
+        public int FeatherUnlockLevel => m_featherUnlockLevel;
+        public Sprite FeatherSprite => m_featherSprite;
 
         public DietType DietType
         {
             get => m_dietType;
             set => m_dietType = value;
+        }
+
+        public List<DietIconEntry> DietIcons
+        {
+            get => m_dietIcons;
+            set => m_dietIcons = value;
         }
 
         public string Habitat
@@ -298,24 +359,6 @@ namespace Birdie.Data
         {
             get => m_habitatMap;
             set => m_habitatMap = value;
-        }
-
-        public string IdentificationInfo
-        {
-            get => m_identificationInfo;
-            set => m_identificationInfo = value;
-        }
-
-        public bool IsThreatened
-        {
-            get => m_isThreatened;
-            set => m_isThreatened = value;
-        }
-
-        public string ConservationStatus
-        {
-            get => m_conservationStatus;
-            set => m_conservationStatus = value;
         }
 
         /// <summary>

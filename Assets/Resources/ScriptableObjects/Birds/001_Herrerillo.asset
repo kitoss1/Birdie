@@ -28,20 +28,34 @@ MonoBehaviour:
   m_birdPhoto: {fileID: 21300000, guid: 55c815fe8a58fa445b7802a8efda42aa, type: 3}
   m_size: 1
   m_rarity: 0
-  m_baseSpawnWeight: 1
+  m_baseSpawnWeight: 100
   m_appearanceTimeRange:
     m_startHour: 8
     m_endHour: 18
   m_appearsAnytime: 1
   m_maxFriendshipLevel: 4
   m_friendshipLevelThresholds: 00000000190000004b00000096000000
-  m_friendshipUnlocks: []
+  m_fullPhotoUnlockLevel: 0
+  m_scientificNameUnlockLevel: 1
+  m_visitHoursUnlockLevel: 1
+  m_dietUnlockLevel: 2
+  m_descriptionUnlockLevel: 2
+  m_habitatMapUnlockLevel: 2
+  m_peligroUnlockLevel: 2
+  m_peligroSprite: {fileID: 21300000, guid: aea6fbc1cb8f93e47a4a331aca51628d, type: 3}
+  m_peligroDescription: "Especie abundante y de amplia distribuci\xF3n territorial
+    que, una vez evaluada, se considera fuera de las categor\xEDas con mayor grado
+    de amenaza."
+  m_featherUnlockLevel: 3
+  m_featherSprite: {fileID: -6815859362317167124, guid: 05ef199e22b800f40a5019f165d48733, type: 3}
   m_dietType: 0
+  m_dietIcons:
+  - icon: {fileID: 21300000, guid: f8396c1c49e33ee4c99b598f4aebdb3e, type: 3}
+    name: Semillas
+  - icon: {fileID: 21300000, guid: a0e99d487f114644ca7ab3c9a91eb08d, type: 3}
+    name: Insectos
   m_habitat: 
   m_habitatMap: {fileID: 7475527344487684069, guid: 0e719344f1aa73a40b59964c2993204a, type: 3}
-  m_identificationInfo: 
-  m_isThreatened: 0
-  m_conservationStatus: 
   m_songParts:
   - {fileID: 8300000, guid: 0e52f8663e420794fa0921ca98f3867e, type: 3}
   - {fileID: 8300000, guid: c1fb843385a0f024a8ca56c9aba51176, type: 3}
@@ -77,7 +91,4 @@ MonoBehaviour:
   m_specialAnimationDescription: 
   m_minigameCooldownDuration: 0
   m_availableMinigames:
-  - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
-  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}
-  - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}
   - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}

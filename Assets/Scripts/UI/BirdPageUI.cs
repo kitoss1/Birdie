@@ -60,8 +60,17 @@ namespace Birdie.UI
         [Tooltip("Text displaying the bird's visit hours")]
         [SerializeField] private TextMeshProUGUI m_visitHoursText;
 
-        [Tooltip("Text displaying the bird's diet type")]
+        [Tooltip("Icon displaying the conservation danger level")]
+        [SerializeField] private Image m_peligroIcon;
+
+        [Tooltip("Text displaying the bird's diet type (shown when diet is locked)")]
         [SerializeField] private TextMeshProUGUI m_foodText;
+
+        [Tooltip("Container for instantiated diet icons (shown when diet is unlocked)")]
+        [SerializeField] private Transform m_dietIconContainer;
+
+        [Tooltip("Prefab instantiated for each diet icon (must have an Image component)")]
+        [SerializeField] private GameObject m_dietIconPrefab;
 
         public GameObject BackParent => m_backParent;
         public GameObject FrontParent => m_frontParent;
@@ -75,7 +84,10 @@ namespace Birdie.UI
         public TextMeshProUGUI FriendshipLevelText => m_friendshipLevelText;
         public ResourceBarTracker FriendshipBar => m_friendshipBar;
         public TextMeshProUGUI VisitHoursText => m_visitHoursText;
+        public Image PeligroIcon => m_peligroIcon;
         public TextMeshProUGUI FoodText => m_foodText;
+        public Transform DietIconContainer => m_dietIconContainer;
+        public GameObject DietIconPrefab => m_dietIconPrefab;
 
         private int m_originalSiblingIndex;
 
@@ -239,9 +251,24 @@ namespace Birdie.UI
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Visit Hours Text reference is missing!", this);
                 }
 
+                if (m_peligroIcon == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Peligro Icon reference is missing!", this);
+                }
+
                 if (m_foodText == null)
                 {
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Food Text reference is missing!", this);
+                }
+
+                if (m_dietIconContainer == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Diet Icon Container reference is missing!", this);
+                }
+
+                if (m_dietIconPrefab == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Diet Icon Prefab reference is missing!", this);
                 }
             }
         }

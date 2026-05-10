@@ -1,13 +1,15 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Birdie.Data;
 using Birdie.Debug;
 using Birdie.Save;
 using Birdie.UI;
+using Birdie.UI.Toast;
 using Cysharp.Threading.Tasks;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Object = UnityEngine.Object;
 
 namespace Birdie.Managers
 {
@@ -52,6 +54,19 @@ namespace Birdie.Managers
         
         [Tooltip("Button to close the diary popup")]
         [SerializeField] private Button m_closeButton;
+
+        [Header("Toast Settings")]
+        [Tooltip("Toast appearance settings for diet icon toasts. Leave empty to use prefab defaults.")]
+        [SerializeField] private ToastSettings m_dietIconToastSettings;
+
+        [Header("Peligro Popup")]
+        [Tooltip("Popup shown when clicking the conservation danger icon")]
+        [SerializeField] private PeligroPopupUI m_peligroPopup;
+
+        [Header("Map Popup")]
+        [Tooltip("Popup shown when clicking the habitat map")]
+        [SerializeField] private MapPopupUI m_mapPopup;
+
 
         private readonly List<GameObject> m_instantiatedPages = new List<GameObject>();
         private readonly Dictionary<string, int> m_birdIDToPageIndex = new Dictionary<string, int>();
@@ -210,7 +225,8 @@ namespace Birdie.Managers
                 PopulateBackPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.NameText,
                     introPageUI.ScientificNameText, introPageUI.InteractionCounterText,
                     introPageUI.FriendshipLevelText, introPageUI.FriendshipBar,
-                    introPageUI.VisitHoursText, introPageUI.FoodText, allBirds[0]);
+                    introPageUI.VisitHoursText, introPageUI.FoodText,
+                    introPageUI.DietIconContainer, introPageUI.DietIconPrefab, allBirds[0]);
 
                 // Initialize introduction page to show front (0 degrees rotation)
                 introPageUI.SetPageSide(showingBack: false);
@@ -232,8 +248,8 @@ namespace Birdie.Managers
                     continue;
                 }
 
-                // Populate FRONT with bird[i]'s front page (description, map)
-                PopulateFrontPage(pageUI.FrontParent, pageUI.DescriptionText, pageUI.MapImage, allBirds[i]);
+                // Populate FRONT with bird[i]'s front page (description, map, peligro icon)
+                PopulateFrontPage(pageUI.FrontParent, pageUI.DescriptionText, pageUI.MapImage, pageUI.FeatherImage, pageUI.PeligroIcon, allBirds[i]);
 
                 // Populate BACK with bird[i+1]'s back page (photo, name, stats)
                 if (i + 1 < allBirds.Count)
@@ -241,7 +257,8 @@ namespace Birdie.Managers
                     PopulateBackPage(pageUI.BackParent, pageUI.BirdPhoto, pageUI.NameText,
                         pageUI.ScientificNameText, pageUI.InteractionCounterText,
                         pageUI.FriendshipLevelText, pageUI.FriendshipBar,
-                        pageUI.VisitHoursText, pageUI.FoodText, allBirds[i + 1]);
+                        pageUI.VisitHoursText, pageUI.FoodText,
+                        pageUI.DietIconContainer, pageUI.DietIconPrefab, allBirds[i + 1]);
                 }
                 else
                 {
@@ -271,7 +288,7 @@ namespace Birdie.Managers
         /// Shown on the front of pages (right side of the spread).
         /// </summary>
         private void PopulateFrontPage(GameObject parentObject, TextMeshProUGUI descriptionText,
-            Image mapImage, BirdData birdData)
+            Image mapImage, Image featherImage, Image peligroIcon, BirdData birdData)
         {
             if (parentObject != null)
             {
@@ -280,14 +297,28 @@ namespace Birdie.Managers
 
             bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
 
+            if (!isDiscovered)
+            {
+                if (descriptionText != null) descriptionText.text = m_lockedDescriptionText;
+                if (mapImage != null) mapImage.color = m_lockedPhotoTint;
+                if (featherImage != null) featherImage.enabled = false;
+                if (peligroIcon != null) peligroIcon.gameObject.SetActive(false);
+                return;
+            }
+
+            int currentLevel = GameManager.Instance.FriendshipManager.GetFriendshipLevel(birdData.BirdID, birdData);
+
             if (descriptionText != null)
             {
-                descriptionText.text = isDiscovered ? birdData.BasicDescription : m_lockedDescriptionText;
+                descriptionText.text = currentLevel >= birdData.DescriptionUnlockLevel
+                    ? birdData.BasicDescription
+                    : "???";
             }
 
             if (mapImage != null)
             {
-                if (isDiscovered && birdData.HabitatMap != null)
+                bool mapUnlocked = currentLevel >= birdData.HabitatMapUnlockLevel;
+                if (mapUnlocked && birdData.HabitatMap != null)
                 {
                     mapImage.sprite = birdData.HabitatMap;
                     mapImage.color = Color.white;
@@ -295,6 +326,45 @@ namespace Birdie.Managers
                 else
                 {
                     mapImage.color = m_lockedPhotoTint;
+                }
+
+                mapImage.raycastTarget = true;
+                Button mapBtn = mapImage.GetComponent<Button>();
+                if (mapBtn == null) mapBtn = mapImage.gameObject.AddComponent<Button>();
+                mapBtn.onClick.RemoveAllListeners();
+                if (mapUnlocked && birdData.HabitatMap != null && m_mapPopup != null)
+                {
+                    Sprite map = birdData.HabitatMap;
+                    mapBtn.onClick.AddListener(() => m_mapPopup.Show(map));
+                }
+            }
+
+            if (featherImage != null)
+            {
+                bool featherVisible = currentLevel >= birdData.FeatherUnlockLevel;
+                featherImage.enabled = featherVisible;
+                if (featherVisible && birdData.FeatherSprite != null)
+                {
+                    featherImage.sprite = birdData.FeatherSprite;
+                }
+            }
+
+            if (peligroIcon != null)
+            {
+                bool peligroUnlocked = currentLevel >= birdData.PeligroUnlockLevel;
+                if (birdData.PeligroSprite != null)
+                    peligroIcon.sprite = birdData.PeligroSprite;
+                peligroIcon.gameObject.SetActive(peligroUnlocked);
+
+                peligroIcon.raycastTarget = true;
+                Button btn = peligroIcon.GetComponent<Button>();
+                if (btn == null) btn = peligroIcon.gameObject.AddComponent<Button>();
+                btn.onClick.RemoveAllListeners();
+                if (peligroUnlocked && m_peligroPopup != null)
+                {
+                    Sprite sprite = birdData.PeligroSprite;
+                    string description = birdData.PeligroDescription;
+                    btn.onClick.AddListener(() => m_peligroPopup.Show(sprite, description));
                 }
             }
         }
@@ -306,7 +376,8 @@ namespace Birdie.Managers
         private void PopulateBackPage(GameObject parentObject, Image birdPhoto, TextMeshProUGUI nameText,
             TextMeshProUGUI scientificNameText, TextMeshProUGUI interactionCounterText,
             TextMeshProUGUI friendshipLevelText, ResourceBarTracker friendshipBar,
-            TextMeshProUGUI visitHoursText, TextMeshProUGUI foodText, BirdData birdData)
+            TextMeshProUGUI visitHoursText, TextMeshProUGUI foodText,
+            Transform dietIconContainer, GameObject dietIconPrefab, BirdData birdData)
         {
             if (parentObject != null)
             {
@@ -315,47 +386,49 @@ namespace Birdie.Managers
 
             bool isDiscovered = GameManager.Instance.DiaryManager.IsBirdDiscovered(birdData);
 
-            if (birdPhoto != null)
+            if (!isDiscovered)
             {
-                if (isDiscovered && birdData.BirdPhoto != null)
-                {
-                    birdPhoto.sprite = birdData.BirdPhoto;
-                    birdPhoto.color = Color.white;
-                }
-                else
-                {
-                    birdPhoto.color = m_lockedPhotoTint;
-                }
+                if (birdPhoto != null) birdPhoto.color = m_lockedPhotoTint;
+                if (nameText != null) nameText.text = m_lockedNameText;
+                if (scientificNameText != null) scientificNameText.text = "???";
+                if (interactionCounterText != null) interactionCounterText.text = "Visitas: ???";
+                if (visitHoursText != null) visitHoursText.text = "???";
+                SetDietLocked(foodText, dietIconContainer);
+                PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered: false);
+                return;
+            }
+
+            int currentLevel = GameManager.Instance.FriendshipManager.GetFriendshipLevel(birdData.BirdID, birdData);
+
+            if (birdPhoto != null && birdData.BirdPhoto != null)
+            {
+                birdPhoto.sprite = birdData.BirdPhoto;
+                birdPhoto.color = currentLevel >= birdData.FullPhotoUnlockLevel ? Color.white : m_lockedPhotoTint;
             }
 
             if (nameText != null)
             {
-                nameText.text = isDiscovered ? birdData.BirdName : m_lockedNameText;
+                nameText.text = birdData.BirdName;
             }
 
             if (scientificNameText != null)
             {
-                scientificNameText.text = isDiscovered ? birdData.ScientificName : "???";
+                scientificNameText.text = currentLevel >= birdData.ScientificNameUnlockLevel
+                    ? birdData.ScientificName
+                    : "???";
             }
 
             if (interactionCounterText != null)
             {
-                if (isDiscovered)
-                {
-                    int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
-                    interactionCounterText.text = $"Visitas: {encounterCount}";
-                }
-                else
-                {
-                    interactionCounterText.text = "Visitas: ???";
-                }
+                int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
+                interactionCounterText.text = $"Visitas: {encounterCount}";
             }
 
-            PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered);
+            PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered: true);
 
             if (visitHoursText != null)
             {
-                if (isDiscovered)
+                if (currentLevel >= birdData.VisitHoursUnlockLevel)
                 {
                     visitHoursText.text = birdData.AppearsAnytime
                         ? "Cualquier hora"
@@ -367,9 +440,82 @@ namespace Birdie.Managers
                 }
             }
 
+            if (currentLevel >= birdData.DietUnlockLevel)
+            {
+                PopulateDietIcons(foodText, dietIconContainer, dietIconPrefab, birdData);
+            }
+            else
+            {
+                SetDietLocked(foodText, dietIconContainer);
+            }
+        }
+
+        private void PopulateDietIcons(TextMeshProUGUI foodText, Transform dietIconContainer,
+            GameObject dietIconPrefab, BirdData birdData)
+        {
             if (foodText != null)
             {
-                foodText.text = isDiscovered ? $"{birdData.DietType}" : "???";
+                foodText.gameObject.SetActive(true);
+                foodText.text = $"{birdData.DietType}";
+            }
+
+            if (dietIconContainer == null)
+            {
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Diet icon container is null for {birdData.BirdName}", DebugCategory.UI);
+                return;
+            }
+
+            for (int i = dietIconContainer.childCount - 1; i >= 0; i--)
+            {
+                Object.Destroy(dietIconContainer.GetChild(i).gameObject);
+            }
+
+            dietIconContainer.gameObject.SetActive(true);
+
+            if (dietIconPrefab == null)
+            {
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] Diet icon prefab is null for {birdData.BirdName}", DebugCategory.UI);
+                return;
+            }
+
+            if (birdData.DietIcons.Count == 0)
+            {
+                DebugBase.LogWarning($"[{nameof(DiaryUIManager)}] No diet icons assigned on {birdData.BirdName}", DebugCategory.UI);
+                return;
+            }
+
+            foreach (DietIconEntry entry in birdData.DietIcons)
+            {
+                if (entry.icon == null) continue;
+
+                GameObject iconObj = Instantiate(dietIconPrefab, dietIconContainer);
+
+                Image iconImage = iconObj.GetComponent<Image>();
+                if (iconImage != null)
+                {
+                    iconImage.sprite = entry.icon;
+                    iconImage.enabled = true;
+                }
+
+                Button button = iconObj.GetComponent<Button>();
+                if (button == null) button = iconObj.AddComponent<Button>();
+
+                string foodName = entry.name;
+                Transform iconTransform = iconObj.transform;
+                ToastSettings dietSettings = m_dietIconToastSettings;
+                button.onClick.AddListener(() => GameManager.Instance.ToastManager.ShowToast(foodName, iconTransform, dietSettings, "diary_diet"));
+            }
+
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Spawned {birdData.DietIcons.Count} diet icons for {birdData.BirdName}", DebugCategory.UI);
+        }
+
+        private static void SetDietLocked(TextMeshProUGUI foodText, Transform dietIconContainer)
+        {
+            if (dietIconContainer != null) dietIconContainer.gameObject.SetActive(false);
+            if (foodText != null)
+            {
+                foodText.gameObject.SetActive(true);
+                foodText.text = "???";
             }
         }
 
@@ -977,7 +1123,8 @@ namespace Birdie.Managers
                     PopulateBackPage(introPageUI.BackParent, introPageUI.BirdPhoto, introPageUI.NameText,
                         introPageUI.ScientificNameText, introPageUI.InteractionCounterText,
                         introPageUI.FriendshipLevelText, introPageUI.FriendshipBar,
-                        introPageUI.VisitHoursText, introPageUI.FoodText, birdData);
+                        introPageUI.VisitHoursText, introPageUI.FoodText,
+                        introPageUI.DietIconContainer, introPageUI.DietIconPrefab, birdData);
                 }
             }
             else if (birdIndex - 1 >= 0 && birdIndex - 1 < m_instantiatedPages.Count)
@@ -989,7 +1136,8 @@ namespace Birdie.Managers
                     PopulateBackPage(prevPageUI.BackParent, prevPageUI.BirdPhoto, prevPageUI.NameText,
                         prevPageUI.ScientificNameText, prevPageUI.InteractionCounterText,
                         prevPageUI.FriendshipLevelText, prevPageUI.FriendshipBar,
-                        prevPageUI.VisitHoursText, prevPageUI.FoodText, birdData);
+                        prevPageUI.VisitHoursText, prevPageUI.FoodText,
+                        prevPageUI.DietIconContainer, prevPageUI.DietIconPrefab, birdData);
                 }
             }
 
@@ -1001,7 +1149,7 @@ namespace Birdie.Managers
                 if (currentPageUI != null)
                 {
                     PopulateFrontPage(currentPageUI.FrontParent, currentPageUI.DescriptionText,
-                        currentPageUI.MapImage, birdData);
+                        currentPageUI.MapImage, currentPageUI.FeatherImage, currentPageUI.PeligroIcon, birdData);
                 }
             }
 
