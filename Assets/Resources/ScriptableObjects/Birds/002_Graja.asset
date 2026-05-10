@@ -44,7 +44,7 @@ MonoBehaviour:
   m_peligroDescription: "La especie se est\xE1 enfrentando a un riesgo muy alto de
     extinci\xF3n en estado silvestre."
   m_featherUnlockLevel: 3
-  m_featherSprite: {fileID: -6815859362317167124, guid: 05ef199e22b800f40a5019f165d48733, type: 3}
+  m_featherSprite: {fileID: 21300000, guid: afc8cc5d8fa92884596d37a715e7c022, type: 3}
   m_dietType: 0
   m_dietIcons:
   - icon: {fileID: 21300000, guid: f8396c1c49e33ee4c99b598f4aebdb3e, type: 3}
