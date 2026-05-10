@@ -128,11 +128,26 @@ namespace Birdie.Managers
 
         /// <summary>
         /// Called when a bird is encountered (interaction count updated).
+        /// Only the visit counter changes on encounter — diet icons, friendship bar, etc. are unchanged.
         /// </summary>
         private void OnBirdEncountered(BirdData birdData)
         {
-            DebugBase.Log($"[{nameof(DiaryUIManager)}] Bird encountered: {birdData.BirdName}, refreshing page", DebugCategory.UI);
-            RefreshSinglePage(birdData);
+            DebugBase.Log($"[{nameof(DiaryUIManager)}] Bird encountered: {birdData.BirdName}, updating counter", DebugCategory.UI);
+
+            if (!m_birdIDToPageIndex.TryGetValue(birdData.BirdID, out int birdIndex))
+            {
+                return;
+            }
+
+            BirdPageUI pageUI = birdIndex == 0
+                ? m_firstPage.GetComponent<BirdPageUI>()
+                : (birdIndex - 1 < m_instantiatedPages.Count ? m_instantiatedPages[birdIndex - 1].GetComponent<BirdPageUI>() : null);
+
+            if (pageUI?.InteractionCounterText != null)
+            {
+                int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
+                pageUI.InteractionCounterText.text = $"Visitas: {encounterCount}";
+            }
         }
 
         private void OnFriendshipChanged(string birdID)
