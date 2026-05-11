@@ -15,7 +15,7 @@ MonoBehaviour:
   m_itemID: Windowsill001
   m_itemName: Windowsill001
   m_description: First windowsill
-  m_icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_icon: {fileID: 21300000, guid: 89a1fd3e61347514ca9e7ce2ecf28d69, type: 3}
   m_price: 10
   m_category: 3
   m_isMovable: 0
