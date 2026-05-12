@@ -155,19 +155,10 @@ namespace Birdie.Data
         [Tooltip("Audio clips for this bird's song. A random one is picked each time the singing animation triggers playback.")]
         private List<AudioClip> m_songParts = new List<AudioClip>();
 
-        [Header("Gifts and Rewards")]
-        [SerializeField]
-        [Tooltip("Items this bird can leave as gifts at high friendship")]
-        private List<GiftItem> m_possibleGifts = new List<GiftItem>();
-
         [Header("Requirements")]
         [SerializeField]
         [Tooltip("Habitat upgrades required for this bird to appear")]
         private List<string> m_requiredUpgradeIDs = new List<string>();
-
-        [SerializeField]
-        [Tooltip("Minimum habitat level required")]
-        private int m_minimumHabitatLevel = 0;
 
         [Header("Visit Behavior")]
         [SerializeField]
@@ -223,15 +214,6 @@ namespace Birdie.Data
         [SerializeField]
         [Tooltip("Behaviors this bird species can perform, each with a per-species weight")]
         private List<BirdBehaviorEntry> m_possibleBehaviors = new List<BirdBehaviorEntry>();
-
-        [Header("Special Behaviors")]
-        [SerializeField]
-        [Tooltip("Does this bird have special animations? (e.g., woodpecker pecking)")]
-        private bool m_hasSpecialAnimation = false;
-
-        [SerializeField]
-        [Tooltip("Special animation description")]
-        private string m_specialAnimationDescription;
 
         [Header("Minigames")]
         [SerializeField]
@@ -364,40 +346,10 @@ namespace Birdie.Data
             set => m_songParts = value;
         }
 
-        /// <summary>
-        /// Returns the first song clip, or null if none are assigned.
-        /// Kept for compatibility with systems that only need a single clip.
-        /// </summary>
-        public AudioClip BirdSong => m_songParts != null && m_songParts.Count > 0 ? m_songParts[0] : null;
-
-        public List<GiftItem> PossibleGifts
-        {
-            get => m_possibleGifts;
-            set => m_possibleGifts = value;
-        }
-
         public List<string> RequiredUpgradeIDs
         {
             get => m_requiredUpgradeIDs;
             set => m_requiredUpgradeIDs = value;
-        }
-
-        public int MinimumHabitatLevel
-        {
-            get => m_minimumHabitatLevel;
-            set => m_minimumHabitatLevel = value;
-        }
-
-        public bool HasSpecialAnimation
-        {
-            get => m_hasSpecialAnimation;
-            set => m_hasSpecialAnimation = value;
-        }
-
-        public string SpecialAnimationDescription
-        {
-            get => m_specialAnimationDescription;
-            set => m_specialAnimationDescription = value;
         }
 
         public BirdBehaviorState ArrivingBehavior => m_arrivingBehavior;
@@ -452,9 +404,6 @@ namespace Birdie.Data
             set => m_availableMinigames = value;
         }
 
-        /// <summary>
-        /// Gets the friendship points required to reach a specific level
-        /// </summary>
         public int GetFriendshipRequirement(int level)
         {
             if (level < 0 || level >= m_friendshipLevelThresholds.Count)
@@ -478,20 +427,5 @@ namespace Birdie.Data
             return m_appearanceTimeRange.IsTimeInRange(currentHour);
         }
 
-        /// <summary>
-        /// Gets the rarity multiplier for golden seed rewards
-        /// </summary>
-        public float GetRarityMultiplier()
-        {
-            return m_rarity switch
-            {
-                BirdRarity.Common => 1.0f,
-                BirdRarity.Uncommon => 1.5f,
-                BirdRarity.Rare => 2.5f,
-                BirdRarity.VeryRare => 3.5f,
-                BirdRarity.Legendary => 5.0f,
-                _ => 1.0f
-            };
-        }
     }
 }

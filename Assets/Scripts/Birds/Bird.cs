@@ -171,7 +171,7 @@ namespace Birdie.Birds
             if (GameManager.Instance?.EnvironmentManager == null)
             {
                 DebugBase.LogWarning($"[{nameof(Bird)}] EnvironmentManager not found!", DebugCategory.Birds);
-                CalculateVisitDuration();
+                CalculateVisitDuration(0);
                 return;
             }
 
@@ -187,26 +187,26 @@ namespace Birdie.Birds
                 }
             }
 
-            // Calculate visit duration based on environment richness
-            CalculateVisitDuration();
+            // Calculate visit duration based on total scene richness (all objects, not just interactable ones)
+            CalculateVisitDuration(allObjects.Count);
         }
 
         /// <summary>
         /// Calculates how long the bird will stay based on environment and friendship.
         /// </summary>
-        private void CalculateVisitDuration()
+        private void CalculateVisitDuration(int totalObjectCount)
         {
             float baseDuration = UnityEngine.Random.Range(m_birdData.VisitDurationMin, m_birdData.VisitDurationMax);
 
             // Increase duration if there are interesting objects
-            float objectBonus = m_nearbyObjects.Count * m_birdData.ObjectBonusSeconds;
+            float objectBonus = totalObjectCount * m_birdData.ObjectBonusSeconds;
             baseDuration += objectBonus;
 
             // TODO: Add friendship level bonus
             // int friendshipBonus = GetFriendshipLevel() * 3;
             // baseDuration += friendshipBonus;
 
-            m_maxVisitDuration = Mathf.Min(baseDuration, m_birdData.VisitDurationMax);
+            m_maxVisitDuration = baseDuration;
             DebugBase.Log($"[{nameof(Bird)}] Visit duration calculated: {m_maxVisitDuration}s", DebugCategory.Birds);
         }
 
@@ -613,24 +613,6 @@ namespace Birdie.Birds
             }
 
             m_animator.CrossFade(stateName, crossFadeDuration);
-        }
-
-        public void PlaySong()
-        {
-            if (m_birdData.BirdSong == null)
-            {
-                DebugBase.LogWarning($"[{nameof(Bird)}] {m_birdData.BirdName} has no song assigned", DebugCategory.Birds);
-                return;
-            }
-
-            if (GameManager.Instance?.SoundManager == null)
-            {
-                DebugBase.LogWarning($"[{nameof(Bird)}] SoundManager not available, cannot play song", DebugCategory.Birds);
-                return;
-            }
-
-            GameManager.Instance.SoundManager.PlaySFX(m_birdData.BirdSong);
-            DebugBase.Log($"[{nameof(Bird)}] Playing song for {m_birdData.BirdName}", DebugCategory.Birds);
         }
 
         /// <summary>

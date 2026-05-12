@@ -1896,7 +1896,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.MissionEntryUI
   m_descriptionText: {fileID: 1046244666}
   m_claimButton: {fileID: 1973707122}
-  m_claimedButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
+  m_disabledButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
   m_claimButtonText: {fileID: 1052666945}
 --- !u!1 &634183681
 GameObject:
@@ -4895,7 +4895,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.MissionEntryUI
   m_descriptionText: {fileID: 155524386}
   m_claimButton: {fileID: 1503787440}
-  m_claimedButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
+  m_disabledButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
   m_claimButtonText: {fileID: 1744529828}
 --- !u!1 &1673955893
 GameObject:
@@ -9257,7 +9257,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.MissionEntryUI
   m_descriptionText: {fileID: 8794830362680233574}
   m_claimButton: {fileID: 2258527652951128219}
-  m_claimedButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
+  m_disabledButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
   m_claimButtonText: {fileID: 3556484296523157767}
 --- !u!1001 &5628030278524953979
 PrefabInstance:
