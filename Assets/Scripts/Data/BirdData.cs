@@ -75,12 +75,7 @@ namespace Birdie.Data
 
         [Header("Friendship System")]
         [SerializeField]
-        [Tooltip("Maximum friendship level achievable with this bird")]
-        [Range(1, 10)]
-        private int m_maxFriendshipLevel = 4;
-
-        [SerializeField]
-        [Tooltip("Friendship points needed for each level")]
+        [Tooltip("Friendship points needed for each level (index = level, last entry = max level)")]
         private List<int> m_friendshipLevelThresholds = new List<int> { 0, 25, 75, 150 };
 
         [Header("Diary Unlock Levels")]
@@ -313,11 +308,10 @@ namespace Birdie.Data
             set => m_appearsAnytime = value;
         }
 
-        public int MaxFriendshipLevel
-        {
-            get => m_maxFriendshipLevel;
-            set => m_maxFriendshipLevel = value;
-        }
+        public int MaxFriendshipLevel =>
+            m_friendshipLevelThresholds != null && m_friendshipLevelThresholds.Count > 0
+                ? m_friendshipLevelThresholds.Count - 1
+                : 0;
 
         public List<int> FriendshipLevelThresholds
         {

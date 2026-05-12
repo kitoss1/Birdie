@@ -12,7 +12,6 @@ namespace Birdie.Save
     {
         public List<string> birdIDs = new List<string>();
         public List<int> friendshipPoints = new List<int>();
-        public List<int> friendshipLevels = new List<int>();
         public List<int> lastSeenFriendshipPoints = new List<int>();
 
         /// <summary>
@@ -29,6 +28,7 @@ namespace Birdie.Save
         {
             return birdIDs != null &&
                    friendshipPoints != null &&
+                   lastSeenFriendshipPoints != null &&
                    birdIDs.Count == friendshipPoints.Count;
         }
     }

@@ -24,8 +24,8 @@ namespace Birdie.UI
         private Button m_claimButton;
 
         [SerializeField]
-        [Tooltip("Sprite used on the claim button after the reward has been claimed")]
-        private Sprite m_claimedButtonSprite;
+        [Tooltip("Sprite used on the claim button when the mission is incomplete or already claimed")]
+        private Sprite m_disabledButtonSprite;
 
         [SerializeField]
         [Tooltip("Text on the claim button showing the reward amount")]
@@ -103,15 +103,15 @@ namespace Birdie.UI
         {
             if (m_claimButton != null)
             {
-                m_claimButton.gameObject.SetActive(isComplete);
-                m_claimButton.interactable = !isClaimed;
+                bool canClaim = isComplete && !isClaimed;
+                m_claimButton.interactable = canClaim;
 
                 Image buttonImage = m_claimButton.GetComponent<Image>();
                 if (buttonImage != null)
                 {
-                    buttonImage.sprite = isClaimed && m_claimedButtonSprite != null
-                        ? m_claimedButtonSprite
-                        : m_defaultButtonSprite;
+                    buttonImage.sprite = canClaim || m_disabledButtonSprite == null
+                        ? m_defaultButtonSprite
+                        : m_disabledButtonSprite;
                 }
             }
 
@@ -150,9 +150,9 @@ namespace Birdie.UI
                 UnityEngine.Debug.LogWarning($"[{nameof(MissionEntryUI)}] Claim Button reference is missing!", this);
             }
 
-            if (m_claimedButtonSprite == null)
+            if (m_disabledButtonSprite == null)
             {
-                UnityEngine.Debug.LogWarning($"[{nameof(MissionEntryUI)}] Claimed Button Sprite is not assigned — button will keep its default sprite when claimed!", this);
+                UnityEngine.Debug.LogWarning($"[{nameof(MissionEntryUI)}] Disabled Button Sprite is not assigned — button will keep its default sprite when incomplete or claimed!", this);
             }
         }
 #endif

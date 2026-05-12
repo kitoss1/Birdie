@@ -216,7 +216,7 @@ namespace Birdie.UI
                 return;
             }
 
-            GameManager.Instance.FriendshipManager.AddFriendship(m_currentBirdData.BirdID, reward);
+            GameManager.Instance.FriendshipManager.AddFriendship(m_currentBirdData.BirdID, reward, m_currentBirdData);
             DebugBase.Log(
                 $"[{nameof(MinigamesMenuUI)}] Awarded {reward} friendship to {m_currentBirdData.BirdName}",
                 DebugCategory.UI);

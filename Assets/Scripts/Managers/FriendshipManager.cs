@@ -27,9 +27,9 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Adds friendship points to a specific bird
+        /// Adds friendship points to a specific bird, capped at the bird's max threshold.
         /// </summary>
-        public void AddFriendship(string birdID, int points)
+        public void AddFriendship(string birdID, int points, BirdData birdData)
         {
             if (!EnsureInitialized())
             {
@@ -42,6 +42,13 @@ namespace Birdie.Managers
             }
 
             m_birdFriendshipPoints[birdID] += points;
+
+            if (birdData != null && birdData.FriendshipLevelThresholds?.Count > 0)
+            {
+                int maxPoints = birdData.FriendshipLevelThresholds[birdData.FriendshipLevelThresholds.Count - 1];
+                m_birdFriendshipPoints[birdID] = Mathf.Min(m_birdFriendshipPoints[birdID], maxPoints);
+            }
+
             DebugBase.Log($"[{nameof(FriendshipManager)}] Added {points} friendship to {birdID}. Total: {m_birdFriendshipPoints[birdID]}");
 
             SaveToSaveData();
@@ -71,6 +78,7 @@ namespace Birdie.Managers
             DebugBase.Log($"[{nameof(FriendshipManager)}] Set friendship for {birdID} to {points}", DebugCategory.Friendship);
 
             SaveToSaveData();
+            OnFriendshipChanged?.Invoke(birdID);
         }
 
         /// <summary>
@@ -178,6 +186,7 @@ namespace Birdie.Managers
         public void ClearFriendshipData()
         {
             m_birdFriendshipPoints.Clear();
+            m_lastSeenFriendshipPoints.Clear();
             SaveToSaveData();
 
             DebugBase.Log($"[{nameof(FriendshipManager)}] Friendship data cleared", DebugCategory.Friendship);
