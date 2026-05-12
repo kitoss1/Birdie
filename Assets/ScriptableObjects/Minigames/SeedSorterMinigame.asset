@@ -19,9 +19,35 @@ MonoBehaviour:
   m_completionReward: 3
   m_difficultyPerLevel:
   - rid: 6068701967402664006
+  - rid: 2215143475976077395
+  - rid: 2215143475976077396
   references:
     version: 2
     RefIds:
+    - rid: 2215143475976077395
+      type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_totalSeedCount: 18
+        m_likedSeedCount: 6
+        m_errorTiers:
+        - m_maxErrors: 0
+          m_friendshipReward: 15
+        - m_maxErrors: 2
+          m_friendshipReward: 10
+        - m_maxErrors: 5
+          m_friendshipReward: 5
+    - rid: 2215143475976077396
+      type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
+      data:
+        m_totalSeedCount: 22
+        m_likedSeedCount: 10
+        m_errorTiers:
+        - m_maxErrors: 0
+          m_friendshipReward: 15
+        - m_maxErrors: 1
+          m_friendshipReward: 10
+        - m_maxErrors: 2
+          m_friendshipReward: 5
     - rid: 6068701967402664006
       type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:

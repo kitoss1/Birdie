@@ -414,6 +414,12 @@ namespace Birdie.UI.Minigames
             m_scoreDisplay?.UpdateScore(m_score);
             m_rewardBar?.UpdateScore(m_score);
             Destroy(seed.gameObject);
+
+            int maxScore = MinigameRewardTier.ComputeMaxScore(m_rewardTiers);
+            if (maxScore > 0 && m_score >= maxScore)
+            {
+                OnMaxScoreReached();
+            }
         }
 
         private void OnSeedMissed(SeedCatcherSeed seed)
@@ -508,6 +514,22 @@ namespace Birdie.UI.Minigames
             }
 
             m_activeSpikes.Clear();
+        }
+
+        private void OnMaxScoreReached()
+        {
+            m_currentState = SeedCatcherState.GameOver;
+
+            if (m_basket != null)
+            {
+                m_basket.SetInputEnabled(false);
+            }
+
+            DebugBase.Log(
+                $"[{nameof(SeedCatcherUI)}] Max score reached! Final score: {m_score}",
+                DebugCategory.UI);
+
+            m_gameOverPanel?.Show(m_score, FriendshipReward);
         }
 
         private void OnTimeUp()

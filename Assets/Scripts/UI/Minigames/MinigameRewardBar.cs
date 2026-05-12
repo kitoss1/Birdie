@@ -38,13 +38,15 @@ namespace Birdie.UI.Minigames
 
         /// <summary>
         /// Stores the reward tiers, computes the max score, and spawns threshold markers.
+        /// Pass <paramref name="maxScore"/> to override the max score derived from tier thresholds —
+        /// required when the game's scoring range doesn't match the highest tier threshold (e.g. Sliding Puzzle).
         /// </summary>
-        public void Initialize(MinigameRewardTier[] tiers, int completionReward = 0, bool reversed = false)
+        public void Initialize(MinigameRewardTier[] tiers, int completionReward = 0, bool reversed = false, int maxScore = 0)
         {
             m_rewardTiers = tiers;
             m_completionReward = completionReward;
             m_reversed = reversed;
-            m_maxScore = MinigameRewardTier.ComputeMaxScore(tiers);
+            m_maxScore = maxScore > 0 ? maxScore : MinigameRewardTier.ComputeMaxScore(tiers);
 
             ClearMarkers();
             RectTransform completionMarker = m_reversed ? SpawnCompletionMarker() : null;
@@ -163,7 +165,7 @@ namespace Birdie.UI.Minigames
 
             if (m_reversed)
             {
-                if (rightmostMarker != null)
+                if (rightmostMarker != null && Mathf.Approximately(rightmostPos, 1f))
                 {
                     rightmostMarker.gameObject.SetActive(false);
                 }

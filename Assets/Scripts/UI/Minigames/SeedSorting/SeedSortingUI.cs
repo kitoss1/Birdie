@@ -116,9 +116,9 @@ namespace Birdie.UI.Minigames
             m_rewardTiers = rewardTiers;
             m_completionReward = completionReward;
 
-            if (m_rewardBar != null)
+            if (!BuildRewardTiersFromErrors())
             {
-                m_rewardBar.Initialize(rewardTiers, completionReward);
+                m_rewardBar?.Initialize(rewardTiers, completionReward);
             }
         }
 
@@ -129,6 +129,7 @@ namespace Birdie.UI.Minigames
                 m_totalSeedCount = sortingSettings.TotalSeedCount;
                 m_likedSeedCount = sortingSettings.LikedSeedCount;
                 m_errorTiers = sortingSettings.ErrorTiers;
+                BuildRewardTiersFromErrors();
             }
             else if (settings != null)
             {
@@ -144,8 +145,6 @@ namespace Birdie.UI.Minigames
             m_errors = 0;
             m_remainingSeeds = m_totalSeedCount;
             m_currentState = SeedSortingState.WaitingToStart;
-
-            BuildRewardTiersFromErrors();
 
             m_scoreDisplay?.UpdateScore(m_score);
             m_rewardBar?.UpdateScore(0);
@@ -184,20 +183,17 @@ namespace Birdie.UI.Minigames
             CleanupReferenceCard();
         }
 
-        private void BuildRewardTiersFromErrors()
+        private bool BuildRewardTiersFromErrors()
         {
             MinigameRewardTier[] tiers = MinigameErrorTier.ToRewardTiers(m_errorTiers, m_totalSeedCount);
             if (tiers == null)
             {
-                return;
+                return false;
             }
 
             m_rewardTiers = tiers;
-
-            if (m_rewardBar != null)
-            {
-                m_rewardBar.Initialize(m_rewardTiers, m_completionReward);
-            }
+            m_rewardBar?.Initialize(m_rewardTiers, m_completionReward);
+            return true;
         }
 
         private void BuildReferenceCard()

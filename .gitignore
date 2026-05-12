@@ -100,3 +100,7 @@ InitTestScene*.unity*
 
 # TFG documentation (local only)
 docs/TFG/
+
+# Local-only docs
+docs/product/
+docs/technical/

@@ -21,8 +21,14 @@ namespace Birdie.Data
         [Min(0f)]
         private float m_nextRoundDelay = 0.8f;
 
+        [SerializeField]
+        [Tooltip("Maximum number of rounds before the game ends. Set to 0 to derive from reward tiers.")]
+        [Min(0)]
+        private int m_maxRounds = 0;
+
         public float SequenceStartDelay => m_sequenceStartDelay;
         public float GapBetweenHighlights => m_gapBetweenHighlights;
         public float NextRoundDelay => m_nextRoundDelay;
+        public int MaxRounds => m_maxRounds;
     }
 }

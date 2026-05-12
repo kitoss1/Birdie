@@ -59,6 +59,7 @@ namespace Birdie.UI.Minigames
         private int m_currentInputIndex;
         private int m_score;
         private int m_maxScore;
+        private int m_difficultyMaxRounds;
         private SimonState m_currentState;
         private CancellationToken m_destroyCancellation;
         private Action<int>[] m_buttonHandlers;
@@ -266,7 +267,7 @@ namespace Birdie.UI.Minigames
         {
             m_rewardTiers = rewardTiers;
             m_completionReward = completionReward;
-            m_maxScore = MinigameRewardTier.ComputeMaxScore(rewardTiers);
+            RefreshMaxScore();
 
             if (m_rewardBar != null)
             {
@@ -281,6 +282,8 @@ namespace Birdie.UI.Minigames
                 m_sequenceStartDelay = simonSettings.SequenceStartDelay;
                 m_gapBetweenHighlights = simonSettings.GapBetweenHighlights;
                 m_nextRoundDelay = simonSettings.NextRoundDelay;
+                m_difficultyMaxRounds = simonSettings.MaxRounds;
+                RefreshMaxScore();
             }
             else if (settings != null)
             {
@@ -288,6 +291,13 @@ namespace Birdie.UI.Minigames
                     $"[{nameof(SimonSaysUI)}] Received unexpected difficulty settings type: {settings.GetType().Name}",
                     DebugCategory.UI);
             }
+        }
+
+        private void RefreshMaxScore()
+        {
+            m_maxScore = m_difficultyMaxRounds > 0
+                ? m_difficultyMaxRounds
+                : MinigameRewardTier.ComputeMaxScore(m_rewardTiers);
         }
 
         private void OnCloseClicked()

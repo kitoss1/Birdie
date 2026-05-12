@@ -138,11 +138,7 @@ namespace Birdie.UI.Minigames
         {
             m_rewardTiers = rewardTiers;
             m_completionReward = completionReward;
-
-            if (m_rewardBar != null)
-            {
-                m_rewardBar.Initialize(rewardTiers, completionReward, reversed: true);
-            }
+            RefreshRewardBar();
         }
 
         public void SetDifficulty(MinigameDifficultySettings settings)
@@ -153,6 +149,7 @@ namespace Birdie.UI.Minigames
                 m_shuffleMoves = puzzleSettings.ShuffleMoves;
                 m_maxScore = puzzleSettings.MaxScore;
                 m_slideDuration = puzzleSettings.SlideDuration;
+                RefreshRewardBar();
             }
             else if (settings != null)
             {
@@ -160,6 +157,11 @@ namespace Birdie.UI.Minigames
                     $"[{nameof(SlidingPuzzleUI)}] Received unexpected difficulty settings type: {settings.GetType().Name}",
                     DebugCategory.UI);
             }
+        }
+
+        private void RefreshRewardBar()
+        {
+            m_rewardBar?.Initialize(m_rewardTiers, m_completionReward, reversed: true, maxScore: m_maxScore);
         }
 
         private void BuildGrid()
