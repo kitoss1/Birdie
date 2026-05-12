@@ -1,0 +1,84 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 70219269baca5b648af64fe42e11e0ed, type: 3}
+  m_Name: 003_Buho
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.BirdData
+  m_birdName: "B\xFAho real "
+  m_scientificName: 'Bubo bubo  '
+  m_birdID: 003
+  m_basicDescription: "a m\xE1s grande de las rapaces nocturnas europeas, el b\xFAho
+    real es un formidable depredador capaz de alimentarse de una enorme variedad
+    de presas. De car\xE1cter reservado y solitario, puede instalarse en los m\xE1s
+    diversos h\xE1bitats, aunque prefiere las zonas brav\xEDas con abundantes roquedales,
+    tajos y cortados. La disminuci\xF3n de su presa fundamental (el conejo), los
+    accidentes con tendidos el\xE9ctricos, los atropellos y la caza furtiva constituyen
+    sus principales problemas de conservaci\xF3n."
+  m_birdPrefab: {fileID: 7991333266149840317, guid: b5dfefa7bf53266409208391c48aef4e, type: 3}
+  m_birdPhoto: {fileID: 4657822427693599115, guid: 3ef7e2854f7eb384c81a91ce4398ae41, type: 3}
+  m_size: 3
+  m_rarity: 0
+  m_baseSpawnWeight: 100
+  m_appearanceTimeRange:
+    m_startHour: 8
+    m_endHour: 18
+  m_appearsAnytime: 1
+  m_maxFriendshipLevel: 4
+  m_friendshipLevelThresholds: 00000000190000004b00000096000000
+  m_fullPhotoUnlockLevel: 0
+  m_scientificNameUnlockLevel: 1
+  m_visitHoursUnlockLevel: 1
+  m_dietUnlockLevel: 2
+  m_descriptionUnlockLevel: 2
+  m_habitatMapUnlockLevel: 2
+  m_peligroUnlockLevel: 2
+  m_peligroSprite: {fileID: 21300000, guid: aea6fbc1cb8f93e47a4a331aca51628d, type: 3}
+  m_peligroDescription: "Especie abundante y de amplia distribuci\xF3n territorial
+    que, una vez evaluada, se considera fuera de las categor\xEDas con mayor grado
+    de amenaza."
+  m_featherUnlockLevel: 3
+  m_featherSprite: {fileID: 21300000, guid: 53d1436e4a8283f45ab8d97df1d7827f, type: 3}
+  m_dietType: 5
+  m_dietIcons:
+  - icon: {fileID: 21300000, guid: 310d7e6d736196b48b7eed349b1054c6, type: 3}
+    name: "Carn\xEDvoro"
+  m_habitat: 
+  m_habitatMap: {fileID: -4754219479817976484, guid: 3dc70ca407a4bd44bbb0be4541fa1bdc, type: 3}
+  m_songParts:
+  - {fileID: 8300000, guid: 850eebfba89f96e4c970e76a79d9f9c1, type: 3}
+  - {fileID: 8300000, guid: b68c47ef20b467c44897892e6959cdb4, type: 3}
+  - {fileID: 8300000, guid: 6a4fb68e76c819344b2bb6c30de052b5, type: 3}
+  m_possibleGifts: []
+  m_requiredUpgradeIDs: []
+  m_minimumHabitatLevel: 0
+  m_arrivingBehavior: {fileID: 11400000, guid: d88b041e0268e154995e1a48f006466d, type: 2}
+  m_leavingBehavior: {fileID: 11400000, guid: f0c4c75f1d13d6b4bbb2248bcd6ea9d4, type: 2}
+  m_visitDurationMin: 30
+  m_visitDurationMax: 200
+  m_objectBonusSeconds: 5
+  m_movementSpeed: 60
+  m_feederInteractionOffset: 100
+  m_walkHopHeight: 30
+  m_walkHopDuration: 0.4
+  m_walkHopIntervalMin: 1.5
+  m_walkHopIntervalMax: 8
+  m_possibleBehaviors:
+  - m_behavior: {fileID: 11400000, guid: 39fea8c70a09ae140817bfddf184aceb, type: 2}
+    m_weight: 50
+  - m_behavior: {fileID: 11400000, guid: 83d10e14225a9b14b84ad00d43fed34b, type: 2}
+    m_weight: 30
+  - m_behavior: {fileID: 11400000, guid: fbfaf83a4f53eb1499c4f3e0d7727c06, type: 2}
+    m_weight: 20
+  m_hasSpecialAnimation: 0
+  m_specialAnimationDescription: 
+  m_minigameCooldownDuration: 120
+  m_availableMinigames:
+  - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}

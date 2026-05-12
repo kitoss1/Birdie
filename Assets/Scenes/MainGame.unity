@@ -461,8 +461,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -1895,8 +1895,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.MissionEntryUI
   m_descriptionText: {fileID: 1046244666}
-  m_claimedIndicator: {fileID: 0}
   m_claimButton: {fileID: 1973707122}
+  m_claimedButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
   m_claimButtonText: {fileID: 1052666945}
 --- !u!1 &634183681
 GameObject:
@@ -2747,8 +2747,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -3600,8 +3600,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 26.26, y: 26.26}
+  m_AnchoredPosition: {x: 0, y: 1.0999985}
+  m_SizeDelta: {x: 14.76, y: 18.21}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1392564045
 MonoBehaviour:
@@ -3668,7 +3668,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1392564043}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -3681,7 +3681,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 3022143573fbb5045a46853bd6fc4163, type: 3}
+  m_Sprite: {fileID: 21300000, guid: c4d42ace2fe6c024da3a1c6962382478, type: 3}
   m_Type: 0
   m_PreserveAspect: 1
   m_FillCenter: 1
@@ -4894,8 +4894,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.MissionEntryUI
   m_descriptionText: {fileID: 155524386}
-  m_claimedIndicator: {fileID: 0}
   m_claimButton: {fileID: 1503787440}
+  m_claimedButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
   m_claimButtonText: {fileID: 1744529828}
 --- !u!1 &1673955893
 GameObject:
@@ -6522,7 +6522,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7118457350178995346, guid: 49e740440f7d25747bdc532de37de34d, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -233.22684
+      value: -233.22682
       objectReference: {fileID: 0}
     - target: {fileID: 7152230995447505101, guid: 49e740440f7d25747bdc532de37de34d, type: 3}
       propertyPath: m_AnchorMax.y
@@ -7366,7 +7366,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5951672339573638153, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -183.99998
+      value: -184.00002
       objectReference: {fileID: 0}
     - target: {fileID: 7693512700322394347, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_Camera
@@ -9256,8 +9256,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.MissionEntryUI
   m_descriptionText: {fileID: 8794830362680233574}
-  m_claimedIndicator: {fileID: 0}
   m_claimButton: {fileID: 2258527652951128219}
+  m_claimedButtonSprite: {fileID: 21300000, guid: 7d7172cf1e164ee4daa48e46a717ece4, type: 3}
   m_claimButtonText: {fileID: 3556484296523157767}
 --- !u!1001 &5628030278524953979
 PrefabInstance:
@@ -9494,6 +9494,10 @@ PrefabInstance:
     - target: {fileID: 3824830478421511992, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4430012847579576972, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
+      propertyPath: m_HorizontalAlignment
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5065410362063097573, guid: 8f0ceb8b85b107349858bfaff63f8896, type: 3}
       propertyPath: m_SizeDelta.y
@@ -10139,6 +10143,14 @@ PrefabInstance:
       propertyPath: m_trashParent
       value: 
       objectReference: {fileID: 1926201832}
+    - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_maxSpawnInterval
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
+      propertyPath: m_minSpawnInterval
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_windowsillAnchor
       value: 
@@ -11168,8 +11180,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 36
-  m_fontSizeBase: 36
+  m_fontSize: 32
+  m_fontSizeBase: 32
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

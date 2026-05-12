@@ -28,7 +28,7 @@ MonoBehaviour:
   m_birdPhoto: {fileID: 21300000, guid: 55c815fe8a58fa445b7802a8efda42aa, type: 3}
   m_size: 1
   m_rarity: 0
-  m_baseSpawnWeight: 100
+  m_baseSpawnWeight: 1
   m_appearanceTimeRange:
     m_startHour: 8
     m_endHour: 18

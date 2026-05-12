@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Decoration002_windowsill002
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: Windowsill002
-  m_itemName: Windowsill002
-  m_description: First windowsill
+  m_itemName: Caoba al atardecer
+  m_description: "Su tono rojizo recuerda al cielo cuando el sol empieza a despedirse.
+    A\xF1ade un toque de elegancia sin intentarlo demasiado."
   m_icon: {fileID: 21300000, guid: 4b22775437112974a8a1cbf22a5b6934, type: 3}
   m_price: 10
   m_category: 3

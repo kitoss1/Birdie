@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Missions.DailyMissionDefinition
   m_missionID: 002
   m_missionType: 1
-  m_description: Limpia la ventada 5 veces
+  m_description: Limpia la ventana 5 veces
   m_targetCount: 5
   m_goldenSeedsReward: 5

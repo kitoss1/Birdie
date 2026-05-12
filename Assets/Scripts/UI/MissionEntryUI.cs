@@ -18,21 +18,21 @@ namespace Birdie.UI
         [Tooltip("Text showing the mission description with progress appended (e.g. 'Visit 3 birds (2/3)')")]
         private TMP_Text m_descriptionText;
 
-        [Header("State Visuals")]
-        [SerializeField]
-        [Tooltip("Object shown when the reward has already been claimed")]
-        private GameObject m_claimedIndicator;
-
         [Header("Claim Button")]
         [SerializeField]
         [Tooltip("Button shown when mission is complete and reward unclaimed")]
         private Button m_claimButton;
 
         [SerializeField]
+        [Tooltip("Sprite used on the claim button after the reward has been claimed")]
+        private Sprite m_claimedButtonSprite;
+
+        [SerializeField]
         [Tooltip("Text on the claim button showing the reward amount")]
         private TMP_Text m_claimButtonText;
 
         private int m_slotIndex;
+        private Sprite m_defaultButtonSprite;
 
         /// <summary>
         /// Binds this entry to a mission slot. Must be called once before Refresh().
@@ -44,6 +44,12 @@ namespace Birdie.UI
             if (m_claimButton != null)
             {
                 m_claimButton.onClick.AddListener(OnClaimButtonClicked);
+
+                Image buttonImage = m_claimButton.GetComponent<Image>();
+                if (buttonImage != null)
+                {
+                    m_defaultButtonSprite = buttonImage.sprite;
+                }
             }
         }
 
@@ -79,7 +85,6 @@ namespace Birdie.UI
 
             UpdateDescription(mission.Description, progress, mission.TargetCount, isClaimed);
             UpdateClaimButton(isComplete, isClaimed, mission.GoldenSeedsReward);
-            UpdateClaimedIndicator(isClaimed);
         }
 
         private void UpdateDescription(string description, int progress, int target, bool isClaimed)
@@ -99,20 +104,21 @@ namespace Birdie.UI
             if (m_claimButton != null)
             {
                 m_claimButton.gameObject.SetActive(isComplete);
-                m_claimButton.enabled = !isClaimed;
+                m_claimButton.interactable = !isClaimed;
+
+                Image buttonImage = m_claimButton.GetComponent<Image>();
+                if (buttonImage != null)
+                {
+                    buttonImage.sprite = isClaimed && m_claimedButtonSprite != null
+                        ? m_claimedButtonSprite
+                        : m_defaultButtonSprite;
+                }
             }
 
             if (m_claimButtonText != null)
             {
                 m_claimButtonText.text = $"+{reward}";
-            }
-        }
-
-        private void UpdateClaimedIndicator(bool isClaimed)
-        {
-            if (m_claimedIndicator != null)
-            {
-                m_claimedIndicator.SetActive(isClaimed);
+                m_claimButtonText.fontStyle = isClaimed ? FontStyles.Strikethrough : FontStyles.Normal;
             }
         }
 
@@ -142,6 +148,11 @@ namespace Birdie.UI
             if (m_claimButton == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(MissionEntryUI)}] Claim Button reference is missing!", this);
+            }
+
+            if (m_claimedButtonSprite == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(MissionEntryUI)}] Claimed Button Sprite is not assigned — button will keep its default sprite when claimed!", this);
             }
         }
 #endif

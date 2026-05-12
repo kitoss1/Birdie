@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Decoration001_windowsill001
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: Windowsill001
-  m_itemName: Windowsill001
-  m_description: First windowsill
+  m_itemName: "Roble c\xE1lido"
+  m_description: "Un alf\xE9izar sencillo y c\xE1lido, como el de la casa de tu abuela.
+    Cl\xE1sico, fiable, y con el olor imaginario de la madera reci\xE9n cortada."
   m_icon: {fileID: 21300000, guid: 89a1fd3e61347514ca9e7ce2ecf28d69, type: 3}
   m_price: 10
   m_category: 3

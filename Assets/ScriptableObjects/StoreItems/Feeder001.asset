@@ -13,8 +13,10 @@ MonoBehaviour:
   m_Name: Feeder001
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: Feeder001
-  m_itemName: Feeder001
-  m_description: First feeder to test
+  m_itemName: Granero de bolsillo
+  m_description: "Un peque\xF1o comedero lleno de semillas frescas. Los p\xE1jaros
+    lo encuentran irresistible, aunque todav\xEDa no saben qui\xE9n lo pone ah\xED
+    cada ma\xF1ana."
   m_icon: {fileID: 21300000, guid: 3b0e6c3947f15b4459b45a08a049cf22, type: 3}
   m_price: 10
   m_category: 0

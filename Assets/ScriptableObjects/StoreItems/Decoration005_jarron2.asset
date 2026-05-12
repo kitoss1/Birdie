@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Decoration005_jarron2
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: jarron002
-  m_itemName: Jarron2
-  m_description: First windowsill
+  m_itemName: Florero soleado
+  m_description: "Alegre, redondo y naranja por todas partes. Las flores no podr\xEDan
+    ser de otro color. Irradia el mismo buen humor todo el a\xF1o."
   m_icon: {fileID: 21300000, guid: 60906357920179e47ad145c5041676d4, type: 3}
   m_price: 10
   m_category: 3

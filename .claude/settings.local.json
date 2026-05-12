@@ -22,7 +22,10 @@
       "Bash(Select-Object Name)",
       "PowerShell(New-Item *)",
       "PowerShell(\\(Get-Content \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\technical\\\\codebase.md\" | Measure-Object -Line\\).Lines)",
-      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\technical\\\\class-relationships.md\" | Measure-Object -Line\\).Lines)"
+      "PowerShell(\\(Get-Content \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\docs\\\\technical\\\\class-relationships.md\" | Measure-Object -Line\\).Lines)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\Assets\\\\Scripts\\\\Data\\\\FriendshipLevelInfo.cs\" -Force)",
+      "Bash(Remove-Item \"C:\\\\Users\\\\marcg\\\\Documents\\\\Projects\\\\Birdie\\\\Assets\\\\Scripts\\\\Data\\\\FriendshipLevelInfo.cs.meta\" -Force -ErrorAction SilentlyContinue)",
+      "Bash(python3 *)"
     ],
     "deny": [],
     "ask": []

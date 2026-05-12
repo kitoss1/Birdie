@@ -13,8 +13,9 @@ MonoBehaviour:
   m_Name: Decoration004_jarron
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: jarron001
-  m_itemName: Jarron1
-  m_description: First windowsill
+  m_itemName: "Cristal de r\xEDo"
+  m_description: "Un jarr\xF3n de vidrio azulado con plantas que crecen tranquilas.
+    Parece que lleva ah\xED siempre, aunque lo acabas de poner."
   m_icon: {fileID: 21300000, guid: d4f9bb437476d624286e6b5f692c28d7, type: 3}
   m_price: 10
   m_category: 3
