@@ -2552,6 +2552,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 902812627}
   m_CullTransparentMesh: 1
+--- !u!1 &919435460 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7121111175861886742, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+  m_PrefabInstance: {fileID: 5133509383242270236}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1013725680
 GameObject:
   m_ObjectHideFlags: 0
@@ -5879,6 +5884,29 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 7913876218892898926, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
   m_PrefabInstance: {fileID: 5133509383242270236}
   m_PrefabAsset: {fileID: 0}
+--- !u!223 &1926201833
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919435460}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 1
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 60
+  m_TargetDisplay: 0
 --- !u!1 &1942892888
 GameObject:
   m_ObjectHideFlags: 0
@@ -7551,7 +7579,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5951672339573638153, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -184.00002
+      value: -184
       objectReference: {fileID: 0}
     - target: {fileID: 7693512700322394347, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_Camera
@@ -9359,7 +9387,10 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 6846144879699725835, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5833315206327285899}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7121111175861886742, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1926201833}
   m_SourcePrefab: {fileID: 100100000, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
 --- !u!1 &5133509383242270237 stripped
 GameObject:

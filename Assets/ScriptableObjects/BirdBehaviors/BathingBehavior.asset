@@ -25,3 +25,4 @@ MonoBehaviour:
   m_forcedNextBehavior: {fileID: 0}
   m_jumpAnimationStateName: Walking
   m_jumpHeight: 150
+  m_jumpSpeedMultiplier: 2.5
