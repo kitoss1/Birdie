@@ -182,11 +182,16 @@ namespace Birdie.Birds
             {
                 Vector2 targetLocal = birdRect.parent.InverseTransformPoint(target.InteractionPosition);
                 targetLocal.x += xOffset;
+                // Preserve the bird's current Y — birds walk on a flat surface, so only X matters
+                // for arrival. Using the interaction point's Y causes the 2D distance check to fail
+                // whenever the point is placed at a different height (e.g. a bath rim vs. ground).
+                targetLocal.y = ((Vector2)birdRect.localPosition).y;
                 return MoveTowardsLocalPosition(bird, birdRect, targetLocal, speed);
             }
 
             Vector3 worldPos = target.InteractionPosition;
             worldPos.x += xOffset;
+            worldPos.y = bird.transform.position.y;
             return MoveTowardsWorldPosition(bird, worldPos, speed);
         }
 

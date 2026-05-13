@@ -546,6 +546,15 @@ namespace Birdie.Birds
         }
 
         /// <summary>
+        /// Applies a Y offset to the visual root for a code-driven jump arc.
+        /// Pass 0 to restore the visual root to ground Y.
+        /// </summary>
+        public void ApplyJumpArcOffset(float offset)
+        {
+            m_walkJumper?.SetJumpArcOffset(offset);
+        }
+
+        /// <summary>
         /// Tilts the visual root by the given angle on the Z axis.
         /// Call with 0 to reset to upright.
         /// </summary>
@@ -578,6 +587,8 @@ namespace Birdie.Birds
         /// <summary>
         /// Returns the normalizedTime of the currently playing Animator state on layer 0.
         /// For looping clips this keeps incrementing past 1.0 — use % 1f to get the in-cycle fraction.
+        /// During a crossfade Unity reports the SOURCE state, so check IsInAnimationTransition first
+        /// when you need to know the destination clip's progress.
         /// </summary>
         public float GetCurrentAnimationNormalizedTime()
         {
@@ -587,6 +598,15 @@ namespace Birdie.Birds
             }
 
             return m_animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+        }
+
+        /// <summary>
+        /// Returns true while the Animator is mid-crossfade on layer 0.
+        /// Use this to avoid reading the source clip's normalizedTime as if it were the destination clip's.
+        /// </summary>
+        public bool IsInAnimationTransition()
+        {
+            return m_animator != null && m_animator.IsInTransition(0);
         }
 
         /// <summary>

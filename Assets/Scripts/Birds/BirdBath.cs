@@ -1,85 +1,72 @@
 using Birdie.Debug;
+using Birdie.Managers;
+using Birdie.Save;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Birdie.Birds
 {
     /// <summary>
-    /// Bird bath object where birds can bathe and clean themselves.
-    /// Birds with bathing behavior will be attracted to this object.
+    /// Bird bath object where birds can bathe and drink.
+    /// The bath has water for a single use and must be refilled by the player.
     /// </summary>
     public class BirdBath : BirdObject
     {
         [Header("Bath Settings")]
         [SerializeField]
-        [Tooltip("Does this bath have water available?")]
-        private bool m_hasWater = true;
-
-        [SerializeField]
-        [Tooltip("Water level (0-1, affects attractiveness)")]
-        [Range(0f, 1f)]
-        private float m_waterLevel = 1f;
-
-        [SerializeField]
-        [Tooltip("Visual representation of water (for animations)")]
+        [Tooltip("Visual representation of water, hidden when the bath is empty")]
         private GameObject m_waterVisual;
 
         [SerializeField]
-        [Tooltip("Particle system for splashing effects")]
-        private ParticleSystem m_splashParticles;
+        [Tooltip("Position inside the bath where the bird stands while bathing. Used by BathingBehavior for the jump-in phase.")]
+        private Transform m_bathingPosition;
+
+        private bool m_hasWater;
 
         public bool HasWater => m_hasWater;
-        public float WaterLevel => m_waterLevel;
+        public Vector3 BathingPosition => m_bathingPosition != null ? m_bathingPosition.position : InteractionPosition;
 
         private void Awake()
         {
-            // Initialize as bath type if not set in inspector
+            m_hasWater = true;
+            UpdateWaterVisual();
+
             if (string.IsNullOrEmpty(ObjectID))
             {
                 DebugBase.Log($"[{nameof(BirdBath)}] Bird bath initialized at {transform.position}", DebugCategory.Birds);
             }
         }
 
+        private void Start()
+        {
+            LoadFromSaveData();
+        }
+
         public override void OnBirdStartInteraction(Bird bird)
         {
             base.OnBirdStartInteraction(bird);
 
-            DebugBase.Log($"[{nameof(BirdBath)}] {bird.BirdData?.BirdName} started bathing", DebugCategory.Birds);
-
-            // Show water visual if available
-            if (m_waterVisual != null)
-            {
-                m_waterVisual.SetActive(true);
-            }
-
-            // Start splash particles
-            if (m_splashParticles != null)
-            {
-                m_splashParticles.Play();
-            }
-
-            // TODO: Play water ripple animation
+            DebugBase.Log($"[{nameof(BirdBath)}] {bird.BirdData?.BirdName} started using bird bath", DebugCategory.Birds);
         }
 
         public override void OnBirdEndInteraction(Bird bird)
         {
             base.OnBirdEndInteraction(bird);
 
-            DebugBase.Log($"[{nameof(BirdBath)}] {bird.BirdData?.BirdName} finished bathing", DebugCategory.Birds);
+            DebugBase.Log($"[{nameof(BirdBath)}] {bird.BirdData?.BirdName} finished using bird bath", DebugCategory.Birds);
+        }
 
-            // Stop splash particles
-            if (m_splashParticles != null)
-            {
-                m_splashParticles.Stop();
-            }
-
-            // TODO: Reduce water level slightly
-            // m_waterLevel -= 0.1f;
+        public void ConsumeWater()
+        {
+            m_hasWater = false;
+            DebugBase.Log($"[{nameof(BirdBath)}] Bath is now empty", DebugCategory.Birds);
+            UpdateWaterVisual();
+            SaveToSaveData();
         }
 
         public override bool CanBeUsedBy(Bird bird)
         {
-            // Only usable if water is available
-            if (!m_hasWater || m_waterLevel <= 0f)
+            if (!m_hasWater)
             {
                 return false;
             }
@@ -88,28 +75,68 @@ namespace Birdie.Birds
         }
 
         /// <summary>
-        /// Refills the bird bath with fresh water.
-        /// Called when player refills or when it rains.
+        /// Refills the bath with water.
+        /// Called when the player refills it.
         /// </summary>
         public void Refill()
         {
             m_hasWater = true;
-            m_waterLevel = 1f;
+            UpdateWaterVisual();
+            SaveToSaveData();
             DebugBase.Log($"[{nameof(BirdBath)}] Bird bath refilled", DebugCategory.Birds);
-
-            // TODO: Play refill animation/effects
         }
 
-        /// <summary>
-        /// Simulates water evaporation over time.
-        /// </summary>
-        public void ReduceWaterLevel(float amount)
+        private void LoadFromSaveData()
         {
-            m_waterLevel = Mathf.Max(0f, m_waterLevel - amount);
-            
-            if (m_waterLevel <= 0f)
+            SaveManager saveManager = GameManager.Instance?.SaveManager;
+
+            if (saveManager?.CurrentSaveData == null)
             {
-                m_hasWater = false;
+                DebugBase.LogWarning($"[{nameof(BirdBath)}] SaveManager not available, using default water state", DebugCategory.Birds);
+                return;
+            }
+
+            List<BathWaterEntry> entries = saveManager.CurrentSaveData.economy.bathWaterStates;
+            BathWaterEntry entry = entries.Find(e => e.bathID == ObjectID);
+
+            if (entry != null)
+            {
+                m_hasWater = entry.hasWater;
+                UpdateWaterVisual();
+                DebugBase.Log($"[{nameof(BirdBath)}] Loaded water state: {m_hasWater}", DebugCategory.Birds);
+            }
+        }
+
+        private void SaveToSaveData()
+        {
+            SaveManager saveManager = GameManager.Instance?.SaveManager;
+
+            if (saveManager?.CurrentSaveData == null)
+            {
+                DebugBase.LogWarning($"[{nameof(BirdBath)}] SaveManager not available, cannot save water state", DebugCategory.Birds);
+                return;
+            }
+
+            List<BathWaterEntry> entries = saveManager.CurrentSaveData.economy.bathWaterStates;
+            BathWaterEntry entry = entries.Find(e => e.bathID == ObjectID);
+
+            if (entry != null)
+            {
+                entry.hasWater = m_hasWater;
+            }
+            else
+            {
+                entries.Add(new BathWaterEntry { bathID = ObjectID, hasWater = m_hasWater });
+            }
+
+            saveManager.SaveGame();
+        }
+
+        private void UpdateWaterVisual()
+        {
+            if (m_waterVisual != null)
+            {
+                m_waterVisual.SetActive(m_hasWater);
             }
         }
     }

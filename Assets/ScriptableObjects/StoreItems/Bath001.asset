@@ -13,8 +13,14 @@ MonoBehaviour:
   m_Name: Bath001
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.StoreItemData
   m_itemID: Bath001
-  m_itemName: Bath001
-  m_description: First bath to test
-  m_icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_itemName: La Roseta
+  m_description: "Una peque\xF1a pila de piedra rosa que siempre tiene el agua fresquita.
+    Los m\xE1s grandes se asoman a beber con aire solemne, como si fuera lo m\xE1s
+    importante del d\xEDa. Los peque\xF1os, en cambio, lo convierten en su piscina
+    particular sin pedirle permiso a nadie."
+  m_icon: {fileID: 21300000, guid: c4d0b4ba3f109894b902d2993318d952, type: 3}
   m_price: 10
   m_category: 1
+  m_isMovable: 1
+  m_exclusivityGroup: 
+  m_ownedByDefault: 0

@@ -26,12 +26,11 @@ MonoBehaviour:
   m_birdPhoto: {fileID: 4657822427693599115, guid: 3ef7e2854f7eb384c81a91ce4398ae41, type: 3}
   m_size: 3
   m_rarity: 0
-  m_baseSpawnWeight: 100
+  m_baseSpawnWeight: 1
   m_appearanceTimeRange:
     m_startHour: 8
     m_endHour: 18
-  m_appearsAnytime: 1
-  m_maxFriendshipLevel: 4
+  m_appearsAnytime: 0
   m_friendshipLevelThresholds: 00000000190000004b00000096000000
   m_fullPhotoUnlockLevel: 0
   m_scientificNameUnlockLevel: 1
@@ -56,29 +55,28 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 850eebfba89f96e4c970e76a79d9f9c1, type: 3}
   - {fileID: 8300000, guid: b68c47ef20b467c44897892e6959cdb4, type: 3}
   - {fileID: 8300000, guid: 6a4fb68e76c819344b2bb6c30de052b5, type: 3}
-  m_possibleGifts: []
   m_requiredUpgradeIDs: []
-  m_minimumHabitatLevel: 0
   m_arrivingBehavior: {fileID: 11400000, guid: d88b041e0268e154995e1a48f006466d, type: 2}
   m_leavingBehavior: {fileID: 11400000, guid: f0c4c75f1d13d6b4bbb2248bcd6ea9d4, type: 2}
   m_visitDurationMin: 30
   m_visitDurationMax: 200
   m_objectBonusSeconds: 5
   m_movementSpeed: 60
-  m_feederInteractionOffset: 100
+  m_feederInteractionOffset: 50
+  m_bathInteractionOffset: 120
   m_walkHopHeight: 30
   m_walkHopDuration: 0.4
   m_walkHopIntervalMin: 1.5
   m_walkHopIntervalMax: 8
   m_possibleBehaviors:
   - m_behavior: {fileID: 11400000, guid: 39fea8c70a09ae140817bfddf184aceb, type: 2}
-    m_weight: 50
+    m_weight: 30
   - m_behavior: {fileID: 11400000, guid: 83d10e14225a9b14b84ad00d43fed34b, type: 2}
     m_weight: 30
   - m_behavior: {fileID: 11400000, guid: fbfaf83a4f53eb1499c4f3e0d7727c06, type: 2}
     m_weight: 20
-  m_hasSpecialAnimation: 0
-  m_specialAnimationDescription: 
+  - m_behavior: {fileID: 11400000, guid: abca6f41425aedc49b2106f11b0e6d19, type: 2}
+    m_weight: 100
   m_minigameCooldownDuration: 120
   m_availableMinigames:
-  - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}
+  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}

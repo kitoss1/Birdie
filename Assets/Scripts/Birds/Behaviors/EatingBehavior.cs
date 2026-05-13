@@ -165,7 +165,14 @@ namespace Birdie.Birds.Behaviors
 
         private void ExecuteEatingStart(Bird bird)
         {
-            // Wait for the one-shot clip to finish (normalizedTime reaches 1).
+            // Wait for the crossfade to settle before reading normalizedTime.
+            // Without this, the walk clip's time (source state) is read instead of the
+            // eating-start clip's time, causing an immediate skip to the eating loop.
+            if (bird.IsInAnimationTransition())
+            {
+                return;
+            }
+
             if (bird.GetCurrentAnimationNormalizedTime() >= 1f)
             {
                 EnterEatingLoop(bird);
@@ -180,7 +187,8 @@ namespace Birdie.Birds.Behaviors
 
             if (!string.IsNullOrEmpty(AnimationStateName))
             {
-                bird.PlayAnimation(AnimationStateName);
+                // Cut with no crossfade so the loop starts on the exact same frame the start clip ended.
+                bird.PlayAnimation(AnimationStateName, 0f);
             }
         }
 

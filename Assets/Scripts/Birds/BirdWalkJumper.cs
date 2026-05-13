@@ -138,6 +138,23 @@ namespace Birdie.Birds
             m_visualRoot.localPosition = pos;
         }
 
+        /// <summary>
+        /// Applies an explicit Y offset on top of the ground position, overriding any landing in progress.
+        /// Used by BathBehaviorBase to drive a jump arc in code. Pass 0 to restore ground Y.
+        /// </summary>
+        public void SetJumpArcOffset(float offset)
+        {
+            if (m_visualRoot == null)
+            {
+                return;
+            }
+
+            m_isLanding = false;
+            Vector3 pos = m_visualRoot.localPosition;
+            pos.y = m_groundY + offset;
+            m_visualRoot.localPosition = pos;
+        }
+
         private void RestoreGroundY()
         {
             if (m_visualRoot == null)

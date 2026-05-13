@@ -17,6 +17,7 @@ namespace Birdie.Save
         public int habitatLevel = 0;
         public List<ItemPositionEntry> itemPositions = new List<ItemPositionEntry>();
         public List<FeederFoodEntry> feederFoodLevels = new List<FeederFoodEntry>();
+        public List<BathWaterEntry> bathWaterStates = new List<BathWaterEntry>();
 
         /// <summary>
         /// Creates an empty economy save data.
@@ -35,6 +36,7 @@ namespace Birdie.Save
                    disabledItemIDs != null &&
                    itemPositions != null &&
                    feederFoodLevels != null &&
+                   bathWaterStates != null &&
                    goldenSeeds >= 0 &&
                    habitatLevel >= 0;
         }

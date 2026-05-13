@@ -190,6 +190,10 @@ namespace Birdie.Data
         [Tooltip("Horizontal offset from the feeder interaction point. Adjust per bird size so the sprite aligns correctly.")]
         private float m_feederInteractionOffset = 0f;
 
+        [SerializeField]
+        [Tooltip("Horizontal offset from the bath interaction point. Adjust per bird size so the sprite aligns correctly.")]
+        private float m_bathInteractionOffset = 0f;
+
         [Header("Walk Hop Settings")]
         [SerializeField]
         [Tooltip("Peak height of each hop while walking, in local units (pixels for canvas, world units otherwise). Set to 0 to disable hopping.")]
@@ -375,6 +379,8 @@ namespace Birdie.Data
         }
 
         public float FeederInteractionOffset => m_feederInteractionOffset;
+
+        public float BathInteractionOffset => m_bathInteractionOffset;
 
         public float WalkHopHeight => m_walkHopHeight;
 

@@ -162,7 +162,7 @@ namespace Birdie.UI
         {
             return action switch
             {
-                ObjectPopupMenuAction.Refill => obj is BirdFeeder,
+                ObjectPopupMenuAction.Refill => obj is BirdFeeder or BirdBath,
                 _ => true,
             };
         }
@@ -171,7 +171,8 @@ namespace Birdie.UI
         {
             return action switch
             {
-                ObjectPopupMenuAction.Refill => obj is BirdFeeder feeder && feeder.CurrentFoodLevel < feeder.MaxFoodLevel,
+                ObjectPopupMenuAction.Refill => obj is BirdFeeder feeder && feeder.CurrentFoodLevel < feeder.MaxFoodLevel
+                                            || obj is BirdBath bath && !bath.HasWater,
                 _ => true,
             };
         }
@@ -193,13 +194,17 @@ namespace Birdie.UI
 
         private void OnRefillClicked()
         {
-            if (m_currentObject is not BirdFeeder feeder)
+            if (m_currentObject is BirdFeeder feeder)
             {
-                return;
+                DebugBase.Log($"[{nameof(ObjectContextMenuUI)}] Refill clicked for feeder {feeder.ObjectID}", DebugCategory.UI);
+                feeder.Refill();
+            }
+            else if (m_currentObject is BirdBath bath)
+            {
+                DebugBase.Log($"[{nameof(ObjectContextMenuUI)}] Refill clicked for bath {bath.ObjectID}", DebugCategory.UI);
+                bath.Refill();
             }
 
-            DebugBase.Log($"[{nameof(ObjectContextMenuUI)}] Refill clicked for {feeder.ObjectID}", DebugCategory.UI);
-            feeder.Refill();
             Hide();
         }
 
