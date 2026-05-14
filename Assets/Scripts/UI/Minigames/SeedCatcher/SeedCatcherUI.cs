@@ -479,12 +479,7 @@ namespace Birdie.UI.Minigames
 
         private void OnLivesLost()
         {
-            m_currentState = SeedCatcherState.GameOver;
-
-            if (m_basket != null)
-            {
-                m_basket.SetInputEnabled(false);
-            }
+            EnterGameOver();
 
             DebugBase.Log(
                 $"[{nameof(SeedCatcherUI)}] No lives left! Final score: {m_score}",
@@ -518,12 +513,7 @@ namespace Birdie.UI.Minigames
 
         private void OnMaxScoreReached()
         {
-            m_currentState = SeedCatcherState.GameOver;
-
-            if (m_basket != null)
-            {
-                m_basket.SetInputEnabled(false);
-            }
+            EnterGameOver();
 
             DebugBase.Log(
                 $"[{nameof(SeedCatcherUI)}] Max score reached! Final score: {m_score}",
@@ -535,6 +525,18 @@ namespace Birdie.UI.Minigames
         private void OnTimeUp()
         {
             m_remainingTime = 0f;
+            UpdateTimerDisplay();
+            EnterGameOver();
+
+            DebugBase.Log(
+                $"[{nameof(SeedCatcherUI)}] Time's up! Final score: {m_score}",
+                DebugCategory.UI);
+
+            m_gameOverPanel?.Show(m_score, FriendshipReward);
+        }
+
+        private void EnterGameOver()
+        {
             m_currentState = SeedCatcherState.GameOver;
 
             if (m_basket != null)
@@ -542,13 +544,7 @@ namespace Birdie.UI.Minigames
                 m_basket.SetInputEnabled(false);
             }
 
-            UpdateTimerDisplay();
-
-            DebugBase.Log(
-                $"[{nameof(SeedCatcherUI)}] Time's up! Final score: {m_score}",
-                DebugCategory.UI);
-
-            m_gameOverPanel?.Show(m_score, FriendshipReward);
+            CleanupAllSeeds();
         }
 
         private void UpdateTimerDisplay()
@@ -565,7 +561,7 @@ namespace Birdie.UI.Minigames
             m_rewardTiers = rewardTiers;
             m_completionReward = completionReward;
 
-            if (m_rewardBar != null)
+            if (rewardTiers != null && m_rewardBar != null)
             {
                 m_rewardBar.Initialize(rewardTiers, completionReward);
             }

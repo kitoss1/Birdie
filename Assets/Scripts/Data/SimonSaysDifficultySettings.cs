@@ -26,14 +26,9 @@ namespace Birdie.Data
         [Min(0)]
         private int m_maxRounds = 0;
 
-        [SerializeField]
-        [Tooltip("Per-difficulty reward tiers. If set, overrides the MinigameData reward tiers for this level.")]
-        private MinigameRewardTier[] m_rewardTiers;
-
         public float SequenceStartDelay => m_sequenceStartDelay;
         public float GapBetweenHighlights => m_gapBetweenHighlights;
         public float NextRoundDelay => m_nextRoundDelay;
         public int MaxRounds => m_maxRounds;
-        public MinigameRewardTier[] RewardTiers => m_rewardTiers;
     }
 }

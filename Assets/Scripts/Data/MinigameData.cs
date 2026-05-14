@@ -19,15 +19,7 @@ namespace Birdie.Data
         [Tooltip("Prefab instantiated when this minigame is selected")]
         private GameObject m_minigamePrefab;
 
-        [SerializeField]
-        [Tooltip("Icon for UI display")]
-        private Sprite m_icon;
-
         [Header("Rewards")]
-        [SerializeField]
-        [Tooltip("Score thresholds and friendship rewards (three tiers, lowest to highest)")]
-        private MinigameRewardTier[] m_rewardTiers;
-
         [SerializeField]
         [Tooltip("Friendship reward awarded just for completing the minigame regardless of score")]
         [Min(0)]
@@ -41,8 +33,6 @@ namespace Birdie.Data
 
         public string MinigameName => m_minigameName;
         public GameObject MinigamePrefab => m_minigamePrefab;
-        public Sprite Icon => m_icon;
-        public MinigameRewardTier[] RewardTiers => m_rewardTiers;
         public int CompletionReward => m_completionReward;
 
         public MinigameDifficultySettings GetDifficultyForLevel(int friendshipLevel)
@@ -67,48 +57,6 @@ namespace Birdie.Data
             if (m_minigamePrefab == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(MinigameData)}] Minigame prefab is not assigned on {name}");
-            }
-
-            ValidateRewardTiers();
-        }
-
-        private void ValidateRewardTiers()
-        {
-            if (m_rewardTiers == null || m_rewardTiers.Length == 0)
-            {
-                return;
-            }
-
-            int previousThreshold = -1;
-
-            for (int i = 0; i < m_rewardTiers.Length; i++)
-            {
-                MinigameRewardTier tier = m_rewardTiers[i];
-                if (tier == null)
-                {
-                    continue;
-                }
-
-                if (tier.ScoreThreshold <= 0)
-                {
-                    UnityEngine.Debug.LogWarning(
-                        $"[{nameof(MinigameData)}] Reward tier {i} on {name} has a non-positive score threshold ({tier.ScoreThreshold})");
-                }
-
-                if (tier.FriendshipReward <= 0)
-                {
-                    UnityEngine.Debug.LogWarning(
-                        $"[{nameof(MinigameData)}] Reward tier {i} on {name} has a non-positive friendship reward ({tier.FriendshipReward})");
-                }
-
-                if (tier.ScoreThreshold <= previousThreshold)
-                {
-                    UnityEngine.Debug.LogWarning(
-                        $"[{nameof(MinigameData)}] Reward tiers on {name} are not sorted by ascending score threshold " +
-                        $"(tier {i} threshold {tier.ScoreThreshold} <= previous {previousThreshold})");
-                }
-
-                previousThreshold = tier.ScoreThreshold;
             }
         }
 #endif

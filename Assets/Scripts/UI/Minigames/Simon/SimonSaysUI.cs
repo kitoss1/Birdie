@@ -283,17 +283,7 @@ namespace Birdie.UI.Minigames
                 m_gapBetweenHighlights = simonSettings.GapBetweenHighlights;
                 m_nextRoundDelay = simonSettings.NextRoundDelay;
                 m_difficultyMaxRounds = simonSettings.MaxRounds;
-
-                if (simonSettings.RewardTiers != null && simonSettings.RewardTiers.Length > 0)
-                {
-                    m_rewardTiers = simonSettings.RewardTiers;
-                    RefreshMaxScore();
-                    m_rewardBar?.Initialize(m_rewardTiers, m_completionReward);
-                }
-                else
-                {
-                    RefreshMaxScore();
-                }
+                RefreshMaxScore();
             }
             else if (settings != null)
             {

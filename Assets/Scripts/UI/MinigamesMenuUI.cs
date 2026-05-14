@@ -105,7 +105,7 @@ namespace Birdie.UI
 
             if (m_currentMinigame != null)
             {
-                m_currentMinigame.SetRewardTiers(selectedMinigame.RewardTiers, selectedMinigame.CompletionReward);
+                m_currentMinigame.SetRewardTiers(null, selectedMinigame.CompletionReward);
 
                 int friendshipLevel = 0;
                 if (GameManager.Instance?.FriendshipManager != null)
@@ -118,6 +118,11 @@ namespace Birdie.UI
                 if (difficulty != null)
                 {
                     m_currentMinigame.SetDifficulty(difficulty);
+
+                    if (difficulty.RewardTiers != null && difficulty.RewardTiers.Length > 0)
+                    {
+                        m_currentMinigame.SetRewardTiers(difficulty.RewardTiers, selectedMinigame.CompletionReward);
+                    }
                 }
 
                 m_currentMinigame.GameClosed += OnMinigameFinished;
