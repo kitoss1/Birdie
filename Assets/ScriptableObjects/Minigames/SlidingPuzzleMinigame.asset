@@ -14,12 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MinigameData
   m_minigameName: Sliding Puzzle
   m_minigamePrefab: {fileID: 4400365219516685110, guid: 6463b1e699aeb9e4c8688cbc4ac7ce95, type: 3}
-  m_icon: {fileID: 0}
-  m_rewardTiers:
-  - m_scoreThreshold: 25
-    m_friendshipReward: 10
-  - m_scoreThreshold: 50
-    m_friendshipReward: 15
   m_completionReward: 5
   m_difficultyPerLevel:
   - rid: 6068701964018384896
@@ -31,6 +25,11 @@ MonoBehaviour:
     - rid: 2215143475976077398
       type: {class: SlidingPuzzleDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers:
+        - m_scoreThreshold: 30
+          m_friendshipReward: 15
+        - m_scoreThreshold: 50
+          m_friendshipReward: 20
         m_gridSize: 3
         m_shuffleMoves: 8
         m_maxScore: 100
@@ -38,6 +37,11 @@ MonoBehaviour:
     - rid: 2215143475976077413
       type: {class: SlidingPuzzleDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers:
+        - m_scoreThreshold: 15
+          m_friendshipReward: 20
+        - m_scoreThreshold: 40
+          m_friendshipReward: 25
         m_gridSize: 3
         m_shuffleMoves: 8
         m_maxScore: 90
@@ -45,7 +49,12 @@ MonoBehaviour:
     - rid: 6068701964018384896
       type: {class: SlidingPuzzleDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers:
+        - m_scoreThreshold: 10
+          m_friendshipReward: 10
+        - m_scoreThreshold: 20
+          m_friendshipReward: 15
         m_gridSize: 2
         m_shuffleMoves: 5
-        m_maxScore: 100
+        m_maxScore: 40
         m_slideDuration: 0.15

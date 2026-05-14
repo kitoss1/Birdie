@@ -2,11 +2,11 @@ namespace Birdie.Data
 {
     public enum DietType
     {
-        Seeds,
-        Insects,
+        Semillas,
+        Insectos,
         Nectar,
-        Fruits,
-        Mixed,
-        Carnivorous
+        Frutas,
+        Mixta,
+        Carnivora
     }
 }

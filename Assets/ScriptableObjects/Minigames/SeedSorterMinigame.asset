@@ -14,9 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MinigameData
   m_minigameName: Seed Sorter
   m_minigamePrefab: {fileID: 4400365219516685110, guid: c3bb9138d31ae7d4387dd0765b5a64fa, type: 3}
-  m_icon: {fileID: 0}
-  m_rewardTiers: []
-  m_completionReward: 3
+  m_completionReward: 0
   m_difficultyPerLevel:
   - rid: 6068701967402664006
   - rid: 2215143475976077395
@@ -27,6 +25,7 @@ MonoBehaviour:
     - rid: 2215143475976077395
       type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers: []
         m_totalSeedCount: 18
         m_likedSeedCount: 6
         m_errorTiers:
@@ -39,6 +38,7 @@ MonoBehaviour:
     - rid: 2215143475976077396
       type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers: []
         m_totalSeedCount: 22
         m_likedSeedCount: 10
         m_errorTiers:
@@ -51,6 +51,7 @@ MonoBehaviour:
     - rid: 6068701967402664006
       type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers: []
         m_totalSeedCount: 12
         m_likedSeedCount: 6
         m_errorTiers:

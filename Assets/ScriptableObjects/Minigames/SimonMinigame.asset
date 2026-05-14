@@ -14,14 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MinigameData
   m_minigameName: Simon
   m_minigamePrefab: {fileID: 4400365219516685110, guid: bcc97641d564aaf4eac3c4abecf02613, type: 3}
-  m_icon: {fileID: 0}
-  m_rewardTiers:
-  - m_scoreThreshold: 2
-    m_friendshipReward: 5
-  - m_scoreThreshold: 5
-    m_friendshipReward: 10
-  - m_scoreThreshold: 7
-    m_friendshipReward: 15
   m_completionReward: 0
   m_difficultyPerLevel:
   - rid: 6068701941492613193
@@ -33,6 +25,13 @@ MonoBehaviour:
     - rid: 6068701941492613193
       type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers:
+        - m_scoreThreshold: 2
+          m_friendshipReward: 5
+        - m_scoreThreshold: 4
+          m_friendshipReward: 10
+        - m_scoreThreshold: 6
+          m_friendshipReward: 15
         m_sequenceStartDelay: 1
         m_gapBetweenHighlights: 0.2
         m_nextRoundDelay: 0.8
@@ -40,6 +39,13 @@ MonoBehaviour:
     - rid: 6068701941492613194
       type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers:
+        - m_scoreThreshold: 3
+          m_friendshipReward: 10
+        - m_scoreThreshold: 6
+          m_friendshipReward: 15
+        - m_scoreThreshold: 8
+          m_friendshipReward: 20
         m_sequenceStartDelay: 1
         m_gapBetweenHighlights: 0.2
         m_nextRoundDelay: 0.8
@@ -47,6 +53,13 @@ MonoBehaviour:
     - rid: 6068701941492613195
       type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:
+        m_rewardTiers:
+        - m_scoreThreshold: 5
+          m_friendshipReward: 15
+        - m_scoreThreshold: 9
+          m_friendshipReward: 20
+        - m_scoreThreshold: 12
+          m_friendshipReward: 25
         m_sequenceStartDelay: 0.8
         m_gapBetweenHighlights: 0.1
         m_nextRoundDelay: 0.5
