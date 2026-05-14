@@ -26,15 +26,17 @@ MonoBehaviour:
   m_birdPhoto: {fileID: 4657822427693599115, guid: 3ef7e2854f7eb384c81a91ce4398ae41, type: 3}
   m_size: 3
   m_rarity: 0
-  m_baseSpawnWeight: 1
+  m_baseSpawnWeight: 100
   m_appearanceTimeRange:
-    m_startHour: 8
-    m_endHour: 18
+    m_startHour: 20
+    m_endHour: 6
   m_appearsAnytime: 0
   m_friendshipLevelThresholds: 00000000190000004b00000096000000
   m_fullPhotoUnlockLevel: 0
   m_scientificNameUnlockLevel: 1
   m_visitHoursUnlockLevel: 1
+  m_interactionCounterUnlockLevel: 0
+  m_firstVisitDateUnlockLevel: 0
   m_dietUnlockLevel: 2
   m_descriptionUnlockLevel: 2
   m_habitatMapUnlockLevel: 2

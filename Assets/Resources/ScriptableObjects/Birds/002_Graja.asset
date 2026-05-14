@@ -35,6 +35,8 @@ MonoBehaviour:
   m_fullPhotoUnlockLevel: 0
   m_scientificNameUnlockLevel: 1
   m_visitHoursUnlockLevel: 1
+  m_interactionCounterUnlockLevel: 0
+  m_firstVisitDateUnlockLevel: 0
   m_dietUnlockLevel: 2
   m_descriptionUnlockLevel: 2
   m_habitatMapUnlockLevel: 2

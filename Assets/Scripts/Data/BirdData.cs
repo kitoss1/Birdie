@@ -95,6 +95,16 @@ namespace Birdie.Data
         private int m_visitHoursUnlockLevel = 1;
 
         [SerializeField]
+        [Tooltip("Friendship level required to reveal the visit counter")]
+        [Range(0, 10)]
+        private int m_interactionCounterUnlockLevel = 1;
+
+        [SerializeField]
+        [Tooltip("Friendship level required to reveal the first visit date")]
+        [Range(0, 10)]
+        private int m_firstVisitDateUnlockLevel = 1;
+
+        [SerializeField]
         [Tooltip("Friendship level required to reveal the diet type")]
         [Range(0, 10)]
         private int m_dietUnlockLevel = 1;
@@ -308,6 +318,8 @@ namespace Birdie.Data
         public int FullPhotoUnlockLevel => m_fullPhotoUnlockLevel;
         public int ScientificNameUnlockLevel => m_scientificNameUnlockLevel;
         public int VisitHoursUnlockLevel => m_visitHoursUnlockLevel;
+        public int InteractionCounterUnlockLevel => m_interactionCounterUnlockLevel;
+        public int FirstVisitDateUnlockLevel => m_firstVisitDateUnlockLevel;
         public int DietUnlockLevel => m_dietUnlockLevel;
         public int PeligroUnlockLevel => m_peligroUnlockLevel;
         public Sprite PeligroSprite => m_peligroSprite;

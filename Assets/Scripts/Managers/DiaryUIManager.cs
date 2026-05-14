@@ -145,8 +145,10 @@ namespace Birdie.Managers
 
             if (pageUI?.InteractionCounterText != null)
             {
-                int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
-                pageUI.InteractionCounterText.text = $"Visitas: {encounterCount}";
+                int currentLevel = GameManager.Instance.FriendshipManager.GetFriendshipLevel(birdData.BirdID, birdData);
+                pageUI.InteractionCounterText.text = currentLevel >= birdData.InteractionCounterUnlockLevel
+                    ? $"Visitas: {GameManager.Instance.DiaryManager.GetEncounterCount(birdData)}"
+                    : "Visitas: ???";
             }
         }
 
@@ -241,7 +243,8 @@ namespace Birdie.Managers
                     introPageUI.ScientificNameText, introPageUI.InteractionCounterText,
                     introPageUI.FriendshipLevelText, introPageUI.FriendshipBar,
                     introPageUI.VisitHoursText, introPageUI.FoodText,
-                    introPageUI.DietIconContainer, introPageUI.DietIconPrefab, allBirds[0]);
+                    introPageUI.DietIconContainer, introPageUI.DietIconPrefab,
+                    introPageUI.FirstVisitDateText, allBirds[0]);
 
                 // Initialize introduction page to show front (0 degrees rotation)
                 introPageUI.SetPageSide(showingBack: false);
@@ -273,7 +276,8 @@ namespace Birdie.Managers
                         pageUI.ScientificNameText, pageUI.InteractionCounterText,
                         pageUI.FriendshipLevelText, pageUI.FriendshipBar,
                         pageUI.VisitHoursText, pageUI.FoodText,
-                        pageUI.DietIconContainer, pageUI.DietIconPrefab, allBirds[i + 1]);
+                        pageUI.DietIconContainer, pageUI.DietIconPrefab,
+                        pageUI.FirstVisitDateText, allBirds[i + 1]);
                 }
                 else
                 {
@@ -392,7 +396,8 @@ namespace Birdie.Managers
             TextMeshProUGUI scientificNameText, TextMeshProUGUI interactionCounterText,
             TextMeshProUGUI friendshipLevelText, ResourceBarTracker friendshipBar,
             TextMeshProUGUI visitHoursText, TextMeshProUGUI foodText,
-            Transform dietIconContainer, GameObject dietIconPrefab, BirdData birdData)
+            Transform dietIconContainer, GameObject dietIconPrefab,
+            TextMeshProUGUI firstVisitDateText, BirdData birdData)
         {
             if (parentObject != null)
             {
@@ -408,6 +413,7 @@ namespace Birdie.Managers
                 if (scientificNameText != null) scientificNameText.text = "???";
                 if (interactionCounterText != null) interactionCounterText.text = "Visitas: ???";
                 if (visitHoursText != null) visitHoursText.text = "???";
+                if (firstVisitDateText != null) firstVisitDateText.text = "Fecha de la primera visita: ???";
                 SetDietLocked(foodText, dietIconContainer);
                 PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered: false);
                 return;
@@ -435,8 +441,9 @@ namespace Birdie.Managers
 
             if (interactionCounterText != null)
             {
-                int encounterCount = GameManager.Instance.DiaryManager.GetEncounterCount(birdData);
-                interactionCounterText.text = $"Visitas: {encounterCount}";
+                interactionCounterText.text = currentLevel >= birdData.InteractionCounterUnlockLevel
+                    ? $"Visitas: {GameManager.Instance.DiaryManager.GetEncounterCount(birdData)}"
+                    : "Visitas: ???";
             }
 
             PopulateFriendshipBar(friendshipBar, friendshipLevelText, birdData, isDiscovered: true);
@@ -462,6 +469,21 @@ namespace Birdie.Managers
             else
             {
                 SetDietLocked(foodText, dietIconContainer);
+            }
+
+            if (firstVisitDateText != null)
+            {
+                if (currentLevel >= birdData.FirstVisitDateUnlockLevel)
+                {
+                    DateTime? discoveryDate = GameManager.Instance.DiaryManager.GetDiscoveryDate(birdData.BirdID);
+                    firstVisitDateText.text = discoveryDate.HasValue
+                        ? $"Fecha de la primera visita: {discoveryDate.Value:dd/MM/yyyy}"
+                        : "Fecha de la primera visita: ???";
+                }
+                else
+                {
+                    firstVisitDateText.text = "Fecha de la primera visita: ???";
+                }
             }
         }
 
@@ -1139,7 +1161,8 @@ namespace Birdie.Managers
                         introPageUI.ScientificNameText, introPageUI.InteractionCounterText,
                         introPageUI.FriendshipLevelText, introPageUI.FriendshipBar,
                         introPageUI.VisitHoursText, introPageUI.FoodText,
-                        introPageUI.DietIconContainer, introPageUI.DietIconPrefab, birdData);
+                        introPageUI.DietIconContainer, introPageUI.DietIconPrefab,
+                        introPageUI.FirstVisitDateText, birdData);
                 }
             }
             else if (birdIndex - 1 >= 0 && birdIndex - 1 < m_instantiatedPages.Count)
@@ -1152,7 +1175,8 @@ namespace Birdie.Managers
                         prevPageUI.ScientificNameText, prevPageUI.InteractionCounterText,
                         prevPageUI.FriendshipLevelText, prevPageUI.FriendshipBar,
                         prevPageUI.VisitHoursText, prevPageUI.FoodText,
-                        prevPageUI.DietIconContainer, prevPageUI.DietIconPrefab, birdData);
+                        prevPageUI.DietIconContainer, prevPageUI.DietIconPrefab,
+                        prevPageUI.FirstVisitDateText, birdData);
                 }
             }
 

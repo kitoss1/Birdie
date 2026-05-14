@@ -38,6 +38,9 @@ namespace Birdie.UI
         [Tooltip("Image displaying the feather decoration")]
         [SerializeField] private Image m_featherImage;
 
+        [Tooltip("Icon displaying the conservation danger level")]
+        [SerializeField] private Image m_peligroIcon;
+
         [Header("Back Elements")]
         [Tooltip("The image component that displays the bird's photo")]
         [SerializeField] private Image m_birdPhoto;
@@ -60,9 +63,6 @@ namespace Birdie.UI
         [Tooltip("Text displaying the bird's visit hours")]
         [SerializeField] private TextMeshProUGUI m_visitHoursText;
 
-        [Tooltip("Icon displaying the conservation danger level")]
-        [SerializeField] private Image m_peligroIcon;
-
         [Tooltip("Text displaying the bird's diet type (shown when diet is locked)")]
         [SerializeField] private TextMeshProUGUI m_foodText;
 
@@ -72,11 +72,16 @@ namespace Birdie.UI
         [Tooltip("Prefab instantiated for each diet icon (must have an Image component)")]
         [SerializeField] private GameObject m_dietIconPrefab;
 
+        [Tooltip("Text displaying the date of the first visit")]
+        [SerializeField] private TextMeshProUGUI m_firstVisitDateText;
+
         public GameObject BackParent => m_backParent;
         public GameObject FrontParent => m_frontParent;
         public TextMeshProUGUI DescriptionText => m_descriptionText;
         public Image MapImage => m_mapImage;
         public Image FeatherImage => m_featherImage;
+        public Image PeligroIcon => m_peligroIcon;
+        public TextMeshProUGUI FirstVisitDateText => m_firstVisitDateText;
         public Image BirdPhoto => m_birdPhoto;
         public TextMeshProUGUI NameText => m_nameText;
         public TextMeshProUGUI ScientificNameText => m_scientificNameText;
@@ -84,7 +89,6 @@ namespace Birdie.UI
         public TextMeshProUGUI FriendshipLevelText => m_friendshipLevelText;
         public ResourceBarTracker FriendshipBar => m_friendshipBar;
         public TextMeshProUGUI VisitHoursText => m_visitHoursText;
-        public Image PeligroIcon => m_peligroIcon;
         public TextMeshProUGUI FoodText => m_foodText;
         public Transform DietIconContainer => m_dietIconContainer;
         public GameObject DietIconPrefab => m_dietIconPrefab;
@@ -216,6 +220,11 @@ namespace Birdie.UI
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Description Text reference is missing!", this);
                 }
 
+                if (m_peligroIcon == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Peligro Icon reference is missing!", this);
+                }
+
                 if (m_birdPhoto == null)
                 {
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Bird Photo reference is missing!", this);
@@ -251,11 +260,6 @@ namespace Birdie.UI
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Visit Hours Text reference is missing!", this);
                 }
 
-                if (m_peligroIcon == null)
-                {
-                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Peligro Icon reference is missing!", this);
-                }
-
                 if (m_foodText == null)
                 {
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Food Text reference is missing!", this);
@@ -269,6 +273,11 @@ namespace Birdie.UI
                 if (m_dietIconPrefab == null)
                 {
                     UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] Diet Icon Prefab reference is missing!", this);
+                }
+
+                if (m_firstVisitDateText == null)
+                {
+                    UnityEngine.Debug.LogWarning($"[{nameof(BirdPageUI)}] First Visit Date Text reference is missing!", this);
                 }
             }
         }
