@@ -111,7 +111,9 @@ namespace Birdie.Save
                 }
 
                 m_currentSaveData = backupData;
-                SaveGame();
+                m_currentSaveData.UpdateSaveTimestamp();
+                string jsonData = JsonUtility.ToJson(m_currentSaveData, true);
+                File.WriteAllText(m_saveFilePath, jsonData);
                 DebugBase.Log($"[{nameof(SaveManager)}] Restored from backup successfully", DebugCategory.General);
                 OnLoadCompleted?.Invoke();
                 return true;

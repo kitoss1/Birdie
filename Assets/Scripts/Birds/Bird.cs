@@ -224,8 +224,8 @@ namespace Birdie.Birds
             // Start with the arriving behavior if configured, otherwise pick normally.
             TransitionToNextBehavior(m_birdData.ArrivingBehavior);
 
-            // Wait until visit time is over
-            await UniTask.WaitUntil(() => Time.time >= m_visitEndTime, cancellationToken: this.GetCancellationTokenOnDestroy());
+            // Wait until visit time is over. Don't leave while paused (e.g. during a minigame).
+            await UniTask.WaitUntil(() => m_currentState != BirdState.Paused && Time.time >= m_visitEndTime, cancellationToken: this.GetCancellationTokenOnDestroy());
 
             // Exit current behavior before leaving
             if (m_currentBehavior != null)
