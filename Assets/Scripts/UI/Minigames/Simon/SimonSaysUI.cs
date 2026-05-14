@@ -269,9 +269,9 @@ namespace Birdie.UI.Minigames
             m_completionReward = completionReward;
             RefreshMaxScore();
 
-            if (m_rewardBar != null)
+            if (rewardTiers != null)
             {
-                m_rewardBar.Initialize(rewardTiers, completionReward);
+                m_rewardBar?.Initialize(rewardTiers, completionReward);
             }
         }
 
@@ -283,7 +283,17 @@ namespace Birdie.UI.Minigames
                 m_gapBetweenHighlights = simonSettings.GapBetweenHighlights;
                 m_nextRoundDelay = simonSettings.NextRoundDelay;
                 m_difficultyMaxRounds = simonSettings.MaxRounds;
-                RefreshMaxScore();
+
+                if (simonSettings.RewardTiers != null && simonSettings.RewardTiers.Length > 0)
+                {
+                    m_rewardTiers = simonSettings.RewardTiers;
+                    RefreshMaxScore();
+                    m_rewardBar?.Initialize(m_rewardTiers, m_completionReward);
+                }
+                else
+                {
+                    RefreshMaxScore();
+                }
             }
             else if (settings != null)
             {

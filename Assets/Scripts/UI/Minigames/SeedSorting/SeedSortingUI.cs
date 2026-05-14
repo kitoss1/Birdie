@@ -116,7 +116,7 @@ namespace Birdie.UI.Minigames
             m_rewardTiers = rewardTiers;
             m_completionReward = completionReward;
 
-            if (!BuildRewardTiersFromErrors())
+            if (!BuildRewardTiersFromErrors() && rewardTiers != null)
             {
                 m_rewardBar?.Initialize(rewardTiers, completionReward);
             }
@@ -129,7 +129,11 @@ namespace Birdie.UI.Minigames
                 m_totalSeedCount = sortingSettings.TotalSeedCount;
                 m_likedSeedCount = sortingSettings.LikedSeedCount;
                 m_errorTiers = sortingSettings.ErrorTiers;
-                BuildRewardTiersFromErrors();
+
+                if (!BuildRewardTiersFromErrors())
+                {
+                    m_rewardBar?.Initialize(m_rewardTiers, m_completionReward);
+                }
             }
             else if (settings != null)
             {
