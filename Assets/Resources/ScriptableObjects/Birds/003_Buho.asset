@@ -15,18 +15,20 @@ MonoBehaviour:
   m_birdName: "B\xFAho real "
   m_scientificName: 'Bubo bubo  '
   m_birdID: 003
-  m_basicDescription: "a m\xE1s grande de las rapaces nocturnas europeas, el b\xFAho
-    real es un formidable depredador capaz de alimentarse de una enorme variedad
-    de presas. De car\xE1cter reservado y solitario, puede instalarse en los m\xE1s
-    diversos h\xE1bitats, aunque prefiere las zonas brav\xEDas con abundantes roquedales,
-    tajos y cortados. La disminuci\xF3n de su presa fundamental (el conejo), los
-    accidentes con tendidos el\xE9ctricos, los atropellos y la caza furtiva constituyen
-    sus principales problemas de conservaci\xF3n."
+  m_basicDescription: "El m\xE1s grande de todos. La rapaz nocturna m\xE1s imponente
+    de Europa, capaz de cazar una enorme variedad de presas y hacerlo con una calma
+    que da respeto. No es de los que buscan compa\xF1\xEDa: prefiere los paisajes
+    m\xE1s agrestes, los roquedales, los cortados, los sitios donde nadie m\xE1s
+    se instala.\nVerlo en tu alf\xE9izar ser\xEDa toda una rareza. Es un solitario
+    de los de verdad.\nLamentablemente, no lo tiene f\xE1cil: la escasez de conejos,
+    los tendidos el\xE9ctricos, los atropellos y la caza furtiva siguen siendo amenazas
+    muy reales. Un p\xE1jaro tan magn\xEDfico como fr\xE1gil, aunque \xE9l nunca
+    lo admitir\xEDa."
   m_birdPrefab: {fileID: 7991333266149840317, guid: b5dfefa7bf53266409208391c48aef4e, type: 3}
   m_birdPhoto: {fileID: 4657822427693599115, guid: 3ef7e2854f7eb384c81a91ce4398ae41, type: 3}
   m_size: 3
   m_rarity: 0
-  m_baseSpawnWeight: 100
+  m_baseSpawnWeight: 25
   m_appearanceTimeRange:
     m_startHour: 20
     m_endHour: 6
@@ -51,7 +53,6 @@ MonoBehaviour:
   m_dietIcons:
   - icon: {fileID: 21300000, guid: 310d7e6d736196b48b7eed349b1054c6, type: 3}
     name: "Carn\xEDvoro"
-  m_habitat: 
   m_habitatMap: {fileID: -4754219479817976484, guid: 3dc70ca407a4bd44bbb0be4541fa1bdc, type: 3}
   m_songParts:
   - {fileID: 8300000, guid: 850eebfba89f96e4c970e76a79d9f9c1, type: 3}
@@ -72,13 +73,16 @@ MonoBehaviour:
   m_walkHopIntervalMax: 8
   m_possibleBehaviors:
   - m_behavior: {fileID: 11400000, guid: 39fea8c70a09ae140817bfddf184aceb, type: 2}
-    m_weight: 30
+    m_weight: 50
   - m_behavior: {fileID: 11400000, guid: 83d10e14225a9b14b84ad00d43fed34b, type: 2}
-    m_weight: 30
-  - m_behavior: {fileID: 11400000, guid: fbfaf83a4f53eb1499c4f3e0d7727c06, type: 2}
     m_weight: 20
+  - m_behavior: {fileID: 11400000, guid: fbfaf83a4f53eb1499c4f3e0d7727c06, type: 2}
+    m_weight: 50
   - m_behavior: {fileID: 11400000, guid: abca6f41425aedc49b2106f11b0e6d19, type: 2}
-    m_weight: 100
+    m_weight: 10
   m_minigameCooldownDuration: 120
   m_availableMinigames:
+  - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}
+  - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
   - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}
+  - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}

@@ -7346,6 +7346,10 @@ PrefabInstance:
       propertyPath: m_dietIconToastSettings
       value: 
       objectReference: {fileID: 11400000, guid: 63fe0044c7e66bf48add0e359aea093a, type: 2}
+    - target: {fileID: 4062717470153100130, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
+      propertyPath: m_lockedDescriptionText
+      value: "Este p\xE1jaro todav\xEDa no ha sido descubierto."
+      objectReference: {fileID: 0}
     - target: {fileID: 5338225072528418687, guid: 0b1c13fdc4126574d9f32ada781561d1, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: -14.430481
@@ -10143,11 +10147,11 @@ PrefabInstance:
       objectReference: {fileID: 1926201832}
     - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_maxSpawnInterval
-      value: 10
+      value: 1000
       objectReference: {fileID: 0}
     - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_minSpawnInterval
-      value: 10
+      value: 200
       objectReference: {fileID: 0}
     - target: {fileID: 9050204291063181831, guid: 5ec6656f341caae4696fe5cd79e796d3, type: 3}
       propertyPath: m_windowsillAnchor

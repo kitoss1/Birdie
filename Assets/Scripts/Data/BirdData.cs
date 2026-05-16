@@ -152,11 +152,6 @@ namespace Birdie.Data
         private List<DietIconEntry> m_dietIcons = new List<DietIconEntry>();
 
         [SerializeField]
-        [Tooltip("Natural habitat description")]
-        [TextArea(2, 4)]
-        private string m_habitat;
-
-        [SerializeField]
         [Tooltip("Habitat map/sprite (optional)")]
         private Sprite m_habitatMap;
 
@@ -339,12 +334,6 @@ namespace Birdie.Data
         {
             get => m_dietIcons;
             set => m_dietIcons = value;
-        }
-
-        public string Habitat
-        {
-            get => m_habitat;
-            set => m_habitat = value;
         }
 
         public Sprite HabitatMap
