@@ -31,9 +31,9 @@ MonoBehaviour:
         m_errorTiers:
         - m_maxErrors: 0
           m_friendshipReward: 15
-        - m_maxErrors: 2
-          m_friendshipReward: 10
         - m_maxErrors: 5
+          m_friendshipReward: 10
+        - m_maxErrors: 8
           m_friendshipReward: 5
     - rid: 2215143475976077396
       type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
@@ -44,9 +44,9 @@ MonoBehaviour:
         m_errorTiers:
         - m_maxErrors: 0
           m_friendshipReward: 15
-        - m_maxErrors: 1
+        - m_maxErrors: 3
           m_friendshipReward: 10
-        - m_maxErrors: 2
+        - m_maxErrors: 6
           m_friendshipReward: 5
     - rid: 6068701967402664006
       type: {class: SeedSortingDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}

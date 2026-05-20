@@ -145,7 +145,7 @@ namespace Birdie.UI.Store
             {
                 if (isOwned)
                 {
-                    m_priceText.text = isEnabled ? "Disable" : "Enable";
+                    m_priceText.text = isEnabled ? "Desactivar" : "Activar";
                     m_priceText.color = m_affordableColor;
                 }
                 else

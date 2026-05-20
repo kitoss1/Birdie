@@ -99,6 +99,7 @@ namespace Birdie.UI.Minigames
         private int m_completionReward;
         private MinigameErrorTier[] m_errorTiers;
         private int m_score;
+        private int m_likedScore;
         private int m_errors;
         private int m_remainingSeeds;
         private SeedSortingState m_currentState;
@@ -146,6 +147,7 @@ namespace Birdie.UI.Minigames
         public void StartGame()
         {
             m_score = 0;
+            m_likedScore = 0;
             m_errors = 0;
             m_remainingSeeds = m_totalSeedCount;
             m_currentState = SeedSortingState.WaitingToStart;
@@ -189,7 +191,7 @@ namespace Birdie.UI.Minigames
 
         private bool BuildRewardTiersFromErrors()
         {
-            MinigameRewardTier[] tiers = MinigameErrorTier.ToRewardTiers(m_errorTiers, m_totalSeedCount);
+            MinigameRewardTier[] tiers = MinigameErrorTier.ToRewardTiers(m_errorTiers, m_likedSeedCount);
             if (tiers == null)
             {
                 return false;
@@ -342,6 +344,10 @@ namespace Birdie.UI.Minigames
             if (isCorrect)
             {
                 m_score++;
+                if (seed.IsLiked)
+                {
+                    m_likedScore++;
+                }
             }
             else
             {
@@ -349,7 +355,7 @@ namespace Birdie.UI.Minigames
             }
 
             m_scoreDisplay?.UpdateScore(m_score);
-            m_rewardBar?.UpdateScore(m_score);
+            m_rewardBar?.UpdateScore(m_likedScore);
 
             DebugBase.Log(
                 $"[{nameof(SeedSortingUI)}] Seed dropped on {target}. Liked: {seed.IsLiked}, Correct: {isCorrect}. Score: {m_score}, Errors: {m_errors}",

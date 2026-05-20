@@ -1056,15 +1056,27 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
       propertyPath: m_fontSize
-      value: 40.1
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
+      propertyPath: m_margin.x
+      value: 8.144249
       objectReference: {fileID: 0}
     - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
       propertyPath: m_margin.y
       value: 9.277893
       objectReference: {fileID: 0}
     - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
+      propertyPath: m_margin.z
+      value: 9.049141
+      objectReference: {fileID: 0}
+    - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
       propertyPath: m_fontStyle
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
+      propertyPath: m_fontSizeMax
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 9056938527329392177, guid: 85d8a74bb06ffcf409dabc7952c4c105, type: 3}
       propertyPath: m_enableAutoSizing

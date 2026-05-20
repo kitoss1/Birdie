@@ -142,22 +142,22 @@ namespace Birdie.Managers
         private async UniTask InitializeAsync()
         {
             DebugBase.Log($"[{nameof(GameManager)}] Starting initialization...");
-            OnInitializationProgress?.Invoke(0f, "Starting...");
+            OnInitializationProgress?.Invoke(0f, "Iniciando...");
 
             // PHASE 1: Load persistent data (must happen first)
-            OnInitializationProgress?.Invoke(0.1f, "Loading save data...");
+            OnInitializationProgress?.Invoke(0.1f, "Cargando datos...");
             await InitializeSaveSystemAsync();
 
             // PHASE 2: Initialize core managers (can depend on save data)
-            OnInitializationProgress?.Invoke(0.3f, "Initializing systems...");
+            OnInitializationProgress?.Invoke(0.3f, "Inicializando sistemas...");
             await InitializeManagersAsync();
 
             // PHASE 3: Post-initialization setup (all managers ready)
-            OnInitializationProgress?.Invoke(0.9f, "Finalizing...");
+            OnInitializationProgress?.Invoke(0.9f, "Finalizando...");
             await PostInitializationAsync();
 
             m_initializationComplete = true;
-            OnInitializationProgress?.Invoke(1f, "Ready!");
+            OnInitializationProgress?.Invoke(1f, "¡Listo!");
             DebugBase.Log($"[{nameof(GameManager)}] Initialization complete!");
 
             StartGame();
