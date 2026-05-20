@@ -52,7 +52,7 @@ namespace Birdie.UI.Minigames
 
             if (m_titleText != null)
             {
-                m_titleText.text = friendshipReward > 0 ? "Congratulations!" : "Good luck next time!";
+                m_titleText.text = friendshipReward > 0 ? "¡Felicidades!" : "¡Suerte la próxima vez!";
             }
 
             if (m_scoreText != null)
