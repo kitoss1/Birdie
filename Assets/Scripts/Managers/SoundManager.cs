@@ -17,6 +17,10 @@ namespace Birdie.Managers
         [SerializeField]
         private SoundLibrary m_soundLibrary;
 
+        [Header("Music Playlist")]
+        [SerializeField]
+        private MusicPlaylist m_defaultPlaylist;
+
         [Header("Audio Sources")]
         [SerializeField]
         private AudioSource m_sfxSource;
@@ -36,6 +40,8 @@ namespace Birdie.Managers
         private bool m_sfxMuted;
         private bool m_musicMuted;
         private bool m_ambientMuted;
+
+        private MusicPlaylistPlayer m_playlistPlayer;
 
         public event Action<AudioChannel, float> OnVolumeChanged;
         public event Action<AudioChannel, bool> OnMuteChanged;
@@ -72,6 +78,11 @@ namespace Birdie.Managers
 
             if (m_saveManager != null)
                 LoadFromSaveData();
+
+            m_playlistPlayer = new MusicPlaylistPlayer(m_musicSource);
+
+            if (m_defaultPlaylist != null && m_defaultPlaylist.TrackCount > 0)
+                PlayPlaylist(m_defaultPlaylist);
 
             DebugBase.Log($"[{nameof(SoundManager)}] Sound system initialized", DebugCategory.Audio);
         }
@@ -115,7 +126,7 @@ namespace Birdie.Managers
         // --- Music Playback ---
 
         /// <summary>
-        /// Starts playing a music track. Stops any currently playing music.
+        /// Starts playing a music track. Stops any active playlist and currently playing music.
         /// </summary>
         public void PlayMusic(AudioClip clip, bool loop = true)
         {
@@ -124,12 +135,30 @@ namespace Birdie.Managers
                 return;
             }
 
+            m_playlistPlayer?.Stop();
+
             m_musicSource.clip = clip;
             m_musicSource.loop = loop;
             m_musicSource.volume = CalculateEffectiveVolume(m_musicVolume, m_musicMuted);
             m_musicSource.Play();
 
             DebugBase.Log($"[{nameof(SoundManager)}] Playing music: {clip.name}", DebugCategory.Audio);
+        }
+
+        /// <summary>
+        /// Starts playing a music playlist, cycling through tracks sequentially or in shuffled order.
+        /// Stops any currently playing music or active playlist first.
+        /// </summary>
+        public void PlayPlaylist(MusicPlaylist playlist)
+        {
+            if (!EnsureInitialized() || playlist == null || playlist.TrackCount == 0)
+            {
+                return;
+            }
+
+            m_playlistPlayer.Play(playlist, () => CalculateEffectiveVolume(m_musicVolume, m_musicMuted));
+
+            DebugBase.Log($"[{nameof(SoundManager)}] Started playlist ({playlist.TrackCount} tracks)", DebugCategory.Audio);
         }
 
         /// <summary>
@@ -151,10 +180,12 @@ namespace Birdie.Managers
         }
 
         /// <summary>
-        /// Stops the currently playing music track.
+        /// Stops the currently playing music track and any active playlist.
         /// </summary>
         public void StopMusic()
         {
+            m_playlistPlayer?.Stop();
+
             if (m_musicSource != null && m_musicSource.isPlaying)
             {
                 m_musicSource.Stop();
@@ -400,6 +431,11 @@ namespace Birdie.Managers
             {
                 m_ambientSource.volume = CalculateEffectiveVolume(m_ambientVolume, m_ambientMuted);
             }
+        }
+
+        private void OnDestroy()
+        {
+            m_playlistPlayer?.Stop();
         }
 
         // --- Save/Load ---

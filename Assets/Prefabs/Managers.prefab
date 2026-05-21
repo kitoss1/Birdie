@@ -142,6 +142,7 @@ MonoBehaviour:
   m_settingsPanel: {fileID: 0}
   m_tutorialPanel: {fileID: 0}
   m_minigamesPanel: {fileID: 0}
+  m_dailyMissionsPanel: {fileID: 0}
 --- !u!1 &532232933713661332
 GameObject:
   m_ObjectHideFlags: 0
@@ -236,9 +237,9 @@ MonoBehaviour:
   - m_category: 1
     m_isEnabled: 0
   - m_category: 2
-    m_isEnabled: 0
+    m_isEnabled: 1
   - m_category: 3
-    m_isEnabled: 0
+    m_isEnabled: 1
   - m_category: 4
     m_isEnabled: 1
   - m_category: 5
@@ -776,6 +777,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.SoundManager
   m_soundLibrary: {fileID: 11400000, guid: 692516dde628cf64b81359cc9fb2aa96, type: 2}
+  m_defaultPlaylist: {fileID: 11400000, guid: 1ae05b9f3bad088449c41557df977427, type: 2}
   m_sfxSource: {fileID: 3826252885320749169}
   m_musicSource: {fileID: 8651626969600309108}
   m_ambientSource: {fileID: 7648398392572159965}
@@ -823,7 +825,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caccc3b2d6196644aa9edae696af9a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.DailyMissionManager
-  m_missionPool: []
+  m_missionPool:
+  - {fileID: 11400000, guid: 83132c106e24285498e8917966ef0b8e, type: 2}
+  - {fileID: 11400000, guid: 14ff84663902e2e45ba69cdef759f30c, type: 2}
+  - {fileID: 11400000, guid: 27501780f3828af45a2aa083837fee37, type: 2}
 --- !u!1 &5952294990666354834
 GameObject:
   m_ObjectHideFlags: 0
@@ -1088,6 +1093,10 @@ MonoBehaviour:
     m_sceneObject: {fileID: 0}
   - m_itemData: {fileID: 11400000, guid: 5e81423b0c294b84d980a4aa464ef98c, type: 2}
     m_sceneObject: {fileID: 0}
+  - m_itemData: {fileID: 11400000, guid: faaa6e651a8e4cb4ea38ee6effdaf8bb, type: 2}
+    m_sceneObject: {fileID: 0}
+  - m_itemData: {fileID: 11400000, guid: e69befe9f8b210c469cd9a333b9a172c, type: 2}
+    m_sceneObject: {fileID: 0}
 --- !u!1 &8641492508890357711
 GameObject:
   m_ObjectHideFlags: 0
@@ -1268,6 +1277,6 @@ MonoBehaviour:
   m_trashParent: {fileID: 0}
   m_windowsillAnchor: {fileID: 0}
   m_maxTrashCount: 5
-  m_minSpawnInterval: 120
-  m_maxSpawnInterval: 1800
+  m_minSpawnInterval: 200
+  m_maxSpawnInterval: 1000
   m_yVariation: 0.1
