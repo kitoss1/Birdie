@@ -11,6 +11,10 @@ namespace Birdie.Data
     {
         [Header("Basic Information")]
         [SerializeField]
+        [Tooltip("Unique identifier for this minigame (used by save system and missions)")]
+        private string m_minigameID;
+
+        [SerializeField]
         [Tooltip("Display name of the minigame")]
         private string m_minigameName;
 
@@ -31,6 +35,7 @@ namespace Birdie.Data
                  "If friendship level exceeds array length, the last entry is used.")]
         private MinigameDifficultySettings[] m_difficultyPerLevel;
 
+        public string MinigameID => m_minigameID;
         public string MinigameName => m_minigameName;
         public GameObject MinigamePrefab => m_minigamePrefab;
         public int CompletionReward => m_completionReward;
@@ -49,6 +54,11 @@ namespace Birdie.Data
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            if (string.IsNullOrEmpty(m_minigameID))
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(MinigameData)}] Minigame ID is empty on {name}");
+            }
+
             if (string.IsNullOrEmpty(m_minigameName))
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(MinigameData)}] Minigame name is empty on {name}");

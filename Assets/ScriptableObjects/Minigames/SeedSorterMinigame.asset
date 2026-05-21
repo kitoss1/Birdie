@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c7c56984098274093e93aa0fe1788e, type: 3}
   m_Name: SeedSorterMinigame
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MinigameData
+  m_minigameID: 003
   m_minigameName: Seed Sorter
   m_minigamePrefab: {fileID: 4400365219516685110, guid: c3bb9138d31ae7d4387dd0765b5a64fa, type: 3}
   m_completionReward: 0

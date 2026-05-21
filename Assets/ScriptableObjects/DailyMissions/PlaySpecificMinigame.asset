@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5409f22a471682440b5ad272738f65e1, type: 3}
+  m_Name: PlaySpecificMinigame
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Missions.DailyMissionDefinition
+  m_missionID: 005
+  m_missionType: 4
+  m_description: 'Juega una vez a '
+  m_targetCount: 1
+  m_goldenSeedsReward: 10
+  m_birdPool: []
+  m_minigamePool:
+  - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
+  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}
+  - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}
+  - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}

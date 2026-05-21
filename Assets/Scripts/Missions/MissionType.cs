@@ -8,5 +8,7 @@ namespace Birdie.Missions
         UniqueBirdsVisiting,
         TrashCleaned,
         MinigamesPlayed,
+        SpecificBirdVisiting,
+        SpecificMinigamePlayed,
     }
 }

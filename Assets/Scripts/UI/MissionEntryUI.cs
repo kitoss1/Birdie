@@ -83,7 +83,7 @@ namespace Birdie.UI
             bool isComplete = manager.IsMissionComplete(m_slotIndex);
             bool isClaimed = manager.IsMissionClaimed(m_slotIndex);
 
-            UpdateDescription(mission.Description, progress, mission.TargetCount, isClaimed);
+            UpdateDescription(manager.GetMissionDescription(m_slotIndex), progress, mission.TargetCount, isClaimed);
             UpdateClaimButton(isComplete, isClaimed, mission.GoldenSeedsReward);
         }
 

@@ -1,5 +1,6 @@
 using System;
 using Birdie.Core;
+using Birdie.Data;
 using Birdie.Debug;
 using Birdie.Save;
 using Cysharp.Threading.Tasks;
@@ -43,7 +44,9 @@ namespace Birdie.Managers
         public event Action OnMenuClosed;
         public event Action OnGameStarted;
         public event Action OnMinigameStarted;
-        public event Action OnMinigameEnded;
+        public event Action<MinigameData> OnMinigameEnded;
+
+        private MinigameData m_activeMinigame;
 
         /// <summary>
         /// Event fired when initialization progress updates.
@@ -496,8 +499,9 @@ namespace Birdie.Managers
         /// Enters minigame state
         /// During minigames, time continues but bird spawning is paused
         /// </summary>
-        public void StartMinigame()
+        public void StartMinigame(MinigameData minigameData)
         {
+            m_activeMinigame = minigameData;
             CurrentState = GameState.InMinigame;
 
             if (m_birdManager != null)
@@ -529,7 +533,9 @@ namespace Birdie.Managers
                 m_birdManager.ResumeAllBirds();
             }
 
-            OnMinigameEnded?.Invoke();
+            MinigameData ended = m_activeMinigame;
+            m_activeMinigame = null;
+            OnMinigameEnded?.Invoke(ended);
             DebugBase.Log($"[{nameof(GameManager)}] Minigame ended");
         }
 

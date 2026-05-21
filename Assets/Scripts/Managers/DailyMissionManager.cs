@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Birdie.Birds;
+using Birdie.Data;
 using Birdie.Debug;
 using Birdie.Environment;
 using Birdie.Missions;
@@ -22,6 +23,10 @@ namespace Birdie.Managers
 
         private DailyMissionDefinition[] m_activeMissions;
         private readonly HashSet<string> m_visitedBirdIDsToday = new HashSet<string>();
+
+        // Parallel to m_activeMissions: resolved targets for specific-target mission types.
+        private BirdData[] m_targetBirdData;
+        private MinigameData[] m_targetMinigameData;
 
         public event Action<int> OnMissionProgressChanged;
         public event Action<int> OnMissionCompleted;
@@ -47,14 +52,44 @@ namespace Birdie.Managers
             DebugBase.Log($"[{nameof(DailyMissionManager)}] Daily mission system initialized");
         }
 
+        private bool HasMissingTargets()
+        {
+            for (int i = 0; i < m_activeMissions.Length; i++)
+            {
+                MissionType type = m_activeMissions[i]?.MissionType ?? MissionType.UniqueBirdsVisiting;
+
+                if (type == MissionType.SpecificBirdVisiting && m_targetBirdData?[i] == null)
+                {
+                    return true;
+                }
+
+                if (type == MissionType.SpecificMinigamePlayed && m_targetMinigameData?[i] == null)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         private void RefreshDailyMissions()
         {
             DailyMissionSaveData saveData = m_saveManager.CurrentSaveData.missions;
             string today = DateTime.Now.ToString(DateFormat);
 
-            if (saveData.lastMissionDate == today && saveData.activeMissionIDs.Count == DailyMissionCount)
+            bool sameDayAndCount = saveData.lastMissionDate == today &&
+                                   saveData.activeMissionIDs.Count == DailyMissionCount;
+            bool targetIDsComplete = saveData.missionTargetIDs.Count == DailyMissionCount;
+
+            if (sameDayAndCount && targetIDsComplete)
             {
                 LoadExistingMissions(saveData);
+
+                if (HasMissingTargets())
+                {
+                    DebugBase.Log($"[{nameof(DailyMissionManager)}] Detected missing targets after load, regenerating missions");
+                    GenerateNewDailyMissions(today);
+                }
             }
             else
             {
@@ -65,10 +100,25 @@ namespace Birdie.Managers
         private void LoadExistingMissions(DailyMissionSaveData saveData)
         {
             m_activeMissions = new DailyMissionDefinition[DailyMissionCount];
+            m_targetBirdData = new BirdData[DailyMissionCount];
+            m_targetMinigameData = new MinigameData[DailyMissionCount];
 
             for (int i = 0; i < DailyMissionCount; i++)
             {
                 m_activeMissions[i] = FindMissionByID(saveData.activeMissionIDs[i]);
+
+                string targetID = i < saveData.missionTargetIDs.Count
+                    ? saveData.missionTargetIDs[i]
+                    : string.Empty;
+
+                if (m_activeMissions[i]?.MissionType == MissionType.SpecificBirdVisiting)
+                {
+                    m_targetBirdData[i] = FindBirdInPool(m_activeMissions[i], targetID);
+                }
+                else if (m_activeMissions[i]?.MissionType == MissionType.SpecificMinigamePlayed)
+                {
+                    m_targetMinigameData[i] = FindMinigameInPool(m_activeMissions[i], targetID);
+                }
             }
 
             m_visitedBirdIDsToday.Clear();
@@ -87,12 +137,36 @@ namespace Birdie.Managers
             ResetSaveData(saveData, today);
             m_visitedBirdIDsToday.Clear();
             m_activeMissions = SelectDailyMissions(today);
+            m_targetBirdData = new BirdData[DailyMissionCount];
+            m_targetMinigameData = new MinigameData[DailyMissionCount];
 
-            foreach (DailyMissionDefinition mission in m_activeMissions)
+            System.Random rng = new System.Random(today.GetHashCode() ^ 0x1F2E3D);
+
+            for (int i = 0; i < m_activeMissions.Length; i++)
             {
+                DailyMissionDefinition mission = m_activeMissions[i];
                 saveData.activeMissionIDs.Add(mission.MissionID);
                 saveData.missionProgress.Add(0);
                 saveData.missionClaimed.Add(false);
+
+                if (mission.MissionType == MissionType.SpecificBirdVisiting)
+                {
+                    BirdData picked = PickRandomBirdFromPool(mission, rng);
+                    m_targetBirdData[i] = picked;
+                    saveData.missionTargetIDs.Add(picked != null ? picked.BirdID : string.Empty);
+                    DebugBase.Log($"[{nameof(DailyMissionManager)}] SpecificBirdVisiting target for slot {i}: {picked?.BirdName ?? "none"}");
+                }
+                else if (mission.MissionType == MissionType.SpecificMinigamePlayed)
+                {
+                    MinigameData picked = PickRandomMinigameFromPool(mission, rng);
+                    m_targetMinigameData[i] = picked;
+                    saveData.missionTargetIDs.Add(picked != null ? GetMinigameKey(picked) : string.Empty);
+                    DebugBase.Log($"[{nameof(DailyMissionManager)}] SpecificMinigamePlayed target for slot {i}: {picked?.MinigameName ?? "none"}");
+                }
+                else
+                {
+                    saveData.missionTargetIDs.Add(string.Empty);
+                }
             }
 
             SaveToSaveData();
@@ -107,6 +181,7 @@ namespace Birdie.Managers
             saveData.missionProgress.Clear();
             saveData.missionClaimed.Clear();
             saveData.visitedBirdIDsToday.Clear();
+            saveData.missionTargetIDs.Clear();
         }
 
         private DailyMissionDefinition[] SelectDailyMissions(string dateSeed)
@@ -123,6 +198,104 @@ namespace Birdie.Managers
             }
 
             return selected;
+        }
+
+        private BirdData PickRandomBirdFromPool(DailyMissionDefinition mission, System.Random rng)
+        {
+            if (mission.BirdPool == null || mission.BirdPool.Length == 0)
+            {
+                DebugBase.LogWarning($"[{nameof(DailyMissionManager)}] SpecificBirdVisiting mission '{mission.MissionID}' has no bird pool assigned");
+                return null;
+            }
+
+            int index = rng.Next(mission.BirdPool.Length);
+            return mission.BirdPool[index];
+        }
+
+        private MinigameData PickRandomMinigameFromPool(DailyMissionDefinition mission, System.Random rng)
+        {
+            if (mission.MinigamePool == null || mission.MinigamePool.Length == 0)
+            {
+                DebugBase.LogWarning($"[{nameof(DailyMissionManager)}] SpecificMinigamePlayed mission '{mission.MissionID}' has no minigame pool assigned");
+                return null;
+            }
+
+            int index = rng.Next(mission.MinigamePool.Length);
+            return mission.MinigamePool[index];
+        }
+
+        private MinigameData FindMinigameInPool(DailyMissionDefinition mission, string key)
+        {
+            if (string.IsNullOrEmpty(key) || mission.MinigamePool == null)
+            {
+                return null;
+            }
+
+            foreach (MinigameData minigame in mission.MinigamePool)
+            {
+                if (minigame != null && GetMinigameKey(minigame) == key)
+                {
+                    return minigame;
+                }
+            }
+
+            DebugBase.LogWarning($"[{nameof(DailyMissionManager)}] Target minigame '{key}' not found in pool for mission '{mission.MissionID}'");
+            return null;
+        }
+
+        // Uses MinigameID if set, otherwise falls back to the asset name.
+        private static string GetMinigameKey(MinigameData minigame)
+        {
+            return !string.IsNullOrEmpty(minigame.MinigameID) ? minigame.MinigameID : minigame.name;
+        }
+
+        private BirdData FindBirdInPool(DailyMissionDefinition mission, string birdID)
+        {
+            if (string.IsNullOrEmpty(birdID) || mission.BirdPool == null)
+            {
+                return null;
+            }
+
+            foreach (BirdData bird in mission.BirdPool)
+            {
+                if (bird != null && bird.BirdID == birdID)
+                {
+                    return bird;
+                }
+            }
+
+            DebugBase.LogWarning($"[{nameof(DailyMissionManager)}] Target bird '{birdID}' not found in pool for mission '{mission.MissionID}'");
+            return null;
+        }
+
+        /// <summary>
+        /// Returns the display description for the given mission slot.
+        /// For SpecificBirdVisiting, substitutes {0} in the template with the target bird name.
+        /// </summary>
+        public string GetMissionDescription(int missionIndex)
+        {
+            if (!IsValidMissionIndex(missionIndex))
+            {
+                return string.Empty;
+            }
+
+            DailyMissionDefinition mission = m_activeMissions[missionIndex];
+
+            if (mission.MissionType == MissionType.SpecificBirdVisiting)
+            {
+                BirdData target = m_targetBirdData != null ? m_targetBirdData[missionIndex] : null;
+                string birdName = target != null ? target.BirdName : "?";
+                return $"{mission.Description} {birdName}";
+            }
+
+            if (mission.MissionType == MissionType.SpecificMinigamePlayed)
+            {
+                MinigameData target = m_targetMinigameData != null ? m_targetMinigameData[missionIndex] : null;
+                string minigameName = target != null ? target.MinigameName : "?";
+                return $"{mission.Description} {minigameName}";
+            }
+
+            return mission.Description;
         }
 
         private DailyMissionDefinition FindMissionByID(string missionID)
@@ -182,15 +355,50 @@ namespace Birdie.Managers
 
             string birdID = bird.BirdData.BirdID;
 
-            if (m_visitedBirdIDsToday.Contains(birdID))
+            if (!m_visitedBirdIDsToday.Contains(birdID))
             {
-                return;
+                m_visitedBirdIDsToday.Add(birdID);
+                m_saveManager.CurrentSaveData.missions.visitedBirdIDsToday = new List<string>(m_visitedBirdIDsToday);
+
+                IncrementProgressForType(MissionType.UniqueBirdsVisiting);
             }
 
-            m_visitedBirdIDsToday.Add(birdID);
-            m_saveManager.CurrentSaveData.missions.visitedBirdIDsToday = new List<string>(m_visitedBirdIDsToday);
+            HandleSpecificBirdMissions(birdID);
+        }
 
-            IncrementProgressForType(MissionType.UniqueBirdsVisiting);
+        private void HandleSpecificBirdMissions(string birdID)
+        {
+            bool anyUpdated = false;
+
+            for (int i = 0; i < m_activeMissions.Length; i++)
+            {
+                if (m_activeMissions[i]?.MissionType != MissionType.SpecificBirdVisiting || IsMissionComplete(i))
+                {
+                    continue;
+                }
+
+                BirdData target = m_targetBirdData != null ? m_targetBirdData[i] : null;
+                if (target == null || target.BirdID != birdID)
+                {
+                    continue;
+                }
+
+                m_saveManager.CurrentSaveData.missions.missionProgress[i]++;
+                anyUpdated = true;
+
+                OnMissionProgressChanged?.Invoke(i);
+                DebugBase.Log($"[{nameof(DailyMissionManager)}] SpecificBirdVisiting mission {i} completed: {target.BirdName} visited");
+
+                if (IsMissionComplete(i))
+                {
+                    OnMissionCompleted?.Invoke(i);
+                }
+            }
+
+            if (anyUpdated)
+            {
+                SaveToSaveData();
+            }
         }
 
         private void OnTrashRemoved(TrashItem _)
@@ -203,7 +411,7 @@ namespace Birdie.Managers
             IncrementProgressForType(MissionType.TrashCleaned);
         }
 
-        private void OnMinigameEnded()
+        private void OnMinigameEnded(MinigameData minigameData)
         {
             if (!EnsureInitialized())
             {
@@ -211,6 +419,47 @@ namespace Birdie.Managers
             }
 
             IncrementProgressForType(MissionType.MinigamesPlayed);
+            HandleSpecificMinigameMissions(minigameData);
+        }
+
+        private void HandleSpecificMinigameMissions(MinigameData minigameData)
+        {
+            if (minigameData == null)
+            {
+                return;
+            }
+
+            bool anyUpdated = false;
+
+            for (int i = 0; i < m_activeMissions.Length; i++)
+            {
+                if (m_activeMissions[i]?.MissionType != MissionType.SpecificMinigamePlayed || IsMissionComplete(i))
+                {
+                    continue;
+                }
+
+                MinigameData target = m_targetMinigameData != null ? m_targetMinigameData[i] : null;
+                if (target == null || target.MinigameID != minigameData.MinigameID)
+                {
+                    continue;
+                }
+
+                m_saveManager.CurrentSaveData.missions.missionProgress[i]++;
+                anyUpdated = true;
+
+                OnMissionProgressChanged?.Invoke(i);
+                DebugBase.Log($"[{nameof(DailyMissionManager)}] SpecificMinigamePlayed mission {i} completed: {target.MinigameName} played");
+
+                if (IsMissionComplete(i))
+                {
+                    OnMissionCompleted?.Invoke(i);
+                }
+            }
+
+            if (anyUpdated)
+            {
+                SaveToSaveData();
+            }
         }
 
         private void IncrementProgressForType(MissionType missionType)

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c7c56984098274093e93aa0fe1788e, type: 3}
   m_Name: SimonMinigame
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MinigameData
+  m_minigameID: 001
   m_minigameName: Simon
   m_minigamePrefab: {fileID: 4400365219516685110, guid: bcc97641d564aaf4eac3c4abecf02613, type: 3}
   m_completionReward: 0

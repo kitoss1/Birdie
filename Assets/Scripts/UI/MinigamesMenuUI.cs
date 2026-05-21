@@ -131,7 +131,7 @@ namespace Birdie.UI
 
             if (GameManager.Instance != null)
             {
-                GameManager.Instance.StartMinigame();
+                GameManager.Instance.StartMinigame(selectedMinigame);
             }
 
             DebugBase.Log($"[{nameof(MinigamesMenuUI)}] Started minigame '{selectedMinigame.MinigameName}' for {birdData.BirdName}", DebugCategory.UI);

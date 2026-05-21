@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5409f22a471682440b5ad272738f65e1, type: 3}
+  m_Name: BirdVisitOnce
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.Missions.DailyMissionDefinition
+  m_missionID: 004
+  m_missionType: 3
+  m_description: Ten la visita de un
+  m_targetCount: 1
+  m_goldenSeedsReward: 10
+  m_birdPool:
+  - {fileID: 11400000, guid: 21d43c179dfbc6b498fde2e9716081c9, type: 2}
+  - {fileID: 11400000, guid: 091ff1b98ad9d5d42bee462d34b46b90, type: 2}
+  - {fileID: 11400000, guid: c38cd9aec1ff52148a09e6138ed71cd7, type: 2}
+  m_minigamePool: []

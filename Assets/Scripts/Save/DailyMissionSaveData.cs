@@ -17,6 +17,12 @@ namespace Birdie.Save
         public List<string> visitedBirdIDsToday = new List<string>();
 
         /// <summary>
+        /// Per-slot target entity ID (bird ID or minigame ID) for specific-target missions.
+        /// Empty string for generic mission types. Parallel to activeMissionIDs.
+        /// </summary>
+        public List<string> missionTargetIDs = new List<string>();
+
+        /// <summary>
         /// Validates the save data integrity.
         /// </summary>
         public bool IsValid()
@@ -24,7 +30,8 @@ namespace Birdie.Save
             return activeMissionIDs != null &&
                    missionProgress != null &&
                    missionClaimed != null &&
-                   visitedBirdIDsToday != null;
+                   visitedBirdIDsToday != null &&
+                   missionTargetIDs != null;
         }
     }
 }

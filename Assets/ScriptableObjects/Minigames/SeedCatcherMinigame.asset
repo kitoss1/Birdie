@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b9c7c56984098274093e93aa0fe1788e, type: 3}
   m_Name: SeedCatcherMinigame
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MinigameData
+  m_minigameID: 002
   m_minigameName: Seed catcher
   m_minigamePrefab: {fileID: 4400365219516685110, guid: 707bb5d8ff4d7d84284dee7a608703b4, type: 3}
   m_completionReward: 0
