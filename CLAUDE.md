@@ -13,8 +13,6 @@ This file provides technical guidance for working with the Birdie codebase. For 
 ### Testing
 
 ### Code Quality
-- C# code analysis is enforced through StyleCop and Microsoft (Roslyn) analyzers
-- Code style rules are defined in 'Assets/Default.ruleset'
 - Coding convention guidelines can be found in 'docs/base/coding-style.md' and '.editorconfig', important to follow them closely
 
 ## Architecture Overview
@@ -65,9 +63,6 @@ This file provides technical guidance for working with the Birdie codebase. For 
 - Organize testing workflows, especially when fixing multiple failing tests
 - Coordinate with git workflow when preparing commits or pull requests
 - Manage dependencies between tasks in complex feature implementations
-
-## Documentation Structure
-For comprehensive documentation about "How we build this Game", see:
 
 ### Technical Documentation
 - **docs/base/coding-style.md** - C# coding standards, .editorconfig support, analyzer rules

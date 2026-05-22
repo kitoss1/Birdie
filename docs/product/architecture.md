@@ -1,8 +1,8 @@
-# Birdie — Architecture Documentation
+# Windowsill — Architecture Documentation
 
 ## 1. System Overview
 
-Birdie is a cozy desktop companion game built in Unity 6. The game runs as a transparent overlay just above the Windows taskbar. The architecture follows a **Manager-centric pattern**: a singleton `GameManager` orchestrates all subsystems, each of which is a self-contained `BaseManager` subclass.
+Windowsill is a cozy desktop companion game built in Unity 6. The game runs as a transparent overlay just above the Windows taskbar. The architecture follows a **Manager-centric pattern**: a singleton `GameManager` orchestrates all subsystems, each of which is a self-contained `BaseManager` subclass.
 
 ```mermaid
 graph TB
@@ -46,8 +46,11 @@ graph TB
 
     GM --> BM & EM & FM & ENV & SM
     GM --> DM & STM & WM & DMM
-    GM --> MM & DUI & TM & LM & HGC
+    GM --> MM & DUI & TM
     GM --> SVM
+
+    LM -.->|observes init| GM
+    HGC -.->|subscribes OnGameStarted| GM
 
     SVM --> SD
     BM --> BD
@@ -82,12 +85,12 @@ flowchart TD
             SM2[SoundManager]
             TM2[ToastManager]
             WM2[WindowsillManager]
+            DM2[DiaryManager]
+            STM2[StoreManager]
+            MM2[MenuManager]
         end
         subgraph SEQ["Sequential (after parallel)"]
-            DM2[DiaryManager\nneeds BirdManager]
-            STM2[StoreManager\nneeds Economy + Save]
-            DUI2[DiaryUIManager\nneeds Diary + Friendship]
-            MM2[MenuManager\nneeds all above]
+            DUI2[DiaryUIManager\nsubscribes to Diary + Friendship]
             DMM2[DailyMissionManager\nsubscribes to events]
         end
         PARALLEL --> SEQ
@@ -97,7 +100,7 @@ flowchart TD
 
     subgraph P3["Phase 3 — Game Start"]
         GS[GameManager.StartGame\nSet state to Playing]
-        BS[BirdManager.StartSpawning\nBegin spawn loop]
+        BS[BirdManager spawns via Update\ntimer loop begins]
     end
 
     P3 --> HIDE[LoadingManager\nHide Loading Screen]
@@ -112,49 +115,54 @@ flowchart TD
 classDiagram
     class BaseManager {
         <<abstract>>
-        +Initialize() UniTask
+        +Initialize(saveManager) void
         +IsInitialized bool
     }
 
     class GameManager {
         +Instance GameManager
-        +CurrentGameState GameState
-        +OnGameStateChanged Action~GameState~
-        +OnMenuOpened Action~MenuType~
+        +CurrentState GameState
+        +OnGameStateChanged Action~GameState,GameState~
+        +OnMenuOpened Action
+        +OnMenuClosed Action
         +OnGameStarted Action
         +OnMinigameStarted Action
+        +OnMinigameEnded Action~MinigameData~
         -InitializeAsync() UniTask
         -StartGame()
     }
 
     class BirdManager {
-        +SpawnBird()
         +PauseAllBirds()
+        +ResumeAllBirds()
+        +PauseBirdSpawning()
         +ResumeBirdSpawning()
-        -WeightedBirdSelection() BirdData
-        -SpawnLoopAsync() UniTask
+        -SelectBirdToSpawn() BirdData
+        -SpawnBird(birdData)
+        -CheckAndSpawnBird()
     }
 
     class EconomyManager {
         +GoldenSeeds int
-        +OnGoldenSeedsChanged Action~int~
+        +OnGoldenSeedsChanged Action~int,int~
         +AddGoldenSeeds(amount)
         +CanAfford(cost) bool
         +TryPurchase(cost) bool
     }
 
     class FriendshipManager {
-        +GetFriendshipLevel(birdId) int
-        +AddFriendshipPoints(birdId, points)
-        +OnFriendshipLevelUp Action~string,int~
+        +GetFriendshipLevel(birdId, birdData) int
+        +AddFriendship(birdId, points, birdData)
+        +GetFriendship(birdId) int
+        +OnFriendshipChanged Action~string~
     }
 
     class EnvironmentManager {
         +GetObjectsOfType(type) List~BirdObject~
-        +GetNearestObject(pos, type) BirdObject
+        +GetNearestObject(type, position) BirdObject
         +HasObjectOfType(type) bool
-        -RegisterObject(obj)
-        -UnregisterObject(obj)
+        +RegisterObject(obj)
+        +UnregisterObject(obj)
     }
 
     class SoundManager {
@@ -166,11 +174,23 @@ classDiagram
     }
 
     class SaveManager {
-        +SaveData SaveData
-        +SaveGame()
-        +LoadGame()
+        +CurrentSaveData SaveData
+        +SaveGame() bool
+        +LoadGame() bool
+        +CreateNewSave()
         -CreateBackup()
-        -RestoreFromBackup()
+        -TryRestoreFromBackup() bool
+    }
+
+    class DiaryUIManager {
+        +RefreshAllPages()
+        +ShowNextPage()
+        +ShowPreviousPage()
+    }
+
+    class MenuManager {
+        +OpenMenu(menuType)
+        +CloseCurrentMenu()
     }
 
     BaseManager <|-- BirdManager
@@ -184,6 +204,7 @@ classDiagram
     BaseManager <|-- DailyMissionManager
     BaseManager <|-- MenuManager
     BaseManager <|-- ToastManager
+    BaseManager <|-- DiaryUIManager
     GameManager --> BaseManager : orchestrates
     GameManager --> SaveManager : phase 1
 ```
@@ -199,13 +220,13 @@ stateDiagram-v2
     [*] --> Appearing : BirdManager.SpawnBird()
 
     Appearing : Appearing
-    Appearing : ArrivingBehavior executes
-    Appearing : Fly-in animation plays
+    Appearing : AppearAsync() sets state instantly
+    Appearing : ScanEnvironment() detects objects
 
     Visiting : Visiting
+    Visiting : ArrivingBehavior executes first
     Visiting : Behavior loop runs
     Visiting : Visit timer counts down
-    Visiting : ScanEnvironment() detects objects
 
     Leaving : Leaving
     Leaving : LeavingBehavior executes
@@ -215,14 +236,12 @@ stateDiagram-v2
     Paused : Animator speed = 0
     Paused : Timer frozen
 
-    Destroyed : [*]
-
-    Appearing --> Visiting : ArrivingBehavior completes
-    Visiting --> Leaving : Visit timer expires\nor ForcedLeave()
-    Leaving --> Destroyed : Animation complete\nGameObject.Destroy()
+    Appearing --> Visiting : AppearAsync completes
+    Visiting --> Leaving : Visit timer expires\nor ForceDeparture()
+    Leaving --> [*] : Animation complete\nGameObject.Destroy()
 
     Visiting --> Paused : BirdManager.PauseAllBirds()\n(minigame starts)
-    Paused --> Visiting : BirdManager.ResumeBirdSpawning()\n(minigame ends, timer recalculated)
+    Paused --> Visiting : BirdManager.ResumeAllBirds()\n(minigame ends, timer recalculated)
 ```
 
 ---
@@ -238,15 +257,17 @@ classDiagram
     class BirdBehaviorState {
         <<abstract ScriptableObject>>
         +OnEnter(bird) void
-        +Execute(bird) UniTask
+        +Execute(bird) void
         +OnExit(bird) void
         +CanExecute(bird) bool
-        +CalculateWeight(bird) float
+        +CalculateWeight(bird, baseWeight) int
+        +IsBehaviorComplete(bird) bool
+        +IsTimerActive(bird) bool
     }
 
     class BirdBehaviorEntry {
         +Behavior BirdBehaviorState
-        +BaseWeight float
+        +Weight int
     }
 
     class BirdData {
@@ -264,18 +285,19 @@ classDiagram
         +ObjectBonusSeconds float
         +MaxFriendshipLevel int
         +SongParts List~AudioClip~
-        +PossibleGifts List~GiftItem~
+        +AvailableMinigames List~MinigameData~
     }
 
     class Bird {
-        +BirdData Data
+        +BirdData BirdData
         +CurrentState BirdState
-        +Initialize(data, spawnPos, landPos)
-        +StartVisitAsync() UniTask
+        +Initialize(data, landingPos, spawnPos)
+        +Pause()
+        +Resume()
+        +ForceDeparture()
+        -StartVisitAsync()
         -TransitionToNextBehavior()
         -ScanEnvironment()
-        -Pause()
-        -Resume()
     }
 
     BirdBehaviorState <|-- ArrivingBehavior
@@ -325,12 +347,12 @@ classDiagram
         <<abstract MonoBehaviour>>
         +ObjectID string
         +ObjectType BirdObjectType
-        +Attractiveness float
+        +Attractiveness int
         +InteractionPosition Vector3
-        +InteractingBirdCount int
-        +OnClicked() void
-        -OnEnable() void
-        -OnDisable() void
+        +IsBeingUsed bool
+        +CanBeUsedBy(bird) bool
+        #OnEnable() void
+        #OnDisable() void
     }
 
     class BirdFeeder {
@@ -349,9 +371,9 @@ classDiagram
     }
 
     class EnvironmentManager {
-        -registeredObjects List~BirdObject~
         +GetObjectsOfType(type) List~BirdObject~
-        +GetNearestObject(pos, type) BirdObject
+        +GetNearestObject(type, position) BirdObject
+        +GetNearestUsableObject(type, bird) BirdObject
         +HasObjectOfType(type) bool
         +RegisterObject(obj)
         +UnregisterObject(obj)
@@ -386,16 +408,14 @@ classDiagram
 
 ```mermaid
 flowchart LR
-    subgraph FILTER["1. Filter candidates"]
+    subgraph FILTER["1. Filter candidates (implemented)"]
         TG["Time gate:\nAppearanceTimeRange\ncovers current hour"]
-        REQ["Requirements:\nRequiredUpgradeIDs\nall purchased"]
-        HAB["Habitat level\n>= MinimumHabitatLevel"]
     end
 
     subgraph WEIGHT["2. Calculate spawn weight"]
-        BASE["BaseSpawnWeight\n(1–100)"]
-        PITY["Pity bonus:\n+weight per tick\nsince last seen"]
-        FRIEND["Friendship bonus:\nhigher level → slightly\nhigher weight"]
+        BASE["BaseSpawnWeight\n(1–100) — implemented"]
+        PITY["Pity bonus — NOT YET IMPLEMENTED"]
+        FRIEND["Friendship bonus — NOT YET IMPLEMENTED"]
     end
 
     subgraph SELECT["3. Selection"]
@@ -422,7 +442,7 @@ classDiagram
         +diary DiarySaveData
         +friendship FriendshipSaveData
         +windowsill WindowsillSaveData
-        +dailyMissions DailyMissionSaveData
+        +missions DailyMissionSaveData
     }
 
     class EconomySaveData {
@@ -441,14 +461,17 @@ classDiagram
     }
 
     class DiarySaveData {
-        +discoveredBirds List~string~
-        +totalEncounters Dictionary~string,int~
-        +firstSeenDates Dictionary~string,string~
+        +discoveredBirdIDs List~string~
+        +encounterBirdIDs List~string~
+        +encounterCounts List~int~
+        +discoveryDateBirdIDs List~string~
+        +discoveryDateTimestamps List~long~
     }
 
     class FriendshipSaveData {
-        +friendshipLevels Dictionary~string,int~
-        +friendshipPoints Dictionary~string,int~
+        +birdIDs List~string~
+        +friendshipPoints List~int~
+        +lastSeenFriendshipPoints List~int~
     }
 
     class WindowsillSaveData {
@@ -551,8 +574,7 @@ flowchart TD
 
     MM --> DIARY & SHOP & SETTINGS & MINIGAMES & MISSIONS & TUTORIAL
     MINIGAMES --> SC & SS & SIM & SP
-    HGC --> MM
-    TOAST -.->|IToastService| MM
+    MM -.->|IToastService| TOAST
 ```
 
 ### Minigame Interface
@@ -561,9 +583,9 @@ flowchart TD
 classDiagram
     class IMinigame {
         <<interface>>
-        +GameClosed Action~MinigameResult~
+        +GameClosed Action
         +FriendshipReward int
-        +SetRewardTiers(tiers)
+        +SetRewardTiers(rewardTiers, completionReward)
         +SetDifficulty(settings)
         +StartGame()
     }
@@ -623,10 +645,10 @@ flowchart LR
 classDiagram
     class DebugBase {
         <<static>>
-        +Log(category, msg)
-        +LogWarning(category, msg)
-        +LogError(category, msg)
-        +LogException(category, ex)
+        +Log(msg, category)
+        +LogWarning(msg, category)
+        +LogError(msg)
+        +LogException(ex, category)
     }
 
     class DebugManager {
@@ -663,7 +685,7 @@ classDiagram
 | Decision | Rationale |
 |---|---|
 | Manager Singleton pattern via `GameManager` | Centralized initialization order, easy cross-system access |
-| `BaseManager` abstract class | Uniform `Initialize() UniTask` contract, guarantees async init |
+| `BaseManager` abstract class | Uniform `Initialize(saveManager)` contract, guarantees ordered init |
 | `BirdBehaviorState` as ScriptableObject | Behaviors configurable per-species in the Unity Editor without code |
 | Dual-resource economy | Separates horizontal (new birds) from vertical (deeper bonds) progression |
 | JSON + backup save | Simple, human-readable, self-healing on corruption |

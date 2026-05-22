@@ -1,7 +1,7 @@
-## Birdie: Game Design Strategy & Vision
+## Windowsill: Game Design Strategy & Vision
 
-## High-Level Concep
-- Idle Bird is a "quasi-idle," cozy desktop companion game for Windows. It runs as a transparent overlay sitting just above the user's taskbar, transforming the bottom of the screen into a virtual window sill.
+## High-Level Concept
+- Windowsill is a "quasi-idle," cozy desktop companion game for Windows. It runs as a transparent overlay sitting just above the user's taskbar, transforming the bottom of the screen into a virtual window sill.
 - The game is designed to be non-intrusive. It exists in the player's peripheral vision while they work or browse, offering a "digital naturalist" experience where birds visit in real-time.
 
 ## Core Design Pillars
@@ -13,7 +13,7 @@
 
 ## The "Quasi-Idle" Gameplay Loop
 
-- Unlike standard idle games that play themselves entirely, Idle Bird relies on "Active Bursts" of interaction.
+- Unlike standard idle games that play themselves entirely, Windowsill relies on "Active Bursts" of interaction.
 - Wait (Idle): The player works on their PC. Birds spawn on the taskbar sill based on time-of-day logic.
 - Interact (Active): The player notices a bird, clicks it, and plays a short, mouse-only minigame (e.g., feeding, singing back).
 - Reward (Economy): Success yields Golden Seeds (Currency) and Friendship Points (Relationship XP).
@@ -56,13 +56,11 @@ Time-Gated: Birds have specific active hours (e.g., Robins: 08:00–18:00; Owls:
 
 Rarity Weights: Common birds appear often; rare birds require specific "Lures" or Habitat Upgrades to spawn.
 
-Pity System: If a specific bird hasn't visited in a long time, its spawn probability slowly increases to prevent bad RNG frustration.
-
 The Minigames
 
-Minigames are short (10-30 seconds), mouse-driven, and low-stakes. They are the primary method of interaction.
+Minigames are short, mouse-driven, and low-stakes. They are the primary method of interaction.
 
-Examples: Rhythm games (mimic the song), Sorting games (pick the right seeds), Precision clicks (cleaning feathers).
+Examples: Rhythm games (mimic the song), Sorting games (pick the right seeds).
 
 The Bird Diary (The Trophy Room)
 
@@ -77,13 +75,13 @@ Setting: The birds are native to Spain, grounding the game in a specific, realis
 ## Top Features (USP)
 
 ### Characters & World
-- **Cute Animations**: Immersive toon fantasy world with vibrant, delightful destruction
+- **Cute Animations**: Cozy, illustrated bird animations with warm and relaxing aesthetics
 
 ### Accessibility
 - **Relaxing Gameplay**: Perfect for unwinding anytime, anywhere
 
 ## Project Information
 
-- **Project Code**: Birdie
-- **Platforms**: Windoows
+- **Project Code**: Windowsill
+- **Platforms**: Windows
 

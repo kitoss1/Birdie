@@ -4,7 +4,7 @@
 --**Input system**: We are using the new input system on all the project
 
 ### Version & Platforms
-- **Unity Version**: 6000.2.10f1
+- **Unity Version**: 6000.3.9f
 - **Target Platforms**: Windows
 - **Project Type**: Idle cosy game
 
@@ -25,7 +25,3 @@
 
 ### Unity Bridge Server
 External tool communication system
-
-#### Claude instructions (IMPORTANT)
-- Use Bridge always to verify that your code changes compile, fix possible errors
-- Use Bridge always to verify that your generated test compile and test go through
