@@ -17,7 +17,7 @@ namespace Birdie.UI.Minigames
         {
             if (m_scoreText != null)
             {
-                m_scoreText.text = $"Score: {score}";
+                m_scoreText.text = $"Puntuación: {score}";
             }
         }
     }

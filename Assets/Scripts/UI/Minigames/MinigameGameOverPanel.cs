@@ -57,12 +57,12 @@ namespace Birdie.UI.Minigames
 
             if (m_scoreText != null)
             {
-                m_scoreText.text = $"Score: {score}";
+                m_scoreText.text = $"Puntuación: {score}";
             }
 
             if (m_friendshipWonText != null)
             {
-                m_friendshipWonText.text = friendshipReward > 0 ? $"+{friendshipReward}" : "0";
+                m_friendshipWonText.text = friendshipReward > 0 ? $"Amistad: +{friendshipReward}" : "Amistad: 0";
             }
         }
 
