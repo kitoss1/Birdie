@@ -12,11 +12,9 @@ namespace Birdie.Save
         public float masterVolume = 1f;
         public float sfxVolume = 1f;
         public float musicVolume = 1f;
-        public float ambientVolume = 1f;
         public bool masterMuted = false;
         public bool sfxMuted = false;
         public bool musicMuted = false;
-        public bool ambientMuted = false;
 
         /// <summary>
         /// Creates audio save data with default values.
@@ -32,8 +30,7 @@ namespace Birdie.Save
         {
             return masterVolume >= 0f && masterVolume <= 1f &&
                    sfxVolume >= 0f && sfxVolume <= 1f &&
-                   musicVolume >= 0f && musicVolume <= 1f &&
-                   ambientVolume >= 0f && ambientVolume <= 1f;
+                   musicVolume >= 0f && musicVolume <= 1f;
         }
     }
 }

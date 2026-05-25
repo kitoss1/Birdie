@@ -1798,6 +1798,7 @@ MonoBehaviour:
   m_descriptionText: {fileID: 8045234057964745481}
   m_mapImage: {fileID: 2850748444263985803}
   m_featherImage: {fileID: 5237099235223134168}
+  m_peligroIcon: {fileID: 6033459224376300098}
   m_birdPhoto: {fileID: 5696459579796917225}
   m_nameText: {fileID: 4737360732127943339}
   m_scientificNameText: {fileID: 7303097266122462596}
@@ -1805,7 +1806,6 @@ MonoBehaviour:
   m_friendshipLevelText: {fileID: 2744222423052864788}
   m_friendshipBar: {fileID: 4194060200835328538}
   m_visitHoursText: {fileID: 5628819688534767281}
-  m_peligroIcon: {fileID: 6033459224376300098}
   m_foodText: {fileID: 2385947030011347316}
   m_dietIconContainer: {fileID: 6395963790333269905}
   m_dietIconPrefab: {fileID: 3527114078945326529}
@@ -3381,7 +3381,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Sobre Mi:'
+  m_text: "Sobre M\xED:"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b95c4d8ab9db4d14fbd76cfd070890ce, type: 2}
   m_sharedMaterial: {fileID: -1109843973577380267, guid: b95c4d8ab9db4d14fbd76cfd070890ce, type: 2}

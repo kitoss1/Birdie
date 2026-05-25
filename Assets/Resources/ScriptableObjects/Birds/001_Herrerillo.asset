@@ -87,6 +87,6 @@ MonoBehaviour:
     m_weight: 5
   m_minigameCooldownDuration: 0
   m_availableMinigames:
-  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}
-  - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
   - {fileID: 11400000, guid: b14327a665a55084c912d751a7d8c324, type: 2}
+  - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
+  - {fileID: 11400000, guid: 34578bcbc5ed29e43a15e8e8f3065e16, type: 2}

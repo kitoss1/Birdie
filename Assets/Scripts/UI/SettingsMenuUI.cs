@@ -60,15 +60,6 @@ namespace Birdie.UI
         [Tooltip("Toggle for music mute (on = audio enabled)")]
         private Toggle m_musicMuteToggle;
 
-        [Header("Ambient Audio")]
-        [SerializeField]
-        [Tooltip("Slider for ambient volume (0-1)")]
-        private Slider m_ambientVolumeSlider;
-
-        [SerializeField]
-        [Tooltip("Toggle for ambient mute (on = audio enabled)")]
-        private Toggle m_ambientMuteToggle;
-
         private bool m_isUpdatingUI;
 
         private void Awake()
@@ -130,11 +121,6 @@ namespace Birdie.UI
                 m_musicVolumeSlider.onValueChanged.AddListener(OnMusicVolumeChanged);
             }
 
-            if (m_ambientVolumeSlider != null)
-            {
-                m_ambientVolumeSlider.onValueChanged.AddListener(OnAmbientVolumeChanged);
-            }
-
             if (m_masterMuteToggle != null)
             {
                 m_masterMuteToggle.onValueChanged.AddListener(OnMasterMuteChanged);
@@ -150,10 +136,6 @@ namespace Birdie.UI
                 m_musicMuteToggle.onValueChanged.AddListener(OnMusicMuteChanged);
             }
 
-            if (m_ambientMuteToggle != null)
-            {
-                m_ambientMuteToggle.onValueChanged.AddListener(OnAmbientMuteChanged);
-            }
         }
 
         private void RemoveListeners()
@@ -193,11 +175,6 @@ namespace Birdie.UI
                 m_musicVolumeSlider.onValueChanged.RemoveListener(OnMusicVolumeChanged);
             }
 
-            if (m_ambientVolumeSlider != null)
-            {
-                m_ambientVolumeSlider.onValueChanged.RemoveListener(OnAmbientVolumeChanged);
-            }
-
             if (m_masterMuteToggle != null)
             {
                 m_masterMuteToggle.onValueChanged.RemoveListener(OnMasterMuteChanged);
@@ -213,10 +190,6 @@ namespace Birdie.UI
                 m_musicMuteToggle.onValueChanged.RemoveListener(OnMusicMuteChanged);
             }
 
-            if (m_ambientMuteToggle != null)
-            {
-                m_ambientMuteToggle.onValueChanged.RemoveListener(OnAmbientMuteChanged);
-            }
         }
 
         private void SubscribeToEvents()
@@ -267,11 +240,6 @@ namespace Birdie.UI
                 m_musicVolumeSlider.value = soundManager.MusicVolume;
             }
 
-            if (m_ambientVolumeSlider != null)
-            {
-                m_ambientVolumeSlider.value = soundManager.AmbientVolume;
-            }
-
             if (m_masterMuteToggle != null)
             {
                 m_masterMuteToggle.isOn = !soundManager.MasterMuted;
@@ -285,11 +253,6 @@ namespace Birdie.UI
             if (m_musicMuteToggle != null)
             {
                 m_musicMuteToggle.isOn = !soundManager.MusicMuted;
-            }
-
-            if (m_ambientMuteToggle != null)
-            {
-                m_ambientMuteToggle.isOn = !soundManager.AmbientMuted;
             }
 
             m_isUpdatingUI = false;
@@ -329,16 +292,6 @@ namespace Birdie.UI
             GameManager.Instance?.SoundManager?.SetMusicVolume(value);
         }
 
-        private void OnAmbientVolumeChanged(float value)
-        {
-            if (m_isUpdatingUI)
-            {
-                return;
-            }
-
-            GameManager.Instance?.SoundManager?.SetAmbientVolume(value);
-        }
-
         // --- Toggle Handlers ---
 
         private void OnMasterMuteChanged(bool isOn)
@@ -369,16 +322,6 @@ namespace Birdie.UI
             }
 
             GameManager.Instance?.SoundManager?.SetMusicMute(!isOn);
-        }
-
-        private void OnAmbientMuteChanged(bool isOn)
-        {
-            if (m_isUpdatingUI)
-            {
-                return;
-            }
-
-            GameManager.Instance?.SoundManager?.SetAmbientMute(!isOn);
         }
 
         // --- SoundManager Event Handlers ---
@@ -413,13 +356,6 @@ namespace Birdie.UI
 
                     break;
 
-                case AudioChannel.Ambient:
-                    if (m_ambientVolumeSlider != null)
-                    {
-                        m_ambientVolumeSlider.value = volume;
-                    }
-
-                    break;
             }
 
             m_isUpdatingUI = false;
@@ -455,13 +391,6 @@ namespace Birdie.UI
 
                     break;
 
-                case AudioChannel.Ambient:
-                    if (m_ambientMuteToggle != null)
-                    {
-                        m_ambientMuteToggle.isOn = !muted;
-                    }
-
-                    break;
             }
 
             m_isUpdatingUI = false;
@@ -556,16 +485,6 @@ namespace Birdie.UI
             if (m_musicMuteToggle == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Music Mute Toggle reference is missing!", this);
-            }
-
-            if (m_ambientVolumeSlider == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Ambient Volume Slider reference is missing!", this);
-            }
-
-            if (m_ambientMuteToggle == null)
-            {
-                UnityEngine.Debug.LogWarning($"[{nameof(SettingsMenuUI)}] Ambient Mute Toggle reference is missing!", this);
             }
 
             if (m_quitButton == null)

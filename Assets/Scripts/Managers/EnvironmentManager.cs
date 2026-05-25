@@ -23,7 +23,6 @@ namespace Birdie.Managers
         private Transform m_rightBound;
 
         private readonly List<Birds.BirdObject> m_allObjects = new List<Birds.BirdObject>();
-        private readonly HashSet<Birds.BirdObject> m_registeredObjects = new HashSet<Birds.BirdObject>();
 
         public override void Initialize(SaveManager saveManager = null)
         {
@@ -42,7 +41,7 @@ namespace Birdie.Managers
                 return;
             }
 
-            if (m_registeredObjects.Add(obj))
+            if (!m_allObjects.Contains(obj))
             {
                 m_allObjects.Add(obj);
                 DebugBase.Log($"[{nameof(EnvironmentManager)}] Registered {obj.ObjectType}: {obj.ObjectID} at {obj.transform.position}", DebugCategory.Managers);
@@ -60,9 +59,8 @@ namespace Birdie.Managers
                 return;
             }
 
-            if (m_registeredObjects.Remove(obj))
+            if (m_allObjects.Remove(obj))
             {
-                m_allObjects.Remove(obj);
                 DebugBase.Log($"[{nameof(EnvironmentManager)}] Unregistered {obj.ObjectType}: {obj.ObjectID}", DebugCategory.Managers);
             }
         }

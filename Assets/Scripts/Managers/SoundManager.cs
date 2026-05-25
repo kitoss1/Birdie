@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Birdie.Managers
 {
     /// <summary>
-    /// Manages all game audio through three dedicated channels: SFX, Music, and Ambient.
+    /// Manages all game audio through two dedicated channels: SFX and Music.
     /// Provides volume control, mute toggles, and clip playback via SoundLibrary keys
     /// or direct AudioClip references.
     /// </summary>
@@ -28,18 +28,13 @@ namespace Birdie.Managers
         [SerializeField]
         private AudioSource m_musicSource;
 
-        [SerializeField]
-        private AudioSource m_ambientSource;
-
         private float m_masterVolume = 1f;
         private float m_sfxVolume = 1f;
         private float m_musicVolume = 1f;
-        private float m_ambientVolume = 1f;
 
         private bool m_masterMuted;
         private bool m_sfxMuted;
         private bool m_musicMuted;
-        private bool m_ambientMuted;
 
         private MusicPlaylistPlayer m_playlistPlayer;
 
@@ -47,20 +42,11 @@ namespace Birdie.Managers
         public event Action<AudioChannel, bool> OnMuteChanged;
 
         public float MasterVolume => m_masterVolume;
-
         public float SfxVolume => m_sfxVolume;
-
         public float MusicVolume => m_musicVolume;
-
-        public float AmbientVolume => m_ambientVolume;
-
         public bool MasterMuted => m_masterMuted;
-
         public bool SfxMuted => m_sfxMuted;
-
         public bool MusicMuted => m_musicMuted;
-
-        public bool AmbientMuted => m_ambientMuted;
 
         public override void Initialize(SaveManager saveManager = null)
         {
@@ -74,7 +60,6 @@ namespace Birdie.Managers
             }
 
             ConfigureMusicSource();
-            ConfigureAmbientSource();
 
             if (m_saveManager != null)
                 LoadFromSaveData();
@@ -193,63 +178,12 @@ namespace Birdie.Managers
             }
         }
 
-        // --- Ambient Playback ---
-
-        /// <summary>
-        /// Starts playing an ambient track. Stops any currently playing ambient audio.
-        /// </summary>
-        public void PlayAmbient(AudioClip clip, bool loop = true)
-        {
-            if (!EnsureInitialized() || clip == null || m_ambientSource == null)
-            {
-                return;
-            }
-
-            m_ambientSource.clip = clip;
-            m_ambientSource.loop = loop;
-            m_ambientSource.volume = CalculateEffectiveVolume(m_ambientVolume, m_ambientMuted);
-            m_ambientSource.Play();
-
-            DebugBase.Log($"[{nameof(SoundManager)}] Playing ambient: {clip.name}", DebugCategory.Audio);
-        }
-
-        /// <summary>
-        /// Starts playing an ambient track by SoundLibrary key.
-        /// </summary>
-        public void PlayAmbient(string key, bool loop = true)
-        {
-            if (m_soundLibrary == null)
-            {
-                DebugBase.LogWarning($"[{nameof(SoundManager)}] SoundLibrary is not assigned", DebugCategory.Audio);
-                return;
-            }
-
-            AudioClip clip = m_soundLibrary.GetClip(key);
-            if (clip != null)
-            {
-                PlayAmbient(clip, loop);
-            }
-        }
-
-        /// <summary>
-        /// Stops the currently playing ambient track.
-        /// </summary>
-        public void StopAmbient()
-        {
-            if (m_ambientSource != null && m_ambientSource.isPlaying)
-            {
-                m_ambientSource.Stop();
-                DebugBase.Log($"[{nameof(SoundManager)}] Ambient stopped", DebugCategory.Audio);
-            }
-        }
-
         /// <summary>
         /// Stops all audio on all channels.
         /// </summary>
         public void StopAll()
         {
             StopMusic();
-            StopAmbient();
 
             if (m_sfxSource != null)
             {
@@ -285,14 +219,6 @@ namespace Birdie.Managers
             SaveToSaveData();
         }
 
-        public void SetAmbientVolume(float volume)
-        {
-            m_ambientVolume = Mathf.Clamp01(volume);
-            ApplyAmbientVolume();
-            OnVolumeChanged?.Invoke(AudioChannel.Ambient, m_ambientVolume);
-            SaveToSaveData();
-        }
-
         // --- Mute Setters ---
 
         public void SetMasterMute(bool muted)
@@ -319,14 +245,6 @@ namespace Birdie.Managers
             SaveToSaveData();
         }
 
-        public void SetAmbientMute(bool muted)
-        {
-            m_ambientMuted = muted;
-            ApplyAmbientVolume();
-            OnMuteChanged?.Invoke(AudioChannel.Ambient, m_ambientMuted);
-            SaveToSaveData();
-        }
-
         // --- Effective Volume Helpers (for external AudioSources) ---
 
         /// <summary>
@@ -346,14 +264,6 @@ namespace Birdie.Managers
             return CalculateEffectiveVolume(m_musicVolume, m_musicMuted);
         }
 
-        /// <summary>
-        /// Calculates the effective ambient volume for external AudioSources.
-        /// </summary>
-        public float GetEffectiveAmbientVolume()
-        {
-            return CalculateEffectiveVolume(m_ambientVolume, m_ambientMuted);
-        }
-
         // --- Private Helpers ---
 
         private void ValidateAudioSources()
@@ -367,11 +277,6 @@ namespace Birdie.Managers
             {
                 DebugBase.LogError($"[{nameof(SoundManager)}] Music AudioSource is not assigned!");
             }
-
-            if (m_ambientSource == null)
-            {
-                DebugBase.LogError($"[{nameof(SoundManager)}] Ambient AudioSource is not assigned!");
-            }
         }
 
         private void ConfigureMusicSource()
@@ -380,15 +285,6 @@ namespace Birdie.Managers
             {
                 m_musicSource.loop = true;
                 m_musicSource.playOnAwake = false;
-            }
-        }
-
-        private void ConfigureAmbientSource()
-        {
-            if (m_ambientSource != null)
-            {
-                m_ambientSource.loop = true;
-                m_ambientSource.playOnAwake = false;
             }
         }
 
@@ -406,7 +302,6 @@ namespace Birdie.Managers
         {
             ApplySfxVolume();
             ApplyMusicVolume();
-            ApplyAmbientVolume();
         }
 
         private void ApplySfxVolume()
@@ -422,14 +317,6 @@ namespace Birdie.Managers
             if (m_musicSource != null)
             {
                 m_musicSource.volume = CalculateEffectiveVolume(m_musicVolume, m_musicMuted);
-            }
-        }
-
-        private void ApplyAmbientVolume()
-        {
-            if (m_ambientSource != null)
-            {
-                m_ambientSource.volume = CalculateEffectiveVolume(m_ambientVolume, m_ambientMuted);
             }
         }
 
@@ -453,11 +340,9 @@ namespace Birdie.Managers
             m_masterVolume = audioData.masterVolume;
             m_sfxVolume = audioData.sfxVolume;
             m_musicVolume = audioData.musicVolume;
-            m_ambientVolume = audioData.ambientVolume;
             m_masterMuted = audioData.masterMuted;
             m_sfxMuted = audioData.sfxMuted;
             m_musicMuted = audioData.musicMuted;
-            m_ambientMuted = audioData.ambientMuted;
 
             ApplyAllVolumes();
 
@@ -476,11 +361,9 @@ namespace Birdie.Managers
             audioData.masterVolume = m_masterVolume;
             audioData.sfxVolume = m_sfxVolume;
             audioData.musicVolume = m_musicVolume;
-            audioData.ambientVolume = m_ambientVolume;
             audioData.masterMuted = m_masterMuted;
             audioData.sfxMuted = m_sfxMuted;
             audioData.musicMuted = m_musicMuted;
-            audioData.ambientMuted = m_ambientMuted;
 
             m_saveManager.SaveGame();
 

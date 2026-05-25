@@ -36,7 +36,7 @@ MonoBehaviour:
         m_sequenceStartDelay: 1
         m_gapBetweenHighlights: 0.2
         m_nextRoundDelay: 0.8
-        m_maxRounds: 5
+        m_maxRounds: 6
     - rid: 6068701941492613194
       type: {class: SimonSaysDifficultySettings, ns: Birdie.Data, asm: Assembly-CSharp}
       data:

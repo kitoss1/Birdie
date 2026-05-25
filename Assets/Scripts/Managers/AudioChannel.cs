@@ -8,6 +8,5 @@ namespace Birdie.Managers
         Master,
         SFX,
         Music,
-        Ambient
     }
 }
