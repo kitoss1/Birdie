@@ -43,7 +43,7 @@ namespace Birdie.Data
 
             for (int i = 0; i < errorTiers.Length; i++)
             {
-                int scoreThreshold = maxScore - errorTiers[i].MaxErrors;
+                int scoreThreshold = Mathf.Max(0, maxScore - errorTiers[i].MaxErrors);
                 rewardTiers[i] = new MinigameRewardTier(scoreThreshold, errorTiers[i].FriendshipReward);
             }
 

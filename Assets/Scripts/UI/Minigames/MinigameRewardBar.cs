@@ -136,6 +136,11 @@ namespace Birdie.UI.Minigames
 
                 float normalizedPosition = (float)tier.ScoreThreshold / m_maxScore;
 
+                if (normalizedPosition <= 0f)
+                {
+                    continue;
+                }
+
                 var marker = Instantiate(m_thresholdMarkerTemplate, m_markerContainer);
                 marker.gameObject.SetActive(true);
                 marker.anchorMin = new Vector2(normalizedPosition, 0f);
