@@ -167,7 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f2588dddb915b94a8a926adff019179, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.Minigames.SeedCatcherUI
-  m_bagImage: {fileID: 7300570109373264114}
+  m_bagImage: {fileID: 0}
   m_scoreDisplay: {fileID: 0}
   m_timerText: {fileID: 7303742891560928780}
   m_livesDisplay: {fileID: 4933066013347319933}
@@ -541,7 +541,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4337571194697627741
 RectTransform:
   m_ObjectHideFlags: 0

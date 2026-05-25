@@ -272,7 +272,7 @@ namespace Birdie.UI.Minigames
 
             DebugBase.Log($"[{nameof(SeedCatcherUI)}] Game started", DebugCategory.UI);
 
-            PlayBagIntroAsync().Forget();
+            StartPlaying();
         }
 
         private async UniTaskVoid PlayBagIntroAsync()

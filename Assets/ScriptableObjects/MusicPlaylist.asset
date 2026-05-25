@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: MusicPlaylist
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Data.MusicPlaylist
   m_tracks:
-  - {fileID: 8300000, guid: 62b8c346ec27d0b44bed683d7d073c00, type: 3}
-  - {fileID: 8300000, guid: 75c70a2e1b0d1ac4aa8ee3f53df3d5ba, type: 3}
+  - {fileID: 8300000, guid: 4fe07955bc746ca4c9168fa8740b8994, type: 3}
+  - {fileID: 8300000, guid: 127c095b31767404e9ea5c97da6d0ff2, type: 3}
   m_shuffle: 1
