@@ -15,8 +15,8 @@ MonoBehaviour:
   m_animationStateName: BathingLoop
   m_movementAnimationStateName: Walking
   m_useTimer: 1
-  m_minDuration: 6
-  m_maxDuration: 12
+  m_minDuration: 12
+  m_maxDuration: 200
   m_requiredFriendshipLevel: 0
   m_requiresSceneObject: 1
   m_canBeInterrupted: 1

@@ -61,8 +61,8 @@ MonoBehaviour:
   m_requiredUpgradeIDs: []
   m_arrivingBehavior: {fileID: 11400000, guid: d88b041e0268e154995e1a48f006466d, type: 2}
   m_leavingBehavior: {fileID: 11400000, guid: f0c4c75f1d13d6b4bbb2248bcd6ea9d4, type: 2}
-  m_visitDurationMin: 30
-  m_visitDurationMax: 200
+  m_visitDurationMin: 180
+  m_visitDurationMax: 720
   m_objectBonusSeconds: 5
   m_movementSpeed: 60
   m_feederInteractionOffset: 50
