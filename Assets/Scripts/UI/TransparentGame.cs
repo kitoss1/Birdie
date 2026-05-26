@@ -85,7 +85,14 @@ public class TransparentGame : MonoBehaviour
     [DllImport("user32.dll")]
     static extern bool SystemParametersInfo(uint uiAction, uint uiParam, ref RECT pvParam, uint fWinIni);
 
-    const uint SPI_GETWORKAREA = 0x0030;
+    const uint SPI_GETWORKAREA  = 0x0030;
+    const uint WS_EX_NOACTIVATE = 0x08000000;
+
+    [DllImport("user32.dll")]
+    static extern IntPtr GetShellWindow();
+
+    [DllImport("user32.dll")]
+    static extern bool SetForegroundWindow(IntPtr hWnd);
 
     private IntPtr hwnd;
 #endif
@@ -126,9 +133,10 @@ public class TransparentGame : MonoBehaviour
         };
         DwmExtendFrameIntoClientArea(hwnd, ref margins);
 
-        // Set WS_EX_LAYERED to enable transparency effects
+        // WS_EX_NOACTIVATE prevents the game window from stealing focus when clicked,
+        // so WM_MOUSEWHEEL always reaches the user's active app (browser, document, etc.)
         int exStyle = GetWindowLong(hwnd, GWL_EXSTYLE);
-        exStyle |= (int)WS_EX_LAYERED;
+        exStyle |= (int)(WS_EX_LAYERED | WS_EX_NOACTIVATE);
         SetWindowLong(hwnd, GWL_EXSTYLE, exStyle);
 
         // Make window always on top
@@ -137,6 +145,10 @@ public class TransparentGame : MonoBehaviour
 
         // Resize window to work area (screen minus taskbar)
         FitWindowToWorkArea();
+
+        // Release any focus the game acquired on startup; subsequent app clicks will own focus naturally
+        SetForegroundWindow(GetShellWindow());
+        DebugBase.Log($"[{nameof(TransparentGame)}] Focus released to shell", DebugCategory.Transparency);
 #else
         DebugBase.LogWarning($"[{nameof(TransparentGame)}] Transparent Game only works in Windows builds", DebugCategory.Transparency);
 

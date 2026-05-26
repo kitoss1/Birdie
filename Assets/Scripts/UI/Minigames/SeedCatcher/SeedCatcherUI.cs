@@ -131,6 +131,7 @@ namespace Birdie.UI.Minigames
         private int m_completionReward;
         private RectTransform m_rectTransform;
         private RectTransform m_seedContainerRect;
+        private Image m_inputOverlay;
         private int m_score;
         private int m_currentLives;
         private float m_remainingTime;
@@ -149,6 +150,7 @@ namespace Birdie.UI.Minigames
         {
             m_destroyCancellation = this.GetCancellationTokenOnDestroy();
             m_rectTransform = GetComponent<RectTransform>();
+            m_inputOverlay = GetComponent<Image>();
 
             if (m_seedContainer != null)
             {
@@ -325,6 +327,11 @@ namespace Birdie.UI.Minigames
         private void StartPlaying()
         {
             m_currentState = SeedCatcherState.Playing;
+
+            if (m_inputOverlay != null)
+            {
+                m_inputOverlay.raycastTarget = true;
+            }
 
             if (m_basket != null)
             {
@@ -539,6 +546,11 @@ namespace Birdie.UI.Minigames
         {
             m_currentState = SeedCatcherState.GameOver;
 
+            if (m_inputOverlay != null)
+            {
+                m_inputOverlay.raycastTarget = false;
+            }
+
             if (m_basket != null)
             {
                 m_basket.SetInputEnabled(false);
@@ -552,7 +564,7 @@ namespace Birdie.UI.Minigames
             if (m_timerText != null)
             {
                 int seconds = Mathf.CeilToInt(Mathf.Max(m_remainingTime, 0f));
-                m_timerText.text = $"Time: {seconds}";
+                m_timerText.text = $"Tiempo: {seconds}";
             }
         }
 
