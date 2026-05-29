@@ -18,7 +18,7 @@ MonoBehaviour:
     A\xF1ade un toque de elegancia sin intentarlo demasiado."
   m_icon: {fileID: 21300000, guid: 4b22775437112974a8a1cbf22a5b6934, type: 3}
   m_price: 10
-  m_category: 3
+  m_category: 2
   m_isMovable: 0
   m_exclusivityGroup: Windowsill
   m_ownedByDefault: 0

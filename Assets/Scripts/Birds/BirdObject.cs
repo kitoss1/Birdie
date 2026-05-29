@@ -129,8 +129,6 @@ namespace Birdie.Birds
     {
         Feeder,
         BirdBath,
-        Toy,
-        Decoration,
-        Perch
+        Decoration
     }
 }

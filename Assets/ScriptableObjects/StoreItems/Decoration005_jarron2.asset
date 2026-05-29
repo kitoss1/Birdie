@@ -18,7 +18,7 @@ MonoBehaviour:
     ser de otro color. Irradia el mismo buen humor todo el a\xF1o."
   m_icon: {fileID: 21300000, guid: 60906357920179e47ad145c5041676d4, type: 3}
   m_price: 10
-  m_category: 3
+  m_category: 2
   m_isMovable: 1
   m_exclusivityGroup: 
   m_ownedByDefault: 0

@@ -80,7 +80,7 @@ MonoBehaviour:
     m_weight: 50
   - m_behavior: {fileID: 11400000, guid: abca6f41425aedc49b2106f11b0e6d19, type: 2}
     m_weight: 10
-  m_minigameCooldownDuration: 120
+  m_minigameCooldownDuration: 0
   m_availableMinigames:
   - {fileID: 11400000, guid: dba2b843e9d4b1444a473cca95d8eb95, type: 2}
   - {fileID: 11400000, guid: 07e71b1ecb30e6f408eb1cc8a8529f87, type: 2}
