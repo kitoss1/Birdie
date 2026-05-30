@@ -37,6 +37,10 @@ namespace Birdie.Debug
         [Tooltip("Button to close all popups")]
         private Button m_closeButton;
 
+        [SerializeField]
+        [Tooltip("Button to add 50 friendship points to the selected bird")]
+        private Button m_addFiftyButton;
+
         public TextMeshProUGUI HeaderText => m_headerText;
         public TextMeshProUGUI CurrentFriendshipText => m_currentFriendshipText;
         public TextMeshProUGUI CurrentLevelText => m_currentLevelText;
@@ -44,6 +48,7 @@ namespace Birdie.Debug
         public Button ApplyButton => m_applyButton;
         public Button BackButton => m_backButton;
         public Button CloseButton => m_closeButton;
+        public Button AddFiftyButton => m_addFiftyButton;
 
 #if UNITY_EDITOR
         private void OnValidate()
@@ -81,6 +86,11 @@ namespace Birdie.Debug
             if (m_closeButton == null)
             {
                 UnityEngine.Debug.LogWarning($"[{nameof(DebugBirdDetailPopupUI)}] Close Button reference is missing!", this);
+            }
+
+            if (m_addFiftyButton == null)
+            {
+                UnityEngine.Debug.LogWarning($"[{nameof(DebugBirdDetailPopupUI)}] Add Fifty Button reference is missing!", this);
             }
         }
 #endif

@@ -144,6 +144,11 @@ namespace Birdie.Debug
                 m_currentBirdDetailPopup.CloseButton.onClick.AddListener(CloseAllPopups);
             }
 
+            if (m_currentBirdDetailPopup.AddFiftyButton != null)
+            {
+                m_currentBirdDetailPopup.AddFiftyButton.onClick.AddListener(AddFiftyFriendship);
+            }
+
             // Populate the detail popup
             UpdateDetailPopupDisplay();
 
@@ -212,6 +217,21 @@ namespace Birdie.Debug
             RefreshDiaryUI();
 
             DebugBase.Log($"[{nameof(DebugBirdEditor)}] Set friendship for {m_selectedBird.BirdName} to {newValue}", DebugCategory.Debug);
+        }
+
+        private void AddFiftyFriendship()
+        {
+            if (m_selectedBird == null)
+            {
+                return;
+            }
+
+            GameManager.Instance.FriendshipManager.AddFriendship(m_selectedBird.BirdID, 50, m_selectedBird);
+
+            UpdateDetailPopupDisplay();
+            RefreshDiaryUI();
+
+            DebugBase.Log($"[{nameof(DebugBirdEditor)}] Added 50 friendship to {m_selectedBird.BirdName}", DebugCategory.Debug);
         }
 
         private void RefreshDiaryUI()
