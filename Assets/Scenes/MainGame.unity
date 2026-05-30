@@ -2713,6 +2713,24 @@ MonoBehaviour:
   m_Spacing: {x: 10, y: 10}
   m_Constraint: 0
   m_ConstraintCount: 2
+--- !u!1 &1018638555 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 321879621293486015, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+  m_PrefabInstance: {fileID: 5133509383242270236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1018638559
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1018638555}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f76ce11b3b535469f28adb3031ef77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.AlphaHitTestImage
+  m_alphaThreshold: 0.1
 --- !u!1 &1031672613
 GameObject:
   m_ObjectHideFlags: 0
@@ -4756,6 +4774,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 790e65e780f22ad4aba70271d3048dbe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Birdie.Managers.DiaryUIManager
+--- !u!1 &1621822217 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7999446236178317405, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+  m_PrefabInstance: {fileID: 5133509383242270236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1621822221
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1621822217}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f76ce11b3b535469f28adb3031ef77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.AlphaHitTestImage
+  m_alphaThreshold: 0.1
 --- !u!1 &1624401283 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1076388443385077661, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
@@ -9629,15 +9665,84 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 44711943361641202, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5133509383242270239}
+    - targetCorrespondingSourceObject: {fileID: 5956283158005195875, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5133509383242270243}
+    - targetCorrespondingSourceObject: {fileID: 4595796750764623703, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5133509383242270242}
     - targetCorrespondingSourceObject: {fileID: 7121111175861886742, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1926201834}
+    - targetCorrespondingSourceObject: {fileID: 321879621293486015, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1018638559}
+    - targetCorrespondingSourceObject: {fileID: 7999446236178317405, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1621822221}
   m_SourcePrefab: {fileID: 100100000, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
 --- !u!1 &5133509383242270237 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 896574850532500468, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
   m_PrefabInstance: {fileID: 5133509383242270236}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &5133509383242270238 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 44711943361641202, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+  m_PrefabInstance: {fileID: 5133509383242270236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5133509383242270239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5133509383242270238}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f76ce11b3b535469f28adb3031ef77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.AlphaHitTestImage
+  m_alphaThreshold: 0.1
+--- !u!1 &5133509383242270240 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4595796750764623703, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+  m_PrefabInstance: {fileID: 5133509383242270236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &5133509383242270241 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5956283158005195875, guid: 1bc14ebab3991c848a05e76bf25e31c6, type: 3}
+  m_PrefabInstance: {fileID: 5133509383242270236}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &5133509383242270242
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5133509383242270240}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f76ce11b3b535469f28adb3031ef77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.AlphaHitTestImage
+  m_alphaThreshold: 0.1
+--- !u!114 &5133509383242270243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5133509383242270241}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7f76ce11b3b535469f28adb3031ef77, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Birdie.UI.AlphaHitTestImage
+  m_alphaThreshold: 0.1
 --- !u!222 &5194033604153315390
 CanvasRenderer:
   m_ObjectHideFlags: 0
