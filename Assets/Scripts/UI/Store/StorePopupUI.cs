@@ -281,8 +281,8 @@ namespace Birdie.UI.Store
             BirdObject birdObject = sceneObject.GetComponent<BirdObject>();
             if (birdObject != null && birdObject.IsBeingUsed)
             {
-                GameManager.Instance.ToastManager.ShowToast("A bird is currently using this item!");
-                DebugBase.Log($"[{nameof(StorePopupUI)}] Cannot move item {itemData.ItemName}: a bird is using it");
+                GameManager.Instance.ToastManager.ShowToast("¡Un pájaro está utilizando este objeto en este momento!");
+                DebugBase.Log($"[{nameof(StorePopupUI)}] No se puede mover el objeto {itemData.ItemName}: un pájaro lo está usando");
                 return;
             }
 
@@ -304,7 +304,7 @@ namespace Birdie.UI.Store
             bool isCurrentlyEnabled = GameManager.Instance.StoreManager.IsItemEnabled(itemData.ItemID);
             if (isCurrentlyEnabled && !GameManager.Instance.StoreManager.CanDisableItem(itemData.ItemID))
             {
-                GameManager.Instance.ToastManager.ShowToast("At least one item of this type must remain active!");
+                GameManager.Instance.ToastManager.ShowToast("Debe quedar al menos un elemento de este tipo activo");
                 return;
             }
 

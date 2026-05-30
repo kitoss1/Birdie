@@ -93,7 +93,9 @@ namespace Birdie.UI.Minigames
 
         public event Action GameClosed;
 
-        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, m_score, m_completionReward);
+        public int FriendshipReward => MinigameRewardTier.ResolveReward(m_rewardTiers, EffectiveScore, m_completionReward);
+
+        private int EffectiveScore => Mathf.Max(0, m_likedScore - m_dislikedErrors);
 
         private MinigameRewardTier[] m_rewardTiers;
         private int m_completionReward;
@@ -101,6 +103,7 @@ namespace Birdie.UI.Minigames
         private int m_score;
         private int m_likedScore;
         private int m_errors;
+        private int m_dislikedErrors;
         private int m_remainingSeeds;
         private SeedSortingState m_currentState;
         private Canvas m_canvas;
@@ -149,6 +152,7 @@ namespace Birdie.UI.Minigames
             m_score = 0;
             m_likedScore = 0;
             m_errors = 0;
+            m_dislikedErrors = 0;
             m_remainingSeeds = m_totalSeedCount;
             m_currentState = SeedSortingState.WaitingToStart;
 
@@ -352,10 +356,14 @@ namespace Birdie.UI.Minigames
             else
             {
                 m_errors++;
+                if (!seed.IsLiked)
+                {
+                    m_dislikedErrors++;
+                }
             }
 
             m_scoreDisplay?.UpdateScore(m_score);
-            m_rewardBar?.UpdateScore(m_likedScore);
+            m_rewardBar?.UpdateScore(EffectiveScore);
 
             DebugBase.Log(
                 $"[{nameof(SeedSortingUI)}] Seed dropped on {target}. Liked: {seed.IsLiked}, Correct: {isCorrect}. Score: {m_score}, Errors: {m_errors}",
@@ -418,7 +426,7 @@ namespace Birdie.UI.Minigames
                 $"[{nameof(SeedSortingUI)}] All seeds sorted! Final score: {m_score}/{m_totalSeedCount}",
                 DebugCategory.UI);
 
-            m_gameOverPanel?.Show(m_score, FriendshipReward);
+            m_gameOverPanel?.Show(EffectiveScore, FriendshipReward);
         }
 
         private void OnCloseClicked()
