@@ -8,14 +8,6 @@ An [EditorConfig](https://editorconfig.org "EditorConfig homepage") file (`.edit
 
 For non-C# files (xml, bat, sh, etc.), our current best guidance is consistency. When editing files, keep new code and changes consistent with the style in the files. For new files, it should conform to the style for that kind of files. If there is a completely new type of file, anything that is reasonably broadly accepted is fine.
 
-## Analyzer Rules
-
-Code style rules are defined in `Assets/Default.ruleset` which includes:
-- **StyleCop analyzers** for consistent code style
-- **Microsoft (Roslyn) analyzers** for code quality
-- **Unity analyzers** for Unity-specific best practices
-- **AsyncFixer** for async/await pattern enforcement
-
 ## General Code Practices
 
 Following [Microsoft C# coding conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) **MUST** be followed by all projects, with these modifications:
@@ -64,18 +56,18 @@ using System.Collections.Generic;
 ```
 
 ### All code goes into namespaces
-Format is `Birdie.<MainFeature>.<Feature>`. Sub-namespaces are allowed.
+Format is `Windowsill.<MainFeature>.<Feature>`. Sub-namespaces are allowed.
 
 We move and add new code into correct namespaces.
 ```
-namespace Birdie.Meta.Popups
+namespace Windowsill.Meta.Popups
 {
     public class SomeClass
     {
     }
 }
 
-namespace Birdie.Core.LevelData
+namespace Windowsill.Core.LevelData
 {
     public class LevelGoalsData
     {

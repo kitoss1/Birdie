@@ -11,8 +11,6 @@
 ### Architecture
 - **Graphics**: All the game graphics will be made with UI and canvas.
 
-## Tools, Frameworks & Third Party Dependencies
-
 ### Animation & UI
 - **DOTween** - Animation framework for tweening and UI animations
 
