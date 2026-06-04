@@ -1,6 +1,6 @@
 # C# Coding Style
 
-The general rule we follow is "use Visual Studio defaults" with modifications from General Puzzle Studio code practices.
+The general rule we follow is "use Visual Studio defaults" with modifications.
 
 ## Editor Support
 
@@ -16,7 +16,7 @@ Code style rules are defined in `Assets/Default.ruleset` which includes:
 - **Unity analyzers** for Unity-specific best practices
 - **AsyncFixer** for async/await pattern enforcement
 
-## General Puzzle Studio Code Practices
+## General Code Practices
 
 Following [Microsoft C# coding conventions](https://learn.microsoft.com/en-us/dotnet/csharp/fundamentals/coding-style/coding-conventions) **MUST** be followed by all projects, with these modifications:
 - Use `m_` prefix for member variables instead of the suggested `_` prefix
