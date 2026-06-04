@@ -1,5 +1,4 @@
 # CLAUDE.md
-
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Project Overview
@@ -10,8 +9,6 @@ This file provides technical guidance for working with the Birdie codebase. For 
 ### Building
 - Manual builds can be performed through Unity Editor.
 
-### Testing
-
 ### Code Quality
 - Coding convention guidelines can be found in 'docs/base/coding-style.md' and '.editorconfig', important to follow them closely
 
@@ -21,15 +18,9 @@ This file provides technical guidance for working with the Birdie codebase. For 
 - **Main Scripts**: Located in `Assets/Scripts/` organized into:
    - 'Managers' - Main managers for the game
 
-### Key Components
-
 ### Third-Party Dependencies
 - **DOTween**: Animation framework
 - **UniTask**: Async/await support for Unity
-
-### Other 
-
-### Data Management
 
 ### Planning and Documentation
 - After providing a plan how to implement requested feature/bugfix, verify from local Unity docs using unity-docs agent that the methods you are available and are not deprecated
@@ -68,7 +59,6 @@ This file provides technical guidance for working with the Birdie codebase. For 
 - **docs/base/coding-style.md** - C# coding standards, .editorconfig support, analyzer rules
 
 ### Product Documentation
-Add design document
 - **docs/product/big-picture.md** - 
 
 ### Feature Development Context
